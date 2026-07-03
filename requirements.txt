@@ -1,0 +1,3 @@
+earthengine-api>=0.1.400
+geemap>=0.32
+pandas>=2.0
