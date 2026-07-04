@@ -1,0 +1,16 @@
+<svg width="100%" viewBox="0 0 680 680" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>savana package logo</title>
+<desc>A gear-shaped badge containing a warm cream circle with a low golden sun, an acacia tree silhouette, and a large centered "savana" wordmark in dark brown bold text.</desc>
+<defs>
+<linearGradient id="sunGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+<stop offset="0%" stop-color="#ffcf5c"/>
+<stop offset="100%" stop-color="#e8942e"/>
+</linearGradient>
+</defs>
+<polygon points="264.3,107.0 288.4,44.5 391.6,44.5 415.7,107.0 415.7,107.0 472.0,70.6 555.4,131.2 538.2,196.0 538.2,196.0 605.1,199.6 637.0,297.7 585.0,340.0 585.0,340.0 637.0,382.3 605.1,480.4 538.2,484.0 538.2,484.0 555.4,548.8 472.0,609.4 415.7,573.0 415.7,573.0 391.6,635.5 288.4,635.5 264.3,573.0 264.3,573.0 208.0,609.4 124.6,548.8 141.8,484.0 141.8,484.0 74.9,480.4 43.0,382.3 95.0,340.0 95.0,340.0 43.0,297.7 74.9,199.6 141.8,196.0 141.8,196.0 124.6,131.2 208.0,70.6 264.3,107.0" fill="#a9660f" stroke="#7c4a0a" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="340" cy="340" r="243" fill="#f5e8ca" stroke="#7c4a0a" stroke-width="4"/>
+<circle cx="452" cy="212" r="52" fill="url(#sunGrad)"/>
+<rect x="330" y="270" width="16" height="115" fill="#5a3d1e"/>
+<path d="M 200 258 Q 220 208 270 223 Q 290 193 330 200 Q 355 178 395 198 Q 430 193 450 228 Q 480 213 490 253 Q 470 278 430 274 Q 400 288 360 278 Q 320 290 280 278 Q 240 288 210 273 Q 195 266 200 258 Z" fill="#3f4d20" stroke="#2c3616" stroke-width="3" stroke-linejoin="round"/>
+<text x="340" y="470" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="128" fill="#2e2410" stroke="#f5e8ca" stroke-width="2" letter-spacing="1">savana</text>
+</svg>

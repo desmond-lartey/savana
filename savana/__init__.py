@@ -1,4 +1,4 @@
-"""savana: adaptive AI classification of complex savanna landscapes.
+"""savana: adaptive classification of complex savanna landscapes.
 
 Classifies savanna landscapes into ecologically meaningful land-system
 management classes (e.g. Core Woodland, Open Woodland, Shrub-Transition,

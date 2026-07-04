@@ -1,6 +1,10 @@
 # savana
 
-**Adaptive AI classification of complex savanna landscapes into management-relevant land-system classes.**
+<p align="center">
+  <img src="docs/assets/logo-readme.png" alt="savana logo" width="180">
+</p>
+
+**Adaptive classification of complex savanna landscapes into management-relevant land-system classes.**
 
 Conventional LULC (land use / land cover) products typically collapse the internal
 structure of savanna landscapes into one or two undifferentiated "grass/shrub" classes —
@@ -98,7 +102,7 @@ This is the first module of a larger package. Planned additions include:
 - Additional class schemes / configurable taxonomies for other savanna biomes
 - Alternative embedding backbones (e.g. other foundation models) as drop-in options
 - Local (non-GEE) inference for pre-exported imagery
-- A CLI, similar in spirit to `geoai`'s
+- A CLI
 
 Contributions and issues welcome.
 
@@ -107,6 +111,14 @@ Contributions and issues welcome.
 If you use this package in your research, please cite the associated manuscript
 (citation to be added on publication).
 
-## License
 
-MIT
+## 📄 License
+
+Savana is free and open source software, licensed under the MIT License.
+
+## Acknowledgments
+
+We gratefully acknowledge the support of the following organizations:
+
+-   [Irish Research Council](https://research.ie/funding/goipg/): This research is supported by the Government of Ireland Postgraduate Scholarship through Grant No. GOIPG/2025/8306, awarded under the [Reseearch Ireland Program](https://www.researchireland.ie/funding/government-ireland-postgraduate/).
+-   [Department of Geography](https://www.mic.ul.ie/faculty-of-arts/department/geography?index=0): This work is also partially supported by the department of Geography, Mary Immaculate College.

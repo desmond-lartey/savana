@@ -1,0 +1,51 @@
+site_name: savana
+site_description: Adaptive classification of complex savanna landscapes into management-relevant land-system classes
+site_author: Desmond Lartey
+repo_url: https://github.com/desmond-lartey/savana
+
+copyright: "Copyright &copy; 2026 Desmond Lartey"
+
+theme:
+    name: material
+    logo: assets/logo.png
+    favicon: assets/favicon.ico
+    palette:
+        - scheme: default
+          toggle:
+              icon: material/toggle-switch-off-outline
+              name: Switch to dark mode
+        - scheme: slate
+          primary: green
+          accent: green
+          toggle:
+              icon: material/toggle-switch
+              name: Switch to light mode
+    icon:
+        repo: fontawesome/brands/github
+    features:
+        - navigation.instant
+        - navigation.tracking
+        - navigation.top
+        - search.highlight
+        - search.share
+
+plugins:
+    - search
+    - mkdocstrings
+
+nav:
+    - Home: index.md
+    - Installation: installation.md
+    - Quick Start: quickstart.md
+    - Method Overview: method.md
+    - API Reference: api.md
+    - Contributing: contributing.md
+    - Changelog: changelog.md
+
+markdown_extensions:
+    - admonition
+    - pymdownx.details
+    - pymdownx.superfences
+    - pymdownx.highlight
+    - toc:
+          permalink: true

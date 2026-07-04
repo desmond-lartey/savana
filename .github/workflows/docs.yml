@@ -1,0 +1,30 @@
+name: docs
+
+on:
+  push:
+    branches:
+      - Fires   # <-- your current default branch; rename this if you switch to 'main'
+
+permissions:
+  contents: write   # required so mkdocs gh-deploy can push to the gh-pages branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install package and docs dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[docs]"
+
+      - name: Deploy docs to GitHub Pages
+        run: mkdocs gh-deploy --force
