@@ -38,3 +38,12 @@ repos:
                 [
                     "--skip=*.csv,*.geojson,*.json,*.yml,*.js,*.html,*.pdf",
                 ]
+
+    - repo: local
+      hooks:
+          - id: check-version-sync
+            name: Check pyproject.toml / __init__.py version match
+            entry: python scripts/check_version_sync.py
+            language: system
+            pass_filenames: false
+            files: ^(pyproject\.toml|savana/__init__\.py)$

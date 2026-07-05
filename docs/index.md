@@ -1,4 +1,4 @@
-# savana
+# Savana: A Geosptaial Intelligence for Savannah Landscapes
 
 <p align="center">
   <img src="assets/logo-readme.png" alt="savana logo" width="180">
@@ -51,6 +51,13 @@ Overview** for the science behind it.
 If you use this package in your research, please cite the associated manuscript
 (citation to be added on publication).
 
-## License
+## 📄 License
 
-MIT
+Savana is free and open source software, licensed under the MIT License.
+
+## Acknowledgments
+
+We gratefully acknowledge the support of the following organizations:
+
+-   [Irish Research Council](https://research.ie/funding/goipg/): This research is supported by the Government of Ireland Postgraduate Scholarship through Grant No. GOIPG/2025/8306, awarded under the [Reseearch Ireland Program](https://www.researchireland.ie/funding/government-ireland-postgraduate/).
+-   [Department of Geography](https://www.mic.ul.ie/faculty-of-arts/department/geography?index=0): This work is also partially supported by the department of Geography, Mary Immaculate College.

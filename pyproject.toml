@@ -1,6 +1,6 @@
 [project]
 name = "savana"
-version = "0.1.0"
+version = "0.1.2"
 description = "Adaptive classification of complex savanna landscapes into management-relevant land-system classes"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -26,7 +26,7 @@ dependencies = [
 
 [project.optional-dependencies]
 vector = ["geopandas>=0.14"]
-dev = ["pytest>=7.0", "black", "flake8", "isort", "pre-commit"]
+dev = ["pytest>=7.0", "black", "flake8", "isort", "pre-commit", "bump-my-version"]
 docs = ["mkdocs", "mkdocs-material", "mkdocstrings[python]"]
 
 [tool.setuptools.packages.find]
@@ -34,7 +34,7 @@ include = ["savana*"]
 exclude = ["docs*", "tests*"]
 
 [tool.bumpversion]
-current_version = "0.1.0"
+current_version = "0.1.2"
 commit = true
 tag = true
 tag_name = "v{new_version}"

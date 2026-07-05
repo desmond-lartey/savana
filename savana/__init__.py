@@ -30,7 +30,7 @@ from __future__ import annotations
 import importlib
 
 __author__ = "Desmond Lartey"
-__version__ = "0.1.0"
+__version__ = "0.1.2"
 
 _LAZY_SYMBOL_MAP = {
     # --- savana.pipeline ---
@@ -120,7 +120,9 @@ def __getattr__(name):
 
 
 def __dir__():
-    return sorted(set(globals().keys()) | set(_LAZY_SYMBOL_MAP.keys()) | _LAZY_SUBMODULES)
+    return sorted(
+        set(globals().keys()) | set(_LAZY_SYMBOL_MAP.keys()) | _LAZY_SUBMODULES
+    )
 
 
 __all__ = list(_LAZY_SYMBOL_MAP.keys())
