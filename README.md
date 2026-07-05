@@ -1,7 +1,7 @@
-# savana
+# Savana: A Geosptaial Intelligence for Savannah Landscapes
 
 <p align="center">
-  <img src="docs/assets/logo-readme.png" alt="savana logo" width="180">
+  <img src="https://raw.githubusercontent.com/desmond-lartey/savana/Fires/docs/assets/logo-readme.png" alt="savana logo" width="180">
 </p>
 
 **Adaptive classification of complex savanna landscapes into management-relevant land-system classes.**

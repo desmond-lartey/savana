@@ -9,6 +9,7 @@
 ![License](https://img.shields.io/github/license/desmond-lartey/savana)
 ![Stars](https://img.shields.io/github/stars/desmond-lartey/savana?style=social)
 ![Forks](https://img.shields.io/github/forks/desmond-lartey/savana?style=social)
+[![image](https://img.shields.io/badge/YouTube-Tutorials-red)](https://www.youtube.com/@desmondlartey31)
 
 **Adaptive classification of complex savanna landscapes into management-relevant land-system classes.**
 
