@@ -17,20 +17,23 @@
 **Adaptive classification of complex savanna landscapes into management-relevant land-system classes.**
 
 Conventional LULC (land use / land cover) products typically collapse the internal
-structure of savanna landscapes into one or two undifferentiated "grass/shrub" classes —
+structure of savanna landscapes into one or two undifferentiated "grass/shrub" classes which is
 too coarse to be useful for protected-area management, grazing planning, or fire regime
 analysis. `savana` implements a validated, fully adaptive classification method
 (Sentinel-2 + Google AlphaEarth satellite embeddings + rainfall-normalised phenology)
 that resolves savanna landscapes into ecologically meaningful classes such as Core
 Woodland, Open Woodland, Shrub-Transition Savanna, Grassland, Riparian/Wetland
-Vegetation, and Anthropogenic Disturbance — for *any* AOI, with **no hardcoded
-thresholds**: every cutoff is derived from that landscape's own index percentiles.
+Vegetation, and Anthropogenic Disturbance, and does it for *any* AOI, with **no
+hardcoded thresholds**: every cutoff is derived from that landscape's own index
+percentiles.
 
 This package started as the Google Earth Engine implementation behind a land-system
-classification study of West African protected areas. It's designed as a foundation —
-the four-model ablation, the RUE-validated conservative change detection, and the
-adaptive thresholding are all built as independent, composable modules so new sensors,
-feature stacks, and classification schemes can be added without breaking the existing API.
+classification study of West African protected areas (Kogyae, Old Oyo, and others). It's
+designed as a foundation, the four-model ablation (KNN baseline / RF-embeddings /
+RF-phenology / RF-embeddings+phenology), the RUE-validated conservative change
+detection, and the adaptive thresholding are all built as independent, composable
+modules so new sensors, feature stacks, and classification schemes can be added
+without breaking the existing API.
 
 ## Quick example
 

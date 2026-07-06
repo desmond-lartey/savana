@@ -16,7 +16,7 @@
 **Adaptive classification of complex savanna landscapes into management-relevant land-system classes.**
 
 Conventional LULC (land use / land cover) products typically collapse the internal
-structure of savanna landscapes into one or two undifferentiated "grass/shrub" classes which iis
+structure of savanna landscapes into one or two undifferentiated "grass/shrub" classes which is
 too coarse to be useful for protected-area management, grazing planning, or fire regime
 analysis. `savana` implements a validated, fully adaptive classification method
 (Sentinel-2 + Google AlphaEarth satellite embeddings + rainfall-normalised phenology)
