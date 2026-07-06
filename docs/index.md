@@ -4,12 +4,15 @@
   <img src="assets/logo-readme.png" alt="savana logo" width="180">
 </p>
 
-![PyPI](https://img.shields.io/pypi/v/savana?color=blue)
-![Downloads](https://img.shields.io/pypi/dm/savana)
-![License](https://img.shields.io/github/license/desmond-lartey/savana)
-![Stars](https://img.shields.io/github/stars/desmond-lartey/savana?style=social)
-![Forks](https://img.shields.io/github/forks/desmond-lartey/savana?style=social)
-[![image](https://img.shields.io/badge/YouTube-Tutorials-red)](https://www.youtube.com/@desmondlartey31)
+<p align="center">
+  <a href="https://pypi.org/project/savana/" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/pypi/v/savana?color=blue" alt="PyPI"></a>
+  <a href="https://pypistats.org/packages/savana" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/pypi/dm/savana" alt="Downloads"></a>
+  <a href="https://github.com/desmond-lartey/savana/blob/Fires/LICENSE" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/github/license/desmond-lartey/savana" alt="License"></a>
+  <a href="https://github.com/desmond-lartey/savana/stargazers" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/github/stars/desmond-lartey/savana?style=social" alt="Stars"></a>
+  <a href="https://github.com/desmond-lartey/savana/network/members" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/github/forks/desmond-lartey/savana?style=social" alt="Forks"></a>
+  <a href="https://www.youtube.com/@desmondlartey31" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/YouTube-Tutorials-red" alt="YouTube"></a>
+</p>
+
 
 **Adaptive classification of complex savanna landscapes into management-relevant land-system classes.**
 
