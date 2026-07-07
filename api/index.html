@@ -523,6 +523,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#savana.pipeline.SavanaClassifier.compare" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        compare
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#savana.pipeline.SavanaClassifier.confusion_matrices" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -582,6 +593,39 @@
     <span class="md-ellipsis">
       
         show_change
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#savana.pipeline.SavanaClassifier.show_geolibre" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        show_geolibre
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#savana.pipeline.SavanaClassifier.show_years" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        show_years
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#savana.pipeline.SavanaClassifier.show_years_geolibre" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        show_years_geolibre
       
     </span>
   </a>
@@ -1100,6 +1144,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#savana.viz.compare_split_map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        compare_split_map
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#savana.viz.show_change_map" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1115,6 +1170,17 @@
     <span class="md-ellipsis">
       
         show_classified_map
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#savana.viz.show_multi_year_map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        show_multi_year_map
       
     </span>
   </a>
@@ -1383,6 +1449,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#savana.pipeline.SavanaClassifier.compare" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        compare
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#savana.pipeline.SavanaClassifier.confusion_matrices" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1442,6 +1519,39 @@
     <span class="md-ellipsis">
       
         show_change
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#savana.pipeline.SavanaClassifier.show_geolibre" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        show_geolibre
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#savana.pipeline.SavanaClassifier.show_years" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        show_years
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#savana.pipeline.SavanaClassifier.show_years_geolibre" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        show_years_geolibre
       
     </span>
   </a>
@@ -1960,6 +2070,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#savana.viz.compare_split_map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        compare_split_map
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#savana.viz.show_change_map" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1975,6 +2096,17 @@
     <span class="md-ellipsis">
       
         show_classified_map
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#savana.viz.show_multi_year_map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        show_multi_year_map
       
     </span>
   </a>
@@ -2171,13 +2303,7 @@ class scheme, or sensor configuration.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>savana/pipeline.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 42</span>
-<span class="normal"> 43</span>
-<span class="normal"> 44</span>
-<span class="normal"> 45</span>
-<span class="normal"> 46</span>
-<span class="normal"> 47</span>
-<span class="normal"> 48</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 48</span>
 <span class="normal"> 49</span>
 <span class="normal"> 50</span>
 <span class="normal"> 51</span>
@@ -2353,7 +2479,110 @@ class scheme, or sensor configuration.</p>
 <span class="normal">221</span>
 <span class="normal">222</span>
 <span class="normal">223</span>
-<span class="normal">224</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SavanaClassifier</span><span class="p">:</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SavanaClassifier</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;End-to-end adaptive savanna land-system classifier for one AOI.</span>
 
 <span class="sd">    All parameters have sane defaults matching the original manuscript</span>
@@ -2414,8 +2643,12 @@ class scheme, or sensor configuration.</p>
     <span class="k">def</span><span class="w"> </span><span class="nf">build_features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Build composites, indices, RUE, thresholds, and masks for the reference year.&quot;&quot;&quot;</span>
         <span class="n">s2_annual</span> <span class="o">=</span> <span class="n">composites</span><span class="o">.</span><span class="n">sentinel2_annual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">)</span>
-        <span class="n">s2_dry</span> <span class="o">=</span> <span class="n">composites</span><span class="o">.</span><span class="n">seasonal_composite</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span><span class="si">}</span><span class="s2">-03-01&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span><span class="si">}</span><span class="s2">-05-15&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">)</span>
-        <span class="n">s2_wet</span> <span class="o">=</span> <span class="n">composites</span><span class="o">.</span><span class="n">seasonal_composite</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span><span class="si">}</span><span class="s2">-05-01&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span><span class="si">}</span><span class="s2">-07-15&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">)</span>
+        <span class="n">s2_dry</span> <span class="o">=</span> <span class="n">composites</span><span class="o">.</span><span class="n">seasonal_composite</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span><span class="si">}</span><span class="s2">-03-01&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span><span class="si">}</span><span class="s2">-05-15&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span>
+        <span class="p">)</span>
+        <span class="n">s2_wet</span> <span class="o">=</span> <span class="n">composites</span><span class="o">.</span><span class="n">seasonal_composite</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span><span class="si">}</span><span class="s2">-05-01&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span><span class="si">}</span><span class="s2">-07-15&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span>
+        <span class="p">)</span>
         <span class="n">pcts</span> <span class="o">=</span> <span class="n">composites</span><span class="o">.</span><span class="n">percentile_composites</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">composites</span><span class="o">.</span><span class="n">embedding_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">)</span>
 
@@ -2428,7 +2661,10 @@ class scheme, or sensor configuration.</p>
     <span class="k">def</span><span class="w"> </span><span class="nf">sample_training_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Unsupervised clustering + rule-based labelling + class balancing.&quot;&quot;&quot;</span>
         <span class="n">cluster_result</span> <span class="o">=</span> <span class="n">sampling</span><span class="o">.</span><span class="n">cluster_embedding</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">n_clusters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_seed</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span>
+            <span class="n">n_clusters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span><span class="p">,</span>
+            <span class="n">seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_seed</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gcps</span> <span class="o">=</span> <span class="n">sampling</span><span class="o">.</span><span class="n">build_gcps</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">,</span>
@@ -2477,7 +2713,9 @@ class scheme, or sensor configuration.</p>
     <span class="k">def</span><span class="w"> </span><span class="nf">analyse_change</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run conservative + RUE-validated change detection across epochs.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">change</span> <span class="o">=</span> <span class="n">change_mod</span><span class="o">.</span><span class="n">analyse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">park_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">park_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">change</span> <span class="o">=</span> <span class="n">change_mod</span><span class="o">.</span><span class="n">analyse</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">park_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">park_name</span>
+            <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2495,46 +2733,134 @@ class scheme, or sensor configuration.</p>
     <span class="k">def</span><span class="w"> </span><span class="nf">accuracy_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;One row per model (A/B/C/D) with overall accuracy, kappa, PA/UA.&quot;&quot;&quot;</span>
         <span class="n">matrices</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_a&quot;</span><span class="p">],</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_b&quot;</span><span class="p">],</span>
-            <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_c&quot;</span><span class="p">],</span> <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_d&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_a&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_b&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_c&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_d&quot;</span><span class="p">],</span>
         <span class="p">}</span>
-        <span class="k">return</span> <span class="n">accuracy_mod</span><span class="o">.</span><span class="n">summary_dataframe</span><span class="p">(</span><span class="n">matrices</span><span class="p">,</span> <span class="n">park_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">park_name</span><span class="p">,</span> <span class="n">class_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">class_info</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">accuracy_mod</span><span class="o">.</span><span class="n">summary_dataframe</span><span class="p">(</span>
+            <span class="n">matrices</span><span class="p">,</span> <span class="n">park_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">park_name</span><span class="p">,</span> <span class="n">class_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">class_info</span>
+        <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">confusion_matrices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Full per-class confusion matrix table across all 4 models.&quot;&quot;&quot;</span>
         <span class="n">matrices</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_a&quot;</span><span class="p">],</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_b&quot;</span><span class="p">],</span>
-            <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_c&quot;</span><span class="p">],</span> <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_d&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_a&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_b&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_c&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_d&quot;</span><span class="p">],</span>
         <span class="p">}</span>
-        <span class="k">return</span> <span class="n">accuracy_mod</span><span class="o">.</span><span class="n">confusion_matrix_dataframe</span><span class="p">(</span><span class="n">matrices</span><span class="p">,</span> <span class="n">park_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">park_name</span><span class="p">,</span> <span class="n">class_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">class_info</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">accuracy_mod</span><span class="o">.</span><span class="n">confusion_matrix_dataframe</span><span class="p">(</span>
+            <span class="n">matrices</span><span class="p">,</span> <span class="n">park_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">park_name</span><span class="p">,</span> <span class="n">class_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">class_info</span>
+        <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">class_areas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Per-epoch class area statistics (km2) as a pandas DataFrame.&quot;&quot;&quot;</span>
         <span class="n">stats_scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">change</span><span class="p">[</span><span class="s2">&quot;stats_scale&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">change</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span>
-        <span class="k">return</span> <span class="n">exports_mod</span><span class="o">.</span><span class="n">class_areas_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">stats_scale</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">exports_mod</span><span class="o">.</span><span class="n">class_areas_dataframe</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">stats_scale</span>
+        <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drive_folder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">asset_folder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Export classified maps (+ change products, if computed) to Drive/Assets.&quot;&quot;&quot;</span>
         <span class="n">tasks</span> <span class="o">=</span> <span class="n">exports_mod</span><span class="o">.</span><span class="n">export_classified_maps</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">park_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">park_name</span><span class="p">,</span>
-            <span class="n">drive_folder</span><span class="o">=</span><span class="n">drive_folder</span><span class="p">,</span> <span class="n">asset_folder</span><span class="o">=</span><span class="n">asset_folder</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span>
+            <span class="n">park_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">park_name</span><span class="p">,</span>
+            <span class="n">drive_folder</span><span class="o">=</span><span class="n">drive_folder</span><span class="p">,</span>
+            <span class="n">asset_folder</span><span class="o">=</span><span class="n">asset_folder</span><span class="p">,</span>
+            <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span>
+            <span class="n">crs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">change</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">drive_folder</span> <span class="ow">or</span> <span class="n">asset_folder</span><span class="p">):</span>
             <span class="n">tasks</span> <span class="o">+=</span> <span class="n">exports_mod</span><span class="o">.</span><span class="n">export_change_products</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">change</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">park_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">park_name</span><span class="p">,</span>
-                <span class="n">drive_folder</span><span class="o">=</span><span class="n">drive_folder</span><span class="p">,</span> <span class="n">asset_folder</span><span class="o">=</span><span class="n">asset_folder</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">change</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span>
+                <span class="n">park_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">park_name</span><span class="p">,</span>
+                <span class="n">drive_folder</span><span class="o">=</span><span class="n">drive_folder</span><span class="p">,</span>
+                <span class="n">asset_folder</span><span class="o">=</span><span class="n">asset_folder</span><span class="p">,</span>
+                <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span>
+                <span class="n">crs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">tasks</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Display a classified epoch (default: reference year) on an interactive map.&quot;&quot;&quot;</span>
         <span class="n">year</span> <span class="o">=</span> <span class="n">year</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span>
-        <span class="k">return</span> <span class="n">viz</span><span class="o">.</span><span class="n">show_classified_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">[</span><span class="n">year</span><span class="p">],</span> <span class="n">region</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">class_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">class_info</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">viz</span><span class="o">.</span><span class="n">show_classified_map</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">[</span><span class="n">year</span><span class="p">],</span> <span class="n">region</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">class_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">class_info</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_years</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">years</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display several classified epochs as toggleable layers on one map.</span>
+
+<span class="sd">        Uses geemap&#39;s layer panel — check/uncheck each year&#39;s checkbox to</span>
+<span class="sd">        flip between them. Defaults to all epochs the classifier ran.</span>
+
+<span class="sd">        &gt;&gt;&gt; clf.show_years()             # all epochs</span>
+<span class="sd">        &gt;&gt;&gt; clf.show_years([2019, 2024]) # just these two</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">viz</span><span class="o">.</span><span class="n">show_multi_year_map</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">,</span> <span class="n">years</span><span class="o">=</span><span class="n">years</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">class_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">class_info</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_geolibre</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display a classified epoch inside the GeoLibre Jupyter widget.</span>
+
+<span class="sd">        Alternative to .show() — same idea, different map backend.</span>
+<span class="sd">        Requires: pip install &quot;savana[geolibre]&quot; (Python &gt;= 3.11).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">viz_geolibre</span>
+
+        <span class="n">year</span> <span class="o">=</span> <span class="n">year</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span>
+        <span class="k">return</span> <span class="n">viz_geolibre</span><span class="o">.</span><span class="n">show_classified_map</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">[</span><span class="n">year</span><span class="p">],</span> <span class="n">region</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">class_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">class_info</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_years_geolibre</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">years</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display several classified epochs as toggleable layers in GeoLibre.</span>
+
+<span class="sd">        Alternative to .show_years() — same idea, different map backend.</span>
+<span class="sd">        Requires: pip install &quot;savana[geolibre]&quot; (Python &gt;= 3.11).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">viz_geolibre</span>
+
+        <span class="k">return</span> <span class="n">viz_geolibre</span><span class="o">.</span><span class="n">show_multi_year_map</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">,</span> <span class="n">years</span><span class="o">=</span><span class="n">years</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">class_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">class_info</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">compare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="mi">2024</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="s2">&quot;SATELLITE&quot;</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Side-by-side swipe comparison between two years, or a year vs. a basemap.</span>
+
+<span class="sd">        ``left``/``right`` each accept either an epoch year (int, must be</span>
+<span class="sd">        in ``self.maps``) or a basemap name string (e.g. ``&quot;SATELLITE&quot;``,</span>
+<span class="sd">        ``&quot;HYBRID&quot;``, ``&quot;ROADMAP&quot;``, ``&quot;Esri.WorldImagery&quot;``). Drag the</span>
+<span class="sd">        handle in the middle of the resulting map to swipe.</span>
+
+<span class="sd">        &gt;&gt;&gt; clf.compare(2019, 2024)              # two classified years</span>
+<span class="sd">        &gt;&gt;&gt; clf.compare(2024, &quot;SATELLITE&quot;)        # classified year vs. basemap</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">left_img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">[</span><span class="n">left</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="n">left</span>
+        <span class="n">right_img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">[</span><span class="n">right</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="n">right</span>
+        <span class="n">left_label</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="n">left</span>
+        <span class="n">right_label</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">right</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="n">right</span>
+        <span class="k">return</span> <span class="n">viz</span><span class="o">.</span><span class="n">compare_split_map</span><span class="p">(</span>
+            <span class="n">left_img</span><span class="p">,</span>
+            <span class="n">right_img</span><span class="p">,</span>
+            <span class="n">left_label</span><span class="o">=</span><span class="n">left_label</span><span class="p">,</span>
+            <span class="n">right_label</span><span class="o">=</span><span class="n">right_label</span><span class="p">,</span>
+            <span class="n">region</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span>
+            <span class="n">class_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">class_info</span><span class="p">,</span>
+            <span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">show_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Display change-detection layers on an interactive map.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">change</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Call .analyse_change() (or .run()) with &gt;= 2 epochs first.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Call .analyse_change() (or .run()) with &gt;= 2 epochs first.&quot;</span>
+            <span class="p">)</span>
         <span class="k">return</span> <span class="n">viz</span><span class="o">.</span><span class="n">show_change_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">change</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
               </details>
@@ -2568,19 +2894,27 @@ class scheme, or sensor configuration.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>savana/pipeline.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">181</span>
-<span class="normal">182</span>
-<span class="normal">183</span>
-<span class="normal">184</span>
-<span class="normal">185</span>
-<span class="normal">186</span>
-<span class="normal">187</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">accuracy_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">accuracy_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;One row per model (A/B/C/D) with overall accuracy, kappa, PA/UA.&quot;&quot;&quot;</span>
     <span class="n">matrices</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_a&quot;</span><span class="p">],</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_b&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_c&quot;</span><span class="p">],</span> <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_d&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_a&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_b&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_c&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_d&quot;</span><span class="p">],</span>
     <span class="p">}</span>
-    <span class="k">return</span> <span class="n">accuracy_mod</span><span class="o">.</span><span class="n">summary_dataframe</span><span class="p">(</span><span class="n">matrices</span><span class="p">,</span> <span class="n">park_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">park_name</span><span class="p">,</span> <span class="n">class_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">class_info</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">accuracy_mod</span><span class="o">.</span><span class="n">summary_dataframe</span><span class="p">(</span>
+        <span class="n">matrices</span><span class="p">,</span> <span class="n">park_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">park_name</span><span class="p">,</span> <span class="n">class_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">class_info</span>
+    <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2603,14 +2937,18 @@ class scheme, or sensor configuration.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>savana/pipeline.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">163</span>
-<span class="normal">164</span>
-<span class="normal">165</span>
-<span class="normal">166</span>
-<span class="normal">167</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">analyse_change</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">analyse_change</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Run conservative + RUE-validated change detection across epochs.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">change</span> <span class="o">=</span> <span class="n">change_mod</span><span class="o">.</span><span class="n">analyse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">park_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">park_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">change</span> <span class="o">=</span> <span class="n">change_mod</span><span class="o">.</span><span class="n">analyse</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">park_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">park_name</span>
+        <span class="p">)</span>
     <span class="k">return</span> <span class="bp">self</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2634,23 +2972,31 @@ class scheme, or sensor configuration.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>savana/pipeline.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span>
-<span class="normal">105</span>
-<span class="normal">106</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">106</span>
 <span class="normal">107</span>
 <span class="normal">108</span>
 <span class="normal">109</span>
 <span class="normal">110</span>
 <span class="normal">111</span>
-<span class="normal">112</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">build_features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">build_features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Build composites, indices, RUE, thresholds, and masks for the reference year.&quot;&quot;&quot;</span>
     <span class="n">s2_annual</span> <span class="o">=</span> <span class="n">composites</span><span class="o">.</span><span class="n">sentinel2_annual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">)</span>
-    <span class="n">s2_dry</span> <span class="o">=</span> <span class="n">composites</span><span class="o">.</span><span class="n">seasonal_composite</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span><span class="si">}</span><span class="s2">-03-01&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span><span class="si">}</span><span class="s2">-05-15&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">)</span>
-    <span class="n">s2_wet</span> <span class="o">=</span> <span class="n">composites</span><span class="o">.</span><span class="n">seasonal_composite</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span><span class="si">}</span><span class="s2">-05-01&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span><span class="si">}</span><span class="s2">-07-15&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">)</span>
+    <span class="n">s2_dry</span> <span class="o">=</span> <span class="n">composites</span><span class="o">.</span><span class="n">seasonal_composite</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span><span class="si">}</span><span class="s2">-03-01&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span><span class="si">}</span><span class="s2">-05-15&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span>
+    <span class="p">)</span>
+    <span class="n">s2_wet</span> <span class="o">=</span> <span class="n">composites</span><span class="o">.</span><span class="n">seasonal_composite</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span><span class="si">}</span><span class="s2">-05-01&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span><span class="si">}</span><span class="s2">-07-15&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span>
+    <span class="p">)</span>
     <span class="n">pcts</span> <span class="o">=</span> <span class="n">composites</span><span class="o">.</span><span class="n">percentile_composites</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">composites</span><span class="o">.</span><span class="n">embedding_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">)</span>
 
@@ -2681,13 +3027,17 @@ class scheme, or sensor configuration.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>savana/pipeline.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">197</span>
-<span class="normal">198</span>
-<span class="normal">199</span>
-<span class="normal">200</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">class_areas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">class_areas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Per-epoch class area statistics (km2) as a pandas DataFrame.&quot;&quot;&quot;</span>
     <span class="n">stats_scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">change</span><span class="p">[</span><span class="s2">&quot;stats_scale&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">change</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span>
-    <span class="k">return</span> <span class="n">exports_mod</span><span class="o">.</span><span class="n">class_areas_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">stats_scale</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">exports_mod</span><span class="o">.</span><span class="n">class_areas_dataframe</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">stats_scale</span>
+    <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2710,18 +3060,18 @@ class scheme, or sensor configuration.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>savana/pipeline.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">150</span>
-<span class="normal">151</span>
-<span class="normal">152</span>
-<span class="normal">153</span>
-<span class="normal">154</span>
-<span class="normal">155</span>
-<span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span>
-<span class="normal">161</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">classify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">classify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Classify every requested epoch year.&quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">maps</span> <span class="o">=</span> <span class="n">classifiers</span><span class="o">.</span><span class="n">classify_all_epochs</span><span class="p">(</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span>
@@ -2733,6 +3083,87 @@ class scheme, or sensor configuration.</p>
         <span class="n">phenology_min_year</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">phenology_min_year</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="bp">self</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="savana.pipeline.SavanaClassifier.compare" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">compare</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="mi">2024</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="s1">&#39;SATELLITE&#39;</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+<a href="#savana.pipeline.SavanaClassifier.compare" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Side-by-side swipe comparison between two years, or a year vs. a basemap.</p>
+<p><code>left</code>/<code>right</code> each accept either an epoch year (int, must be
+in <code>self.maps</code>) or a basemap name string (e.g. <code>"SATELLITE"</code>,
+<code>"HYBRID"</code>, <code>"ROADMAP"</code>, <code>"Esri.WorldImagery"</code>). Drag the
+handle in the middle of the resulting map to swipe.</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>clf.compare(2019, 2024)              # two classified years
+clf.compare(2024, "SATELLITE")        # classified year vs. basemap</p>
+</blockquote>
+</blockquote>
+</blockquote>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>savana/pipeline.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">compare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="mi">2024</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="s2">&quot;SATELLITE&quot;</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Side-by-side swipe comparison between two years, or a year vs. a basemap.</span>
+
+<span class="sd">    ``left``/``right`` each accept either an epoch year (int, must be</span>
+<span class="sd">    in ``self.maps``) or a basemap name string (e.g. ``&quot;SATELLITE&quot;``,</span>
+<span class="sd">    ``&quot;HYBRID&quot;``, ``&quot;ROADMAP&quot;``, ``&quot;Esri.WorldImagery&quot;``). Drag the</span>
+<span class="sd">    handle in the middle of the resulting map to swipe.</span>
+
+<span class="sd">    &gt;&gt;&gt; clf.compare(2019, 2024)              # two classified years</span>
+<span class="sd">    &gt;&gt;&gt; clf.compare(2024, &quot;SATELLITE&quot;)        # classified year vs. basemap</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">left_img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">[</span><span class="n">left</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="n">left</span>
+    <span class="n">right_img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">[</span><span class="n">right</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="n">right</span>
+    <span class="n">left_label</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="n">left</span>
+    <span class="n">right_label</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">right</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="n">right</span>
+    <span class="k">return</span> <span class="n">viz</span><span class="o">.</span><span class="n">compare_split_map</span><span class="p">(</span>
+        <span class="n">left_img</span><span class="p">,</span>
+        <span class="n">right_img</span><span class="p">,</span>
+        <span class="n">left_label</span><span class="o">=</span><span class="n">left_label</span><span class="p">,</span>
+        <span class="n">right_label</span><span class="o">=</span><span class="n">right_label</span><span class="p">,</span>
+        <span class="n">region</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span>
+        <span class="n">class_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">class_info</span><span class="p">,</span>
+        <span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">,</span>
+    <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2755,19 +3186,27 @@ class scheme, or sensor configuration.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>savana/pipeline.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">189</span>
-<span class="normal">190</span>
-<span class="normal">191</span>
-<span class="normal">192</span>
-<span class="normal">193</span>
-<span class="normal">194</span>
-<span class="normal">195</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">confusion_matrices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">confusion_matrices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Full per-class confusion matrix table across all 4 models.&quot;&quot;&quot;</span>
     <span class="n">matrices</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_a&quot;</span><span class="p">],</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_b&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_c&quot;</span><span class="p">],</span> <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_d&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_a&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_b&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_c&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="s2">&quot;matrix_d&quot;</span><span class="p">],</span>
     <span class="p">}</span>
-    <span class="k">return</span> <span class="n">accuracy_mod</span><span class="o">.</span><span class="n">confusion_matrix_dataframe</span><span class="p">(</span><span class="n">matrices</span><span class="p">,</span> <span class="n">park_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">park_name</span><span class="p">,</span> <span class="n">class_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">class_info</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">accuracy_mod</span><span class="o">.</span><span class="n">confusion_matrix_dataframe</span><span class="p">(</span>
+        <span class="n">matrices</span><span class="p">,</span> <span class="n">park_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">park_name</span><span class="p">,</span> <span class="n">class_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">class_info</span>
+    <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2790,27 +3229,49 @@ class scheme, or sensor configuration.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>savana/pipeline.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">202</span>
-<span class="normal">203</span>
-<span class="normal">204</span>
-<span class="normal">205</span>
-<span class="normal">206</span>
-<span class="normal">207</span>
-<span class="normal">208</span>
-<span class="normal">209</span>
-<span class="normal">210</span>
-<span class="normal">211</span>
-<span class="normal">212</span>
-<span class="normal">213</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drive_folder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">asset_folder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drive_folder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">asset_folder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Export classified maps (+ change products, if computed) to Drive/Assets.&quot;&quot;&quot;</span>
     <span class="n">tasks</span> <span class="o">=</span> <span class="n">exports_mod</span><span class="o">.</span><span class="n">export_classified_maps</span><span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">park_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">park_name</span><span class="p">,</span>
-        <span class="n">drive_folder</span><span class="o">=</span><span class="n">drive_folder</span><span class="p">,</span> <span class="n">asset_folder</span><span class="o">=</span><span class="n">asset_folder</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span>
+        <span class="n">park_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">park_name</span><span class="p">,</span>
+        <span class="n">drive_folder</span><span class="o">=</span><span class="n">drive_folder</span><span class="p">,</span>
+        <span class="n">asset_folder</span><span class="o">=</span><span class="n">asset_folder</span><span class="p">,</span>
+        <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span>
+        <span class="n">crs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">change</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">drive_folder</span> <span class="ow">or</span> <span class="n">asset_folder</span><span class="p">):</span>
         <span class="n">tasks</span> <span class="o">+=</span> <span class="n">exports_mod</span><span class="o">.</span><span class="n">export_change_products</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">change</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">park_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">park_name</span><span class="p">,</span>
-            <span class="n">drive_folder</span><span class="o">=</span><span class="n">drive_folder</span><span class="p">,</span> <span class="n">asset_folder</span><span class="o">=</span><span class="n">asset_folder</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">change</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span>
+            <span class="n">park_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">park_name</span><span class="p">,</span>
+            <span class="n">drive_folder</span><span class="o">=</span><span class="n">drive_folder</span><span class="p">,</span>
+            <span class="n">asset_folder</span><span class="o">=</span><span class="n">asset_folder</span><span class="p">,</span>
+            <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span>
+            <span class="n">crs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="k">return</span> <span class="n">tasks</span>
 </code></pre></div></td></tr></table></div>
@@ -2835,15 +3296,15 @@ class scheme, or sensor configuration.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>savana/pipeline.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span>
-<span class="normal">172</span>
-<span class="normal">173</span>
-<span class="normal">174</span>
-<span class="normal">175</span>
-<span class="normal">176</span>
-<span class="normal">177</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Run the full pipeline: features -&gt; sampling -&gt; training -&gt; classification -&gt; change.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">(</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">build_features</span><span class="p">()</span>
@@ -2874,17 +3335,7 @@ class scheme, or sensor configuration.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>savana/pipeline.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">114</span>
-<span class="normal">115</span>
-<span class="normal">116</span>
-<span class="normal">117</span>
-<span class="normal">118</span>
-<span class="normal">119</span>
-<span class="normal">120</span>
-<span class="normal">121</span>
-<span class="normal">122</span>
-<span class="normal">123</span>
-<span class="normal">124</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">124</span>
 <span class="normal">125</span>
 <span class="normal">126</span>
 <span class="normal">127</span>
@@ -2893,10 +3344,26 @@ class scheme, or sensor configuration.</p>
 <span class="normal">130</span>
 <span class="normal">131</span>
 <span class="normal">132</span>
-<span class="normal">133</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sample_training_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sample_training_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Unsupervised clustering + rule-based labelling + class balancing.&quot;&quot;&quot;</span>
     <span class="n">cluster_result</span> <span class="o">=</span> <span class="n">sampling</span><span class="o">.</span><span class="n">cluster_embedding</span><span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">n_clusters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_seed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span>
+        <span class="n">n_clusters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span><span class="p">,</span>
+        <span class="n">seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_seed</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">gcps</span> <span class="o">=</span> <span class="n">sampling</span><span class="o">.</span><span class="n">build_gcps</span><span class="p">(</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">,</span>
@@ -2935,13 +3402,17 @@ class scheme, or sensor configuration.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>savana/pipeline.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">215</span>
-<span class="normal">216</span>
-<span class="normal">217</span>
-<span class="normal">218</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Display a classified epoch (default: reference year) on an interactive map.&quot;&quot;&quot;</span>
     <span class="n">year</span> <span class="o">=</span> <span class="n">year</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span>
-    <span class="k">return</span> <span class="n">viz</span><span class="o">.</span><span class="n">show_classified_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">[</span><span class="n">year</span><span class="p">],</span> <span class="n">region</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">class_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">class_info</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">viz</span><span class="o">.</span><span class="n">show_classified_map</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">[</span><span class="n">year</span><span class="p">],</span> <span class="n">region</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">class_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">class_info</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span>
+    <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2964,15 +3435,166 @@ class scheme, or sensor configuration.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>savana/pipeline.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">220</span>
-<span class="normal">221</span>
-<span class="normal">222</span>
-<span class="normal">223</span>
-<span class="normal">224</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">show_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">show_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Display change-detection layers on an interactive map.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">change</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Call .analyse_change() (or .run()) with &gt;= 2 epochs first.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="s2">&quot;Call .analyse_change() (or .run()) with &gt;= 2 epochs first.&quot;</span>
+        <span class="p">)</span>
     <span class="k">return</span> <span class="n">viz</span><span class="o">.</span><span class="n">show_change_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">change</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="savana.pipeline.SavanaClassifier.show_geolibre" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">show_geolibre</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+<a href="#savana.pipeline.SavanaClassifier.show_geolibre" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Display a classified epoch inside the GeoLibre Jupyter widget.</p>
+<p>Alternative to .show() — same idea, different map backend.
+Requires: pip install "savana[geolibre]" (Python &gt;= 3.11).</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>savana/pipeline.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">show_geolibre</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Display a classified epoch inside the GeoLibre Jupyter widget.</span>
+
+<span class="sd">    Alternative to .show() — same idea, different map backend.</span>
+<span class="sd">    Requires: pip install &quot;savana[geolibre]&quot; (Python &gt;= 3.11).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">viz_geolibre</span>
+
+    <span class="n">year</span> <span class="o">=</span> <span class="n">year</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_year</span>
+    <span class="k">return</span> <span class="n">viz_geolibre</span><span class="o">.</span><span class="n">show_classified_map</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">[</span><span class="n">year</span><span class="p">],</span> <span class="n">region</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">class_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">class_info</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span>
+    <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="savana.pipeline.SavanaClassifier.show_years" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">show_years</span><span class="p">(</span><span class="n">years</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+<a href="#savana.pipeline.SavanaClassifier.show_years" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Display several classified epochs as toggleable layers on one map.</p>
+<p>Uses geemap's layer panel — check/uncheck each year's checkbox to
+flip between them. Defaults to all epochs the classifier ran.</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>clf.show_years()             # all epochs
+clf.show_years([2019, 2024]) # just these two</p>
+</blockquote>
+</blockquote>
+</blockquote>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>savana/pipeline.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">show_years</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">years</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Display several classified epochs as toggleable layers on one map.</span>
+
+<span class="sd">    Uses geemap&#39;s layer panel — check/uncheck each year&#39;s checkbox to</span>
+<span class="sd">    flip between them. Defaults to all epochs the classifier ran.</span>
+
+<span class="sd">    &gt;&gt;&gt; clf.show_years()             # all epochs</span>
+<span class="sd">    &gt;&gt;&gt; clf.show_years([2019, 2024]) # just these two</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">viz</span><span class="o">.</span><span class="n">show_multi_year_map</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">,</span> <span class="n">years</span><span class="o">=</span><span class="n">years</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">class_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">class_info</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span>
+    <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="savana.pipeline.SavanaClassifier.show_years_geolibre" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">show_years_geolibre</span><span class="p">(</span><span class="n">years</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+<a href="#savana.pipeline.SavanaClassifier.show_years_geolibre" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Display several classified epochs as toggleable layers in GeoLibre.</p>
+<p>Alternative to .show_years() — same idea, different map backend.
+Requires: pip install "savana[geolibre]" (Python &gt;= 3.11).</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>savana/pipeline.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">show_years_geolibre</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">years</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Display several classified epochs as toggleable layers in GeoLibre.</span>
+
+<span class="sd">    Alternative to .show_years() — same idea, different map backend.</span>
+<span class="sd">    Requires: pip install &quot;savana[geolibre]&quot; (Python &gt;= 3.11).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">viz_geolibre</span>
+
+    <span class="k">return</span> <span class="n">viz_geolibre</span><span class="o">.</span><span class="n">show_multi_year_map</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">,</span> <span class="n">years</span><span class="o">=</span><span class="n">years</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">,</span> <span class="n">class_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">class_info</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span>
+    <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2995,20 +3617,20 @@ class scheme, or sensor configuration.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>savana/pipeline.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">135</span>
-<span class="normal">136</span>
-<span class="normal">137</span>
-<span class="normal">138</span>
-<span class="normal">139</span>
-<span class="normal">140</span>
-<span class="normal">141</span>
-<span class="normal">142</span>
-<span class="normal">143</span>
-<span class="normal">144</span>
-<span class="normal">145</span>
-<span class="normal">146</span>
-<span class="normal">147</span>
-<span class="normal">148</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Train the 4-model ablation + master classifiers.&quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">models</span> <span class="o">=</span> <span class="n">classifiers</span><span class="o">.</span><span class="n">train_all_models</span><span class="p">(</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gcps</span><span class="p">,</span>
@@ -3052,7 +3674,9 @@ class scheme, or sensor configuration.</p>
 <blockquote>
 <blockquote>
 <blockquote>
-<p>clf = savana.classify_landscape("path/to/my_park.geojson", epochs=[2020, 2024], park_name="My Park")
+<p>clf = savana.classify_landscape(
+...     "path/to/my_park.geojson", epochs=[2020, 2024], park_name="My Park"
+... )
 clf.show()</p>
 </blockquote>
 </blockquote>
@@ -3061,18 +3685,26 @@ clf.show()</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>savana/pipeline.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">227</span>
-<span class="normal">228</span>
-<span class="normal">229</span>
-<span class="normal">230</span>
-<span class="normal">231</span>
-<span class="normal">232</span>
-<span class="normal">233</span>
-<span class="normal">234</span>
-<span class="normal">235</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">classify_landscape</span><span class="p">(</span><span class="n">aoi</span><span class="p">,</span> <span class="n">epochs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">park_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;AOI&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SavanaClassifier</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span>
+<span class="normal">336</span>
+<span class="normal">337</span>
+<span class="normal">338</span>
+<span class="normal">339</span>
+<span class="normal">340</span>
+<span class="normal">341</span>
+<span class="normal">342</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">classify_landscape</span><span class="p">(</span>
+    <span class="n">aoi</span><span class="p">,</span> <span class="n">epochs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">park_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;AOI&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SavanaClassifier</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;One-call convenience wrapper: build, run, and return a fitted classifier.</span>
 
-<span class="sd">    &gt;&gt;&gt; clf = savana.classify_landscape(&quot;path/to/my_park.geojson&quot;, epochs=[2020, 2024], park_name=&quot;My Park&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; clf = savana.classify_landscape(</span>
+<span class="sd">    ...     &quot;path/to/my_park.geojson&quot;, epochs=[2020, 2024], park_name=&quot;My Park&quot;</span>
+<span class="sd">    ... )</span>
 <span class="sd">    &gt;&gt;&gt; clf.show()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">clf</span> <span class="o">=</span> <span class="n">SavanaClassifier</span><span class="p">(</span><span class="n">aoi</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="n">epochs</span><span class="p">,</span> <span class="n">park_name</span><span class="o">=</span><span class="n">park_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -6630,16 +7262,139 @@ or nothing will be exported. Returns the list of started EE tasks.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>savana/viz.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_legend</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">class_info</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Land System Classes&quot;</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_legend</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">class_info</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Land System Classes&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Add a class legend to a geemap.Map.&quot;&quot;&quot;</span>
     <span class="n">info</span> <span class="o">=</span> <span class="n">class_info</span> <span class="ow">or</span> <span class="n">config</span><span class="o">.</span><span class="n">DEFAULT_CLASS_INFO</span>
     <span class="n">legend_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]:</span> <span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">values</span><span class="p">()}</span>
     <span class="n">m</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">legend_dict</span><span class="o">=</span><span class="n">legend_dict</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">m</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="savana.viz.compare_split_map" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">compare_split_map</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">left_label</span><span class="o">=</span><span class="s1">&#39;Left&#39;</span><span class="p">,</span> <span class="n">right_label</span><span class="o">=</span><span class="s1">&#39;Right&#39;</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">class_info</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span></code>
+
+<a href="#savana.viz.compare_split_map" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Side-by-side swipe comparison between two layers.</p>
+<p>Each of <code>left</code>/<code>right</code> can be either:
+    - an <code>ee.Image</code> (e.g. a classified year, or <code>clf.maps[2019]</code>) —
+      rendered with the land-system palette/legend
+    - a basemap name string (e.g. <code>"SATELLITE"</code>, <code>"HYBRID"</code>,
+      <code>"ROADMAP"</code>, <code>"Esri.WorldImagery"</code>) — passed straight to geemap</p>
+<p>Drag the handle in the middle of the map to swipe between them —
+this also works for "classified year vs. underlying satellite
+imagery" by passing a basemap name string as one side.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>savana/viz.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">compare_split_map</span><span class="p">(</span>
+    <span class="n">left</span><span class="p">,</span>
+    <span class="n">right</span><span class="p">,</span>
+    <span class="n">left_label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Left&quot;</span><span class="p">,</span>
+    <span class="n">right_label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Right&quot;</span><span class="p">,</span>
+    <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">class_info</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">zoom</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Side-by-side swipe comparison between two layers.</span>
+
+<span class="sd">    Each of ``left``/``right`` can be either:</span>
+<span class="sd">        - an ``ee.Image`` (e.g. a classified year, or ``clf.maps[2019]``) —</span>
+<span class="sd">          rendered with the land-system palette/legend</span>
+<span class="sd">        - a basemap name string (e.g. ``&quot;SATELLITE&quot;``, ``&quot;HYBRID&quot;``,</span>
+<span class="sd">          ``&quot;ROADMAP&quot;``, ``&quot;Esri.WorldImagery&quot;``) — passed straight to geemap</span>
+
+<span class="sd">    Drag the handle in the middle of the map to swipe between them —</span>
+<span class="sd">    this also works for &quot;classified year vs. underlying satellite</span>
+<span class="sd">    imagery&quot; by passing a basemap name string as one side.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">ee</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">geemap</span>
+
+    <span class="n">info</span> <span class="o">=</span> <span class="n">class_info</span> <span class="ow">or</span> <span class="n">config</span><span class="o">.</span><span class="n">DEFAULT_CLASS_INFO</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_layer</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">side</span>  <span class="c1"># basemap name — geemap resolves this itself</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">geemap</span><span class="o">.</span><span class="n">ee_tile_layer</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">class_vis_params</span><span class="p">(</span><span class="n">info</span><span class="p">),</span> <span class="n">label</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="s2">&quot;compare_split_map sides must be an ee.Image or a basemap &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;name string, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">side</span><span class="p">)</span><span class="si">!r}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">left_layer</span> <span class="o">=</span> <span class="n">_to_layer</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">left_label</span><span class="p">)</span>
+    <span class="n">right_layer</span> <span class="o">=</span> <span class="n">_to_layer</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">right_label</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">region</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">centerObject</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">zoom</span><span class="p">)</span>
+
+    <span class="n">m</span><span class="o">.</span><span class="n">split_map</span><span class="p">(</span><span class="n">left_layer</span><span class="o">=</span><span class="n">left_layer</span><span class="p">,</span> <span class="n">right_layer</span><span class="o">=</span><span class="n">right_layer</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">m</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -6663,24 +7418,39 @@ or nothing will be exported. Returns the list of started EE tasks.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>savana/viz.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">show_change_map</span><span class="p">(</span><span class="n">chg</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zoom</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">12</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">show_change_map</span><span class="p">(</span><span class="n">chg</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zoom</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">12</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Display conservative/genuine/variable change layers on a geemap.Map.&quot;&quot;&quot;</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">geemap</span>
 
@@ -6688,9 +7458,24 @@ or nothing will be exported. Returns the list of started EE tasks.</p>
         <span class="n">m</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">region</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">m</span><span class="o">.</span><span class="n">centerObject</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">zoom</span><span class="p">)</span>
-    <span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">chg</span><span class="p">[</span><span class="s2">&quot;conservative_change&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">selfMask</span><span class="p">(),</span> <span class="p">{</span><span class="s2">&quot;palette&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;8b0000&quot;</span><span class="p">]},</span> <span class="s2">&quot;Conservative change&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-    <span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">chg</span><span class="p">[</span><span class="s2">&quot;genuine_change&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">selfMask</span><span class="p">(),</span> <span class="p">{</span><span class="s2">&quot;palette&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;d73027&quot;</span><span class="p">]},</span> <span class="s2">&quot;Genuine structural change&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-    <span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">chg</span><span class="p">[</span><span class="s2">&quot;variable_change&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">selfMask</span><span class="p">(),</span> <span class="p">{</span><span class="s2">&quot;palette&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;fc8d59&quot;</span><span class="p">]},</span> <span class="s2">&quot;Rainfall-driven apparent change&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span>
+        <span class="n">chg</span><span class="p">[</span><span class="s2">&quot;conservative_change&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">selfMask</span><span class="p">(),</span>
+        <span class="p">{</span><span class="s2">&quot;palette&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;8b0000&quot;</span><span class="p">]},</span>
+        <span class="s2">&quot;Conservative change&quot;</span><span class="p">,</span>
+        <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span>
+        <span class="n">chg</span><span class="p">[</span><span class="s2">&quot;genuine_change&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">selfMask</span><span class="p">(),</span>
+        <span class="p">{</span><span class="s2">&quot;palette&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;d73027&quot;</span><span class="p">]},</span>
+        <span class="s2">&quot;Genuine structural change&quot;</span><span class="p">,</span>
+        <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span>
+        <span class="n">chg</span><span class="p">[</span><span class="s2">&quot;variable_change&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">selfMask</span><span class="p">(),</span>
+        <span class="p">{</span><span class="s2">&quot;palette&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;fc8d59&quot;</span><span class="p">]},</span>
+        <span class="s2">&quot;Rainfall-driven apparent change&quot;</span><span class="p">,</span>
+        <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span>
         <span class="n">chg</span><span class="p">[</span><span class="s2">&quot;rue_cv&quot;</span><span class="p">],</span>
         <span class="p">{</span><span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s2">&quot;palette&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;1a9641&quot;</span><span class="p">,</span> <span class="s2">&quot;ffffbf&quot;</span><span class="p">,</span> <span class="s2">&quot;d73027&quot;</span><span class="p">]},</span>
@@ -6731,7 +7516,21 @@ or nothing will be exported. Returns the list of started EE tasks.</p>
 <span class="normal">16</span>
 <span class="normal">17</span>
 <span class="normal">18</span>
-<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">show_classified_map</span><span class="p">(</span><span class="n">classified_image</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">class_info</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zoom</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">12</span><span class="p">):</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">show_classified_map</span><span class="p">(</span>
+    <span class="n">classified_image</span><span class="p">,</span>
+    <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">class_info</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">zoom</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Display a classified land-system image on an interactive geemap.Map.&quot;&quot;&quot;</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">geemap</span>
 
@@ -6740,7 +7539,89 @@ or nothing will be exported. Returns the list of started EE tasks.</p>
         <span class="n">m</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">region</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">m</span><span class="o">.</span><span class="n">centerObject</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">zoom</span><span class="p">)</span>
-    <span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">classified_image</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">class_vis_params</span><span class="p">(</span><span class="n">info</span><span class="p">),</span> <span class="s2">&quot;Land System Classification&quot;</span><span class="p">)</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span>
+        <span class="n">classified_image</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">class_vis_params</span><span class="p">(</span><span class="n">info</span><span class="p">),</span> <span class="s2">&quot;Land System Classification&quot;</span>
+    <span class="p">)</span>
+    <span class="n">add_legend</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">m</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="savana.viz.show_multi_year_map" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">show_multi_year_map</span><span class="p">(</span><span class="n">classified_maps</span><span class="p">,</span> <span class="n">years</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">class_info</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span></code>
+
+<a href="#savana.viz.show_multi_year_map" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Add every requested epoch as its own toggleable layer on one map.</p>
+<p>Uses geemap's built-in layer panel — each year gets its own checkbox,
+so you can flip between them (or view several at once with opacity
+sliders) without re-running anything.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>savana/viz.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">show_multi_year_map</span><span class="p">(</span>
+    <span class="n">classified_maps</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+    <span class="n">years</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">class_info</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">zoom</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add every requested epoch as its own toggleable layer on one map.</span>
+
+<span class="sd">    Uses geemap&#39;s built-in layer panel — each year gets its own checkbox,</span>
+<span class="sd">    so you can flip between them (or view several at once with opacity</span>
+<span class="sd">    sliders) without re-running anything.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">geemap</span>
+
+    <span class="n">info</span> <span class="o">=</span> <span class="n">class_info</span> <span class="ow">or</span> <span class="n">config</span><span class="o">.</span><span class="n">DEFAULT_CLASS_INFO</span>
+    <span class="n">years</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">years</span> <span class="ow">or</span> <span class="n">classified_maps</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">region</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">centerObject</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">zoom</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">years</span><span class="p">:</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span>
+            <span class="n">classified_maps</span><span class="p">[</span><span class="n">year</span><span class="p">],</span> <span class="n">config</span><span class="o">.</span><span class="n">class_vis_params</span><span class="p">(</span><span class="n">info</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Land System </span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
     <span class="n">add_legend</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">m</span>
 </code></pre></div></td></tr></table></div>
