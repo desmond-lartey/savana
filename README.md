@@ -121,7 +121,7 @@ If you use this package in your research, please cite the associated manuscript
 (citation to be added on publication).
 
 
-## 📄 License
+## License
 
 Savana is free and open source software, licensed under the MIT License.
 

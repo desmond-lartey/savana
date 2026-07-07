@@ -30,7 +30,7 @@ from __future__ import annotations
 import importlib
 
 __author__ = "Desmond Lartey"
-__version__ = "0.1.3"
+__version__ = "0.1.2"
 
 _LAZY_SYMBOL_MAP = {
     # --- savana.pipeline ---
@@ -78,6 +78,9 @@ _LAZY_SYMBOL_MAP = {
     "show_classified_map": ("viz", None),
     "show_change_map": ("viz", None),
     "add_legend": ("viz", None),
+    # --- savana.viz_geolibre (optional: pip install savana[geolibre]) ---
+    "show_classified_map_geolibre": ("viz_geolibre", "show_classified_map"),
+    "show_multi_year_map_geolibre": ("viz_geolibre", "show_multi_year_map"),
     # --- savana.config ---
     "DEFAULT_CLASS_INFO": ("config", None),
     "class_palette": ("config", None),
@@ -98,6 +101,7 @@ _LAZY_SUBMODULES = {
     "accuracy",
     "exports",
     "viz",
+    "viz_geolibre",
     "pipeline",
 }
 

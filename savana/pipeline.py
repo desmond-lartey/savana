@@ -22,19 +22,25 @@ Example
 
 from __future__ import annotations
 
+from . import accuracy as accuracy_mod
+from . import change as change_mod
 from . import (
-    accuracy as accuracy_mod,
-    change as change_mod,
     classifiers,
     composites,
     config,
     ee_init,
-    exports as exports_mod,
+)
+from . import exports as exports_mod
+from . import (
     indices,
-    masks as masks_mod,
-    rue as rue_mod,
+)
+from . import masks as masks_mod
+from . import rue as rue_mod
+from . import (
     sampling,
-    thresholds as thresholds_mod,
+)
+from . import thresholds as thresholds_mod
+from . import (
     viz,
 )
 
@@ -100,8 +106,12 @@ class SavanaClassifier:
     def build_features(self):
         """Build composites, indices, RUE, thresholds, and masks for the reference year."""
         s2_annual = composites.sentinel2_annual(self.reference_year, self.region)
-        s2_dry = composites.seasonal_composite(f"{self.reference_year}-03-01", f"{self.reference_year}-05-15", self.region)
-        s2_wet = composites.seasonal_composite(f"{self.reference_year}-05-01", f"{self.reference_year}-07-15", self.region)
+        s2_dry = composites.seasonal_composite(
+            f"{self.reference_year}-03-01", f"{self.reference_year}-05-15", self.region
+        )
+        s2_wet = composites.seasonal_composite(
+            f"{self.reference_year}-05-01", f"{self.reference_year}-07-15", self.region
+        )
         pcts = composites.percentile_composites(self.reference_year, self.region)
         self.embedding = composites.embedding_image(self.reference_year, self.region)
 
@@ -114,7 +124,10 @@ class SavanaClassifier:
     def sample_training_points(self):
         """Unsupervised clustering + rule-based labelling + class balancing."""
         cluster_result = sampling.cluster_embedding(
-            self.embedding, self.region, n_clusters=self.n_clusters, seed=self.random_seed
+            self.embedding,
+            self.region,
+            n_clusters=self.n_clusters,
+            seed=self.random_seed,
         )
         self.gcps = sampling.build_gcps(
             self.embedding,
@@ -163,7 +176,9 @@ class SavanaClassifier:
     def analyse_change(self):
         """Run conservative + RUE-validated change detection across epochs."""
         if len(self.epochs) >= 2:
-            self.change = change_mod.analyse(self.maps, self.epochs, self.region, park_name=self.park_name)
+            self.change = change_mod.analyse(
+                self.maps, self.epochs, self.region, park_name=self.park_name
+            )
         return self
 
     def run(self):
@@ -181,53 +196,145 @@ class SavanaClassifier:
     def accuracy_summary(self):
         """One row per model (A/B/C/D) with overall accuracy, kappa, PA/UA."""
         matrices = {
-            "a": self.models["matrix_a"], "b": self.models["matrix_b"],
-            "c": self.models["matrix_c"], "d": self.models["matrix_d"],
+            "a": self.models["matrix_a"],
+            "b": self.models["matrix_b"],
+            "c": self.models["matrix_c"],
+            "d": self.models["matrix_d"],
         }
-        return accuracy_mod.summary_dataframe(matrices, park_name=self.park_name, class_info=self.class_info)
+        return accuracy_mod.summary_dataframe(
+            matrices, park_name=self.park_name, class_info=self.class_info
+        )
 
     def confusion_matrices(self):
         """Full per-class confusion matrix table across all 4 models."""
         matrices = {
-            "a": self.models["matrix_a"], "b": self.models["matrix_b"],
-            "c": self.models["matrix_c"], "d": self.models["matrix_d"],
+            "a": self.models["matrix_a"],
+            "b": self.models["matrix_b"],
+            "c": self.models["matrix_c"],
+            "d": self.models["matrix_d"],
         }
-        return accuracy_mod.confusion_matrix_dataframe(matrices, park_name=self.park_name, class_info=self.class_info)
+        return accuracy_mod.confusion_matrix_dataframe(
+            matrices, park_name=self.park_name, class_info=self.class_info
+        )
 
     def class_areas(self):
         """Per-epoch class area statistics (km2) as a pandas DataFrame."""
         stats_scale = self.change["stats_scale"] if self.change else self.scale
-        return exports_mod.class_areas_dataframe(self.maps, self.epochs, self.region, stats_scale)
+        return exports_mod.class_areas_dataframe(
+            self.maps, self.epochs, self.region, stats_scale
+        )
 
     def export(self, drive_folder: str | None = None, asset_folder: str | None = None):
         """Export classified maps (+ change products, if computed) to Drive/Assets."""
         tasks = exports_mod.export_classified_maps(
-            self.maps, self.epochs, self.region, park_name=self.park_name,
-            drive_folder=drive_folder, asset_folder=asset_folder, scale=self.scale, crs=self.crs,
+            self.maps,
+            self.epochs,
+            self.region,
+            park_name=self.park_name,
+            drive_folder=drive_folder,
+            asset_folder=asset_folder,
+            scale=self.scale,
+            crs=self.crs,
         )
         if self.change is not None and (drive_folder or asset_folder):
             tasks += exports_mod.export_change_products(
-                self.change, self.region, park_name=self.park_name,
-                drive_folder=drive_folder, asset_folder=asset_folder, scale=self.scale, crs=self.crs,
+                self.change,
+                self.region,
+                park_name=self.park_name,
+                drive_folder=drive_folder,
+                asset_folder=asset_folder,
+                scale=self.scale,
+                crs=self.crs,
             )
         return tasks
 
     def show(self, year: int | None = None, m=None):
         """Display a classified epoch (default: reference year) on an interactive map."""
         year = year or self.reference_year
-        return viz.show_classified_map(self.maps[year], region=self.region, class_info=self.class_info, m=m)
+        return viz.show_classified_map(
+            self.maps[year], region=self.region, class_info=self.class_info, m=m
+        )
+
+    def show_years(self, years: list[int] | None = None, m=None):
+        """Display several classified epochs as toggleable layers on one map.
+
+        Uses geemap's layer panel — check/uncheck each year's checkbox to
+        flip between them. Defaults to all epochs the classifier ran.
+
+        >>> clf.show_years()             # all epochs
+        >>> clf.show_years([2019, 2024]) # just these two
+        """
+        return viz.show_multi_year_map(
+            self.maps, years=years, region=self.region, class_info=self.class_info, m=m
+        )
+
+    def show_geolibre(self, year: int | None = None, m=None):
+        """Display a classified epoch inside the GeoLibre Jupyter widget.
+
+        Alternative to .show() — same idea, different map backend.
+        Requires: pip install "savana[geolibre]" (Python >= 3.11).
+        """
+        from . import viz_geolibre
+
+        year = year or self.reference_year
+        return viz_geolibre.show_classified_map(
+            self.maps[year], region=self.region, class_info=self.class_info, m=m
+        )
+
+    def show_years_geolibre(self, years: list[int] | None = None, m=None):
+        """Display several classified epochs as toggleable layers in GeoLibre.
+
+        Alternative to .show_years() — same idea, different map backend.
+        Requires: pip install "savana[geolibre]" (Python >= 3.11).
+        """
+        from . import viz_geolibre
+
+        return viz_geolibre.show_multi_year_map(
+            self.maps, years=years, region=self.region, class_info=self.class_info, m=m
+        )
+
+    def compare(self, left=2024, right="SATELLITE", m=None):
+        """Side-by-side swipe comparison between two years, or a year vs. a basemap.
+
+        ``left``/``right`` each accept either an epoch year (int, must be
+        in ``self.maps``) or a basemap name string (e.g. ``"SATELLITE"``,
+        ``"HYBRID"``, ``"ROADMAP"``, ``"Esri.WorldImagery"``). Drag the
+        handle in the middle of the resulting map to swipe.
+
+        >>> clf.compare(2019, 2024)              # two classified years
+        >>> clf.compare(2024, "SATELLITE")        # classified year vs. basemap
+        """
+        left_img = self.maps[left] if isinstance(left, int) else left
+        right_img = self.maps[right] if isinstance(right, int) else right
+        left_label = str(left) if isinstance(left, int) else left
+        right_label = str(right) if isinstance(right, int) else right
+        return viz.compare_split_map(
+            left_img,
+            right_img,
+            left_label=left_label,
+            right_label=right_label,
+            region=self.region,
+            class_info=self.class_info,
+            m=m,
+        )
 
     def show_change(self, m=None):
         """Display change-detection layers on an interactive map."""
         if self.change is None:
-            raise RuntimeError("Call .analyse_change() (or .run()) with >= 2 epochs first.")
+            raise RuntimeError(
+                "Call .analyse_change() (or .run()) with >= 2 epochs first."
+            )
         return viz.show_change_map(self.change, region=self.region, m=m)
 
 
-def classify_landscape(aoi, epochs: list[int] | None = None, park_name: str = "AOI", **kwargs) -> SavanaClassifier:
+def classify_landscape(
+    aoi, epochs: list[int] | None = None, park_name: str = "AOI", **kwargs
+) -> SavanaClassifier:
     """One-call convenience wrapper: build, run, and return a fitted classifier.
 
-    >>> clf = savana.classify_landscape("path/to/my_park.geojson", epochs=[2020, 2024], park_name="My Park")
+    >>> clf = savana.classify_landscape(
+    ...     "path/to/my_park.geojson", epochs=[2020, 2024], park_name="My Park"
+    ... )
     >>> clf.show()
     """
     clf = SavanaClassifier(aoi, epochs=epochs, park_name=park_name, **kwargs)
