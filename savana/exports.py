@@ -135,5 +135,7 @@ def class_areas_dataframe(classified_maps: dict, epochs: list[int], region, scal
     for year, groups_ee in stats.items():
         groups = groups_ee.getInfo().get("groups", [])
         for g in groups:
-            rows.append({"year": year, "landSystem": g["landSystem"], "area_km2": g["sum"]})
+            rows.append(
+                {"year": year, "landSystem": g["landSystem"], "area_km2": g["sum"]}
+            )
     return pd.DataFrame(rows)

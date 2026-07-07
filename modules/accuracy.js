@@ -5,7 +5,7 @@
 //   {park}_confusion_matrix_full.csv  — 24 rows (4 models × 6 classes)
 //   {park}_accuracy_summary.csv       — 4 rows (one per model)
 // ============================================================
- 
+
 var CLASS_INFO = [
   {code:1, label:'Core_Woodland'},
   {code:2, label:'Open_Woodland'},

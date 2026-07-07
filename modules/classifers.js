@@ -2,7 +2,7 @@
 // MODULE: change
 // Conservative change detection + RUE variability analysis
 // ============================================================
- 
+
 var RUE_MOD = require('users/Desmond/landuse_studies:utils/rue');
 
 exports.analyse = function(classifiedMaps, epochs, geometry, parkName) {

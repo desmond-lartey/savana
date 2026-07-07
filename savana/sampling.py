@@ -11,7 +11,12 @@ from __future__ import annotations
 from . import config
 
 
-def cluster_embedding(embedding, region, n_clusters: int = config.DEFAULT_N_CLUSTERS, seed: int = config.DEFAULT_RANDOM_SEED):
+def cluster_embedding(
+    embedding,
+    region,
+    n_clusters: int = config.DEFAULT_N_CLUSTERS,
+    seed: int = config.DEFAULT_RANDOM_SEED,
+):
     """Unsupervised k-means clustering in AlphaEarth embedding space.
 
     Returns ``{"clusters": image, "samples": feature_collection}``.
@@ -54,8 +59,16 @@ def sample_candidates(
     ).clip(region)
 
     keep_props = [
-        "cluster6", "NDVI", "NDMI", "NDBI", "NDVI_dry", "NDMI_dry",
-        "NDBI_dry", "NDVI_wet", "NDMI_wet", "NDVI_amp",
+        "cluster6",
+        "NDVI",
+        "NDMI",
+        "NDBI",
+        "NDVI_dry",
+        "NDMI_dry",
+        "NDBI_dry",
+        "NDVI_wet",
+        "NDMI_wet",
+        "NDVI_amp",
     ]
 
     def sample_cluster(cluster_id, seed):
@@ -69,7 +82,20 @@ def sample_candidates(
                 geometries=True,
                 tileScale=8,
             )
-            .filter(ee.Filter.notNull(["cluster6", "NDVI", "NDMI", "NDBI", "NDVI_dry", "NDMI_dry", "NDVI_wet", "NDMI_wet"]))
+            .filter(
+                ee.Filter.notNull(
+                    [
+                        "cluster6",
+                        "NDVI",
+                        "NDMI",
+                        "NDBI",
+                        "NDVI_dry",
+                        "NDMI_dry",
+                        "NDVI_wet",
+                        "NDMI_wet",
+                    ]
+                )
+            )
             .randomColumn("pick", seed)
             .sort("pick")
             .limit(candidates_per_cluster)
@@ -195,11 +221,18 @@ def build_gcps(
     import ee
 
     candidates = sample_candidates(
-        idx, clusters, region, n_clusters=n_clusters,
-        candidates_per_cluster=candidates_per_cluster, scale=scale,
+        idx,
+        clusters,
+        region,
+        n_clusters=n_clusters,
+        candidates_per_cluster=candidates_per_cluster,
+        scale=scale,
     )
     labelled = assign_labels(
-        candidates, T, confidence_margin=confidence_margin, class_property=class_property
+        candidates,
+        T,
+        confidence_margin=confidence_margin,
+        class_property=class_property,
     )
 
     def take(fc, class_val, seed):
@@ -219,7 +252,18 @@ def build_gcps(
 
     gcps = embedding.sampleRegions(
         collection=balanced.filterBounds(region),
-        properties=[class_property, "cluster6", "NDVI", "NDMI", "NDBI", "NDVI_dry", "NDMI_dry", "NDVI_wet", "NDMI_wet", "NDVI_amp"],
+        properties=[
+            class_property,
+            "cluster6",
+            "NDVI",
+            "NDMI",
+            "NDBI",
+            "NDVI_dry",
+            "NDMI_dry",
+            "NDVI_wet",
+            "NDMI_wet",
+            "NDVI_amp",
+        ],
         scale=scale,
         geometries=True,
         tileScale=8,

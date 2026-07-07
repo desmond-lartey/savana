@@ -13,8 +13,8 @@ def compute(idx: dict, T: dict) -> dict:
 
     Returns ``{"anthro", "riparian", "core", "grass", "shrub", "open"}``.
     """
-    mask_anthro = idx["ndbi"].gt(T["ANTHRO_NDBI"]).Or(
-        idx["ndvi"].lt(T["ANTHRO_NDVI_MAX"])
+    mask_anthro = (
+        idx["ndbi"].gt(T["ANTHRO_NDBI"]).Or(idx["ndvi"].lt(T["ANTHRO_NDVI_MAX"]))
     )
 
     mask_riparian = (

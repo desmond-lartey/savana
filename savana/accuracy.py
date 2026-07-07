@@ -11,18 +11,35 @@ from __future__ import annotations
 from . import config
 
 MODEL_LABELS = {
-    "a": ("A_KNN3_Embeddings", "KNN (k=3) | AlphaEarth Embeddings only", "Embeddings [baseline]"),
+    "a": (
+        "A_KNN3_Embeddings",
+        "KNN (k=3) | AlphaEarth Embeddings only",
+        "Embeddings [baseline]",
+    ),
     "b": ("B_RF_Embeddings", "RF | AlphaEarth Embeddings only", "Embeddings"),
-    "c": ("C_RF_PhenologyOnly", "RF | Phenological Indices only [CIRCULAR]", "Phenology only \u2014 circularity inflates OA"),
-    "d": ("D_RF_Embeddings_Pheno", "RF | Embeddings + Phenology [PRIMARY]", "Embeddings + Phenology"),
+    "c": (
+        "C_RF_PhenologyOnly",
+        "RF | Phenological Indices only [CIRCULAR]",
+        "Phenology only \u2014 circularity inflates OA",
+    ),
+    "d": (
+        "D_RF_Embeddings_Pheno",
+        "RF | Embeddings + Phenology [PRIMARY]",
+        "Embeddings + Phenology",
+    ),
 }
 
 
 def _class_labels(class_info: dict) -> list[tuple[int, str]]:
-    return [(code, info["name"].replace(" ", "_").replace("/", "").replace("__", "_")) for code, info in sorted(class_info.items())]
+    return [
+        (code, info["name"].replace(" ", "_").replace("/", "").replace("__", "_"))
+        for code, info in sorted(class_info.items())
+    ]
 
 
-def confusion_matrix_dataframe(matrices: dict, park_name: str = "AOI", class_info: dict | None = None):
+def confusion_matrix_dataframe(
+    matrices: dict, park_name: str = "AOI", class_info: dict | None = None
+):
     """Build the full 24-row (4 models x N classes) confusion matrix table.
 
     ``matrices`` maps model key ("a","b","c","d") to an ``ee.ConfusionMatrix``.
@@ -52,12 +69,16 @@ def confusion_matrix_dataframe(matrices: dict, park_name: str = "AOI", class_inf
                 "user_accuracy": ua[0][i] if i < len(ua[0]) else None,
             }
             for j, (_, pred_label) in enumerate(classes):
-                row[f"pred_{pred_label}"] = arr[i][j] if i < len(arr) and j < len(arr[i]) else None
+                row[f"pred_{pred_label}"] = (
+                    arr[i][j] if i < len(arr) and j < len(arr[i]) else None
+                )
             rows.append(row)
     return pd.DataFrame(rows)
 
 
-def summary_dataframe(matrices: dict, park_name: str = "AOI", class_info: dict | None = None):
+def summary_dataframe(
+    matrices: dict, park_name: str = "AOI", class_info: dict | None = None
+):
     """One row per model with overall accuracy, kappa, and per-class PA/UA."""
     import pandas as pd
 
@@ -94,7 +115,9 @@ def print_summary(matrices: dict, park_name: str = "AOI") -> None:
             continue
         cm = matrices[key]
         note = " [CIRCULAR — inflated, diagnostic only]" if key == "c" else ""
-        print(f"Model {key.upper()} | OA: {cm.accuracy().getInfo():.4f} | Kappa: {cm.kappa().getInfo():.4f}{note}")
+        oa = cm.accuracy().getInfo()
+        kappa = cm.kappa().getInfo()
+        print(f"Model {key.upper()} | OA: {oa:.4f} | Kappa: {kappa:.4f}{note}")
     print("")
     print("Interpretation guide:")
     print("  B > A  -> RF outperforms KNN on the same embeddings")

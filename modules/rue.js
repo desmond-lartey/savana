@@ -2,7 +2,7 @@
 // MODULE: rue
 // Rain Use Efficiency — annual and per-epoch computation
 // ============================================================
- 
+
 var S2_COLLECTION  = 'COPERNICUS/S2_SR_HARMONIZED';
 var CS_COLLECTION  = 'GOOGLE/CLOUD_SCORE_PLUS/V1/S2_HARMONIZED';
 var CHIRPS         = 'UCSB-CHG/CHIRPS/DAILY';

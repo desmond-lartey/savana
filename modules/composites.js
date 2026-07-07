@@ -2,7 +2,7 @@
 // MODULE: composites
 // Sentinel-2 and AlphaEarth embedding image builders
 // ============================================================
- 
+
 var S2_COLLECTION  = 'COPERNICUS/S2_SR_HARMONIZED';
 var CS_COLLECTION  = 'GOOGLE/CLOUD_SCORE_PLUS/V1/S2_HARMONIZED';
 var EMB_COLLECTION = 'GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL';

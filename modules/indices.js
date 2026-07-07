@@ -2,7 +2,7 @@
 // MODULE: indices
 // Spectral index computation and phenological stack builder
 // ============================================================
- 
+
 // Compute all spectral indices from seasonal composites.
 // Returns a named object — access as idx.ndvi, idx.ndvi_dry etc.
 exports.compute = function(s2Annual, s2Dry, s2Wet, p10, p90) {

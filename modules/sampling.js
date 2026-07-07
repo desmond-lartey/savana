@@ -3,7 +3,7 @@
 // GCP generation: clustering, candidate sampling,
 // label assignment, class balancing, embedding extraction
 // ============================================================
- 
+
 var RANDOM_SEED    = 42;
 var CONFIDENCE_MARGIN = 0.03;
 var POINTS_PER_CLASS  = 30;

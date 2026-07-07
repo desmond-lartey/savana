@@ -12,7 +12,12 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if (
+    TYPE_CHECKING
+):  # pragma: no cover - only for static analysis/IDE, never imported at runtime
+    import ee
 
 _EE_INITIALIZED = False
 
@@ -48,7 +53,7 @@ def initialize(project: str | None = None, force: bool = False) -> None:
     _EE_INITIALIZED = True
 
 
-def load_aoi(source: Any, name_filter: str | None = None) -> "ee.Geometry":
+def load_aoi(source: Any, name_filter: str | None = None) -> ee.Geometry:
     """Resolve any of several AOI input types into a single ``ee.Geometry``.
 
     Args:
@@ -114,7 +119,7 @@ def load_aoi(source: Any, name_filter: str | None = None) -> "ee.Geometry":
     )
 
 
-def _load_local_vector(path: str, name_filter: str | None) -> "ee.Geometry":
+def _load_local_vector(path: str, name_filter: str | None) -> ee.Geometry:
     import ee
 
     try:
@@ -135,15 +140,14 @@ def _load_local_vector(path: str, name_filter: str | None) -> "ee.Geometry":
     return ee.Geometry(geom)
 
 
-def _geodataframe_to_ee_geometry(gdf: Any) -> "ee.Geometry":
+def _geodataframe_to_ee_geometry(gdf: Any) -> ee.Geometry:
     import ee
 
     try:
         import geopandas as gpd
     except ImportError as exc:  # pragma: no cover
         raise ImportError(
-            "This AOI type requires geopandas. Install with: "
-            "pip install geopandas"
+            "This AOI type requires geopandas. Install with: " "pip install geopandas"
         ) from exc
 
     if isinstance(gdf, gpd.GeoSeries):

@@ -89,7 +89,9 @@ def compute_annual(year: int, region, cloud_score_threshold: float = 0.65) -> di
             .filter(ee.Filter.date(start, end))
             .filter(ee.Filter.bounds(region))
             .linkCollection(cs_plus_m, cs_plus_m.first().bandNames())
-            .map(lambda img: img.updateMask(img.select("cs").gte(cloud_score_threshold)))
+            .map(
+                lambda img: img.updateMask(img.select("cs").gte(cloud_score_threshold))
+            )
         )
         monthly_img = ee.Image(
             ee.Algorithms.If(
@@ -106,9 +108,7 @@ def compute_annual(year: int, region, cloud_score_threshold: float = 0.65) -> di
 
     monthly_ndvi = ee.ImageCollection(months.map(_monthly))
     valid_month_count = monthly_ndvi.count().rename("valid_months")
-    indvi = (
-        monthly_ndvi.sum().divide(valid_month_count).multiply(12).rename("iNDVI")
-    )
+    indvi = monthly_ndvi.sum().divide(valid_month_count).multiply(12).rename("iNDVI")
     rue = indvi.divide(chirps.add(ee.Image.constant(1))).rename("RUE").clip(region)
 
     return {"chirps": chirps, "indvi": indvi, "rue": rue}

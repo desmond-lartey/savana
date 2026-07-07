@@ -4,7 +4,7 @@
 // All thresholds derived from this park's own index distribution.
 // No hardcoded values — transfers to any park automatically.
 // ============================================================
- 
+
 // Compute all classification thresholds from index percentiles.
 // Returns a named object — access as T.CORE_NDVI_DRY etc.
 exports.compute = function(idx, geometry) {

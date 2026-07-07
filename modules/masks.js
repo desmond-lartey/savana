@@ -4,7 +4,7 @@
 // Priority order: Anthro → Riparian → Core → Grass → Shrub → Open
 // Each mask explicitly excludes all higher-priority classes.
 // ============================================================
- 
+
 // Compute all 6 land system masks from indices and thresholds.
 // Returns {anthro, riparian, core, grass, shrub, open}
 exports.compute = function(idx, T) {

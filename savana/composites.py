@@ -92,13 +92,18 @@ def seasonal_composite(
     )
     return ee.Image(
         ee.Algorithms.If(
-            has_scenes, ee.Image(ee.Algorithms.If(has_cs, with_cs, with_cloud_pct)), empty
+            has_scenes,
+            ee.Image(ee.Algorithms.If(has_cs, with_cs, with_cloud_pct)),
+            empty,
         )
     )
 
 
 def percentile_composites(
-    year: int, region, percentiles: tuple[int, int] = (10, 90), cloud_score_threshold: float = 0.65
+    year: int,
+    region,
+    percentiles: tuple[int, int] = (10, 90),
+    cloud_score_threshold: float = 0.65,
 ):
     """Per-band percentile composites (default p10/p90) for a calendar year.
 
@@ -127,9 +132,7 @@ def percentile_composites(
     out = {}
     for p in percentiles:
         img = (
-            s2_masked.reduce(ee.Reducer.percentile([p]))
-            .rename(band_names)
-            .clip(region)
+            s2_masked.reduce(ee.Reducer.percentile([p])).rename(band_names).clip(region)
         )
         out[f"p{p}"] = img
     return out

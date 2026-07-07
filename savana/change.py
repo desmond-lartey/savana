@@ -23,7 +23,13 @@ def _auto_stats_scale(region):
     )
 
 
-def analyse(classified_maps: dict, epochs: list[int], region, park_name: str = "AOI", rue_cv_threshold: float = 0.15) -> dict:
+def analyse(
+    classified_maps: dict,
+    epochs: list[int],
+    region,
+    park_name: str = "AOI",
+    rue_cv_threshold: float = 0.15,
+) -> dict:
     """Run conservative change detection across all epochs.
 
     Requires exactly the epochs present as keys in ``classified_maps``;
@@ -40,7 +46,9 @@ def analyse(classified_maps: dict, epochs: list[int], region, park_name: str = "
     first_year, last_year = epochs_sorted[0], epochs_sorted[-1]
     stats_scale = _auto_stats_scale(region)
 
-    band_name = lambda y: f"ls_{y}"
+    def band_name(y):
+        return f"ls_{y}"
+
     change_stack = ee.Image.cat(
         [classified_maps[y].rename(band_name(y)) for y in epochs_sorted]
     )
@@ -58,7 +66,11 @@ def analyse(classified_maps: dict, epochs: list[int], region, park_name: str = "
         )
         conservative_change = (
             stable_early.And(stable_late)
-            .And(change_stack.select(band_name(first_year)).neq(change_stack.select(band_name(last_year))))
+            .And(
+                change_stack.select(band_name(first_year)).neq(
+                    change_stack.select(band_name(last_year))
+                )
+            )
             .rename("conservative_change")
         )
         stable_throughout = ee.Image(1).clip(region)

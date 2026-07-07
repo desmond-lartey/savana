@@ -17,7 +17,8 @@ Models:
 
 from __future__ import annotations
 
-from . import composites, config, indices, rue as rue_mod
+from . import composites, config, indices
+from . import rue as rue_mod
 
 
 def train_all_models(
@@ -45,7 +46,10 @@ def train_all_models(
     class_order = class_order or [1, 2, 3, 4, 5, 6]
 
     training_data = embedding.sampleRegions(
-        collection=gcps, properties=[class_property], scale=config.DEFAULT_EXPORT_SCALE, tileScale=8
+        collection=gcps,
+        properties=[class_property],
+        scale=config.DEFAULT_EXPORT_SCALE,
+        tileScale=8,
     ).filter(ee.Filter.notNull(embedding.bandNames()))
 
     with_random = gcps.randomColumn("split", seed)
@@ -58,10 +62,16 @@ def train_all_models(
     combined_bands = combined_stack.bandNames()
 
     train_full = combined_stack.sampleRegions(
-        collection=train_set, properties=[class_property], scale=config.DEFAULT_EXPORT_SCALE, tileScale=8
+        collection=train_set,
+        properties=[class_property],
+        scale=config.DEFAULT_EXPORT_SCALE,
+        tileScale=8,
     ).filter(ee.Filter.notNull(combined_bands))
     valid_full = combined_stack.sampleRegions(
-        collection=valid_set, properties=[class_property], scale=config.DEFAULT_EXPORT_SCALE, tileScale=8
+        collection=valid_set,
+        properties=[class_property],
+        scale=config.DEFAULT_EXPORT_SCALE,
+        tileScale=8,
     ).filter(ee.Filter.notNull(combined_bands))
 
     emb_bands = embedding.bandNames()
@@ -81,7 +91,11 @@ def train_all_models(
 
     # Model B — RF (150 trees) | Embeddings only
     model_b = ee.Classifier.smileRandomForest(
-        numberOfTrees=n_trees, variablesPerSplit=8, minLeafPopulation=1, bagFraction=0.632, seed=seed
+        numberOfTrees=n_trees,
+        variablesPerSplit=8,
+        minLeafPopulation=1,
+        bagFraction=0.632,
+        seed=seed,
     ).train(features=train_emb, classProperty=class_property, inputProperties=emb_bands)
     matrix_b = valid_emb.classify(model_b).errorMatrix(
         actual=class_property, predicted="classification", order=class_order
@@ -89,16 +103,30 @@ def train_all_models(
 
     # Model C — RF (150 trees) | Phenology only [CIRCULAR — ablation diagnostic only]
     model_c = ee.Classifier.smileRandomForest(
-        numberOfTrees=n_trees, variablesPerSplit=4, minLeafPopulation=1, bagFraction=0.632, seed=seed
-    ).train(features=train_pheno, classProperty=class_property, inputProperties=pheno_bands)
+        numberOfTrees=n_trees,
+        variablesPerSplit=4,
+        minLeafPopulation=1,
+        bagFraction=0.632,
+        seed=seed,
+    ).train(
+        features=train_pheno, classProperty=class_property, inputProperties=pheno_bands
+    )
     matrix_c = valid_pheno.classify(model_c).errorMatrix(
         actual=class_property, predicted="classification", order=class_order
     )
 
     # Model D — RF (150 trees) | Embeddings + Phenology [PRIMARY]
     model_d = ee.Classifier.smileRandomForest(
-        numberOfTrees=n_trees, variablesPerSplit=9, minLeafPopulation=1, bagFraction=0.632, seed=seed
-    ).train(features=train_full, classProperty=class_property, inputProperties=combined_bands)
+        numberOfTrees=n_trees,
+        variablesPerSplit=9,
+        minLeafPopulation=1,
+        bagFraction=0.632,
+        seed=seed,
+    ).train(
+        features=train_full,
+        classProperty=class_property,
+        inputProperties=combined_bands,
+    )
     matrix_d = valid_full.classify(model_d).errorMatrix(
         actual=class_property, predicted="classification", order=class_order
     )
@@ -106,19 +134,39 @@ def train_all_models(
     # "Master" classifiers used for actual epoch mapping, trained on the
     # FULL gcps/trainFull sets (not just the 70% split) for best final quality.
     master_b = ee.Classifier.smileRandomForest(
-        numberOfTrees=n_trees, variablesPerSplit=8, minLeafPopulation=1, bagFraction=0.632, seed=seed
-    ).train(features=training_data, classProperty=class_property, inputProperties=embedding.bandNames())
+        numberOfTrees=n_trees,
+        variablesPerSplit=8,
+        minLeafPopulation=1,
+        bagFraction=0.632,
+        seed=seed,
+    ).train(
+        features=training_data,
+        classProperty=class_property,
+        inputProperties=embedding.bandNames(),
+    )
 
     model_d_band_names = embedding.bandNames().cat(ee.List(indices.PHENO_BAND_ORDER))
     master_d = ee.Classifier.smileRandomForest(
-        numberOfTrees=n_trees, variablesPerSplit=9, minLeafPopulation=1, bagFraction=0.632, seed=seed
-    ).train(features=train_full, classProperty=class_property, inputProperties=model_d_band_names)
+        numberOfTrees=n_trees,
+        variablesPerSplit=9,
+        minLeafPopulation=1,
+        bagFraction=0.632,
+        seed=seed,
+    ).train(
+        features=train_full,
+        classProperty=class_property,
+        inputProperties=model_d_band_names,
+    )
 
     return {
-        "model_a": model_a, "matrix_a": matrix_a,
-        "model_b": model_b, "matrix_b": matrix_b,
-        "model_c": model_c, "matrix_c": matrix_c,
-        "model_d": model_d, "matrix_d": matrix_d,
+        "model_a": model_a,
+        "matrix_a": matrix_a,
+        "model_b": model_b,
+        "matrix_b": matrix_b,
+        "model_c": model_c,
+        "matrix_c": matrix_c,
+        "model_d": model_d,
+        "matrix_d": matrix_d,
         "master_b": master_b,
         "master_d": master_d,
         "embedding_bands": embedding.bandNames(),
@@ -168,7 +216,9 @@ def classify_all_epochs(
                 .rename(class_property)
                 .clip(region)
                 .toByte()
-                .focal_mode(radius=smooth_radius_px, units="pixels", kernelType="square")
+                .focal_mode(
+                    radius=smooth_radius_px, units="pixels", kernelType="square"
+                )
                 .rename(class_property)
                 .clip(region)
                 .toByte()
@@ -180,11 +230,17 @@ def classify_all_epochs(
         else:
             yr = str(year)
             s2_annual_yr = composites.sentinel2_annual(year, region)
-            s2_dry_yr = composites.seasonal_composite(f"{yr}-03-01", f"{yr}-05-15", region)
-            s2_wet_yr = composites.seasonal_composite(f"{yr}-05-01", f"{yr}-07-15", region)
+            s2_dry_yr = composites.seasonal_composite(
+                f"{yr}-03-01", f"{yr}-05-15", region
+            )
+            s2_wet_yr = composites.seasonal_composite(
+                f"{yr}-05-01", f"{yr}-07-15", region
+            )
             pcts_yr = composites.percentile_composites(year, region)
 
-            idx_yr = indices.compute(s2_annual_yr, s2_dry_yr, s2_wet_yr, pcts_yr["p10"], pcts_yr["p90"])
+            idx_yr = indices.compute(
+                s2_annual_yr, s2_dry_yr, s2_wet_yr, pcts_yr["p10"], pcts_yr["p90"]
+            )
             idx_yr = {k: v.unmask(0) for k, v in idx_yr.items()}
             rue_yr = rue_mod.epoch_rue(year, region).select([f"RUE_{yr}"]).rename("RUE")
 
@@ -196,7 +252,9 @@ def classify_all_epochs(
                 .rename(class_property)
                 .clip(region)
                 .toByte()
-                .focal_mode(radius=smooth_radius_px, units="pixels", kernelType="square")
+                .focal_mode(
+                    radius=smooth_radius_px, units="pixels", kernelType="square"
+                )
                 .rename(class_property)
                 .clip(region)
                 .toByte()
