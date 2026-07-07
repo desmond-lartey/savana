@@ -326,6 +326,42 @@ class SavanaClassifier:
             )
         return viz.show_change_map(self.change, region=self.region, m=m)
 
+    def facts(self) -> dict:
+        """Compute the grounded facts dict — real numbers from your actual results.
+
+        This is the single source of truth for .summarize() and .answer();
+        call it directly if you want the raw structured data instead of text.
+        """
+        from . import insights
+
+        return insights.compute_facts(self)
+
+    def summarize(self) -> str:
+        """Plain-English report generated entirely from real computed results.
+
+        No AI, no invented numbers — every figure here traces back to
+        .class_areas() / .accuracy_summary() / the change-detection stats.
+        """
+        from . import insights
+
+        return insights.summarize(self.facts())
+
+    def answer(self, question: str) -> str:
+        """Answer a question about your results using only computed facts.
+
+        Simple keyword matching, not an LLM — it can only ever report
+        numbers the pipeline actually produced, so it can't hallucinate.
+        Try asking about a class's area, the dominant class, accuracy,
+        or change between years.
+
+        >>> clf.answer("how much core woodland is there in 2024?")
+        >>> clf.answer("what changed between the years?")
+        >>> clf.answer("how accurate is the model?")
+        """
+        from . import insights
+
+        return insights.answer(self.facts(), question)
+
 
 def classify_landscape(
     aoi, epochs: list[int] | None = None, park_name: str = "AOI", **kwargs

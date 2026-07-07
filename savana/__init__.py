@@ -81,6 +81,10 @@ _LAZY_SYMBOL_MAP = {
     # --- savana.viz_geolibre (optional: pip install savana[geolibre]) ---
     "show_classified_map_geolibre": ("viz_geolibre", "show_classified_map"),
     "show_multi_year_map_geolibre": ("viz_geolibre", "show_multi_year_map"),
+    # --- savana.insights (grounded facts / summaries / Q&A) ---
+    "compute_facts": ("insights", None),
+    "summarize_facts": ("insights", "summarize"),
+    "answer_facts": ("insights", "answer"),
     # --- savana.config ---
     "DEFAULT_CLASS_INFO": ("config", None),
     "class_palette": ("config", None),
@@ -102,6 +106,7 @@ _LAZY_SUBMODULES = {
     "exports",
     "viz",
     "viz_geolibre",
+    "insights",
     "pipeline",
 }
 
