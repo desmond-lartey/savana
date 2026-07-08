@@ -30,7 +30,7 @@ from __future__ import annotations
 import importlib
 
 __author__ = "Desmond Lartey"
-__version__ = "0.1.7"
+__version__ = "0.1.2"
 
 _LAZY_SYMBOL_MAP = {
     # --- savana.pipeline ---
@@ -88,6 +88,8 @@ _LAZY_SYMBOL_MAP = {
     # --- savana.agent (optional: pip install savana[agent]) ---
     "for_savana": ("agent", None),
     "chat_widget": ("agent", None),
+    # --- savana.agents (strands-native, optional: pip install savana[agents]) ---
+    "SavanaGeoAgent": ("agents", None),
     # --- savana.config ---
     "DEFAULT_CLASS_INFO": ("config", None),
     "class_palette": ("config", None),
@@ -111,6 +113,7 @@ _LAZY_SUBMODULES = {
     "viz_geolibre",
     "insights",
     "agent",
+    "agents",
     "pipeline",
 }
 
