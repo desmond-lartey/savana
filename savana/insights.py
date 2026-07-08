@@ -19,11 +19,16 @@ def compute_facts(clf) -> dict:
     Requires ``clf.run()`` (or at least ``.classify()``) to have completed.
     This is the "knowledge base" — everything else in this module reads
     from its output, never from the raw ee.Image objects directly.
+
+    Each section (area, accuracy, change) is computed independently and
+    guarded against Earth Engine timeouts — a slow/large AOI causing one
+    section to time out will not prevent the others from returning. Any
+    section that fails is set to ``None`` and noted in ``facts["warnings"]``
+    rather than raising, since a partial, honest answer is better than a
+    hard crash on results that mostly did compute successfully.
     """
     info = clf.class_info
     class_names = {code: v["name"] for code, v in info.items()}
-
-    areas_df = clf.class_areas()
     epochs = sorted(clf.epochs)
 
     facts: dict = {
@@ -34,74 +39,99 @@ def compute_facts(clf) -> dict:
         "pct_by_epoch": {},  # {year: {class_name: pct_of_total}}
         "total_area_km2": {},  # {year: total_km2}
         "dominant_class": {},  # {year: class_name}
+        "accuracy": None,
+        "change": None,
+        "warnings": [],
     }
 
-    for year in epochs:
-        year_rows = areas_df[areas_df["year"] == year]
-        by_class = {}
-        for _, row in year_rows.iterrows():
-            code = int(row["landSystem"])
-            name = class_names.get(code, f"class_{code}")
-            by_class[name] = float(row["area_km2"])
-        total = sum(by_class.values())
-        facts["area_by_epoch"][year] = by_class
-        facts["total_area_km2"][year] = total
-        pct = {}
-        if total > 0:
-            for name, area in by_class.items():
-                pct[name] = round(100 * area / total, 1)
-        facts["pct_by_epoch"][year] = pct
-        facts["dominant_class"][year] = (
-            max(by_class, key=by_class.get) if by_class else None
+    # --- Area stats (per-epoch class areas) ---
+    try:
+        areas_df = clf.class_areas()
+        for year in epochs:
+            year_rows = areas_df[areas_df["year"] == year]
+            by_class = {}
+            for _, row in year_rows.iterrows():
+                code = int(row["landSystem"])
+                name = class_names.get(code, f"class_{code}")
+                by_class[name] = float(row["area_km2"])
+            total = sum(by_class.values())
+            facts["area_by_epoch"][year] = by_class
+            facts["total_area_km2"][year] = total
+            pct = {}
+            if total > 0:
+                for name, area in by_class.items():
+                    pct[name] = round(100 * area / total, 1)
+            facts["pct_by_epoch"][year] = pct
+            facts["dominant_class"][year] = (
+                max(by_class, key=by_class.get) if by_class else None
+            )
+    except (
+        Exception
+    ) as exc:  # noqa: BLE001 - deliberately broad: any EE failure here is non-fatal
+        facts["warnings"].append(
+            f"Area statistics unavailable ({type(exc).__name__}: {exc})."
         )
 
-    # Accuracy — best model by overall accuracy, plus the primary model (D) specifically.
-    acc_df = clf.accuracy_summary()
-    facts["accuracy"] = None
-    if acc_df is not None and len(acc_df) > 0:
-        best_row = acc_df.loc[acc_df["overall_accuracy"].idxmax()]
-        primary_row = acc_df[acc_df["model_code"] == "D"]
-        primary_oa = None
-        primary_kappa = None
-        if len(primary_row):
-            primary_oa = round(float(primary_row.iloc[0]["overall_accuracy"]), 4)
-            primary_kappa = round(float(primary_row.iloc[0]["kappa"]), 4)
-        facts["accuracy"] = {
-            "best_model_code": best_row["model_code"],
-            "best_model_description": best_row["model_description"],
-            "best_overall_accuracy": round(float(best_row["overall_accuracy"]), 4),
-            "best_kappa": round(float(best_row["kappa"]), 4),
-            "primary_model_accuracy": primary_oa,
-            "primary_model_kappa": primary_kappa,
-        }
+    # --- Accuracy — best model by overall accuracy, plus the primary model (D) specifically ---
+    try:
+        acc_df = clf.accuracy_summary()
+        if acc_df is not None and len(acc_df) > 0:
+            best_row = acc_df.loc[acc_df["overall_accuracy"].idxmax()]
+            primary_row = acc_df[acc_df["model_code"] == "D"]
+            primary_oa = None
+            primary_kappa = None
+            if len(primary_row):
+                primary_oa = round(float(primary_row.iloc[0]["overall_accuracy"]), 4)
+                primary_kappa = round(float(primary_row.iloc[0]["kappa"]), 4)
+            facts["accuracy"] = {
+                "best_model_code": best_row["model_code"],
+                "best_model_description": best_row["model_description"],
+                "best_overall_accuracy": round(float(best_row["overall_accuracy"]), 4),
+                "best_kappa": round(float(best_row["kappa"]), 4),
+                "primary_model_accuracy": primary_oa,
+                "primary_model_kappa": primary_kappa,
+            }
+    except Exception as exc:  # noqa: BLE001
+        facts["warnings"].append(
+            f"Accuracy statistics unavailable ({type(exc).__name__}: {exc})."
+        )
 
-    # Change detection — only present if >= 2 epochs were run.
-    facts["change"] = None
+    # --- Change detection — only attempted if >= 2 epochs were run ---
     if clf.change is not None:
-        chg = clf.change
-        first_year, last_year = chg["first_year"], chg["last_year"]
-        reduce_kwargs = dict(
-            reducer=_mean_reducer(),
-            geometry=clf.region,
-            scale=chg["stats_scale"],
-            maxPixels=1e10,
-            tileScale=8,
-        )
-        region_stats = (
-            chg["conservative_change"].unmask(0).reduceRegion(**reduce_kwargs)
-        )
-        genuine_stats = chg["genuine_change"].unmask(0).reduceRegion(**reduce_kwargs)
-        conservative_frac = list(region_stats.getInfo().values())[0]
-        genuine_frac = list(genuine_stats.getInfo().values())[0]
-        facts["change"] = {
-            "first_year": first_year,
-            "last_year": last_year,
-            "conservative_change_pct_of_area": round(100 * conservative_frac, 2),
-            "genuine_change_pct_of_area": round(100 * genuine_frac, 2),
-            "variable_change_pct_of_area": round(
-                100 * (conservative_frac - genuine_frac), 2
-            ),
-        }
+        try:
+            chg = clf.change
+            first_year, last_year = chg["first_year"], chg["last_year"]
+            # Single combined image + single reduceRegion call instead of two
+            # separate ones — halves the round trips to Earth Engine for this section.
+            combined = (
+                chg["conservative_change"]
+                .unmask(0)
+                .rename("conservative")
+                .addBands(chg["genuine_change"].unmask(0).rename("genuine"))
+            )
+            stats = combined.reduceRegion(
+                reducer=_mean_reducer(),
+                geometry=clf.region,
+                scale=chg["stats_scale"],
+                maxPixels=1e10,
+                tileScale=8,
+                bestEffort=True,
+            ).getInfo()
+            conservative_frac = stats.get("conservative", 0) or 0
+            genuine_frac = stats.get("genuine", 0) or 0
+            facts["change"] = {
+                "first_year": first_year,
+                "last_year": last_year,
+                "conservative_change_pct_of_area": round(100 * conservative_frac, 2),
+                "genuine_change_pct_of_area": round(100 * genuine_frac, 2),
+                "variable_change_pct_of_area": round(
+                    100 * (conservative_frac - genuine_frac), 2
+                ),
+            }
+        except Exception as exc:  # noqa: BLE001
+            facts["warnings"].append(
+                f"Change statistics unavailable ({type(exc).__name__}: {exc})."
+            )
 
     return facts
 
@@ -166,6 +196,12 @@ def summarize(facts: dict) -> str:
             f"{chg['variable_change_pct_of_area']}% appears to be rainfall-driven apparent "
             f"change rather than true land-system conversion."
         )
+
+    if facts.get("warnings"):
+        lines.append("")
+        lines.append("Note: some sections could not be computed and are omitted above:")
+        for w in facts["warnings"]:
+            lines.append(f"  - {w}")
 
     return "\n".join(lines)
 
