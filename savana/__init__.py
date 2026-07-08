@@ -30,7 +30,7 @@ from __future__ import annotations
 import importlib
 
 __author__ = "Desmond Lartey"
-__version__ = "0.1.3"
+__version__ = "0.1.7"
 
 _LAZY_SYMBOL_MAP = {
     # --- savana.pipeline ---
