@@ -1,6 +1,6 @@
 [project]
 name = "savana"
-version = "0.1.4"
+version = "0.1.5"
 description = "Adaptive classification of complex savanna landscapes into management-relevant land-system classes"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -36,7 +36,7 @@ include = ["savana*"]
 exclude = ["docs*", "tests*"]
 
 [tool.bumpversion]
-current_version = "0.1.4"
+current_version = "0.1.5"
 commit = true
 tag = true
 tag_name = "v{new_version}"
