@@ -87,6 +87,7 @@ _LAZY_SYMBOL_MAP = {
     "answer_facts": ("insights", "answer"),
     # --- savana.agent (optional: pip install savana[agent]) ---
     "for_savana": ("agent", None),
+    "chat_widget": ("agent", None),
     # --- savana.config ---
     "DEFAULT_CLASS_INFO": ("config", None),
     "class_palette": ("config", None),
