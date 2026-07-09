@@ -1,25 +1,23 @@
-"""A savana-native agent, built directly on Strands (same engine geoai's
-GeoAgent uses), rather than through the standalone GeoAgent package.
+"""SavanaGeoAgent: the one agent class for savana - grounded Q&A, map
+control, and a chat UI, all in one place.
 
-This exists alongside :mod:`savana.agent` (the ``for_savana()`` factory,
-built on the standalone ``GeoAgent`` package) rather than replacing it —
-both work, but this module talks to Strands directly, which avoids the
-``max_tokens`` bug in the standalone package's Anthropic path, and gives
-a foundation to grow the same way geoai's agent did: starting with
-grounded Q&A tools (what's here now), with map-control tools as a
-natural, separate next addition (see the module docstring note at the
-bottom for scope).
+This is the single, recommended entry point for AI-assisted interaction
+with your savana results. Everything lives on one class so there's one
+thing to import and one thing to remember, instead of several separate
+pieces to keep straight:
+
+    from savana.agents import SavanaGeoAgent
+
+    agent = SavanaGeoAgent(clf, model="anthropic")
+    agent.ask("How much core woodland is there in 2024?")   # grounded Q&A
+    agent.ask("Show 2019 and 2024 on the map")               # map control
+    agent.show_ui()                                          # chat UI + live map, inline
+
+Built directly on Strands (the same engine geoai's own GeoAgent uses),
+not through the standalone GeoAgent package — this avoids that package's
+``max_tokens`` bug and gives full control over the tool set.
 
 Requires: ``pip install "savana[agents]"``.
-
-Example
--------
->>> import savana
->>> from savana.agents import SavanaGeoAgent
->>>
->>> clf = savana.classify_landscape(aoi=..., epochs=[2019, 2024], park_name="Kyabobo")
->>> agent = SavanaGeoAgent(clf, model="claude-sonnet-4-6")
->>> print(agent.ask("How much core woodland is there in 2024?"))
 """
 
 from __future__ import annotations
@@ -48,7 +46,7 @@ def create_anthropic_model(
     """Create a Strands AnthropicModel, with max_tokens always explicit.
 
     Always passing ``max_tokens`` (rather than only when the caller
-    supplies one) is deliberate — omitting it is what causes a bare
+    supplies one) is deliberate — omitting it causes a bare
     ``KeyError: 'max_tokens'`` in some Strands/Anthropic version
     combinations, since the Anthropic API requires it on every request.
     """
@@ -113,13 +111,8 @@ _MODEL_FACTORIES = {
 }
 
 
-class SavanaTools:
-    """Grounded savana query tools, bound to one fitted SavanaClassifier.
-
-    Same design principle as :mod:`savana.insights`: every tool here can
-    only report numbers actually computed by the pipeline. Results are
-    cached after the first call in a session — see ``refresh()``.
-    """
+class _SavanaQATools:
+    """Grounded savana query tools, bound to one fitted SavanaClassifier."""
 
     def __init__(self, clf):
         self.clf = clf
@@ -132,25 +125,10 @@ class SavanaTools:
             self._facts_cache = insights.compute_facts(self.clf)
         return self._facts_cache
 
-    def _tool_methods(self) -> list:
-        """Return the bound, @tool-decorated methods for Agent(tools=[...])."""
-        return [
-            self.summarize,
-            self.class_area,
-            self.dominant_class,
-            self.accuracy,
-            self.change,
-            self.refresh,
-        ]
-
-    def _make_tools(self):
+    def build_tools(self):
         from strands import tool
 
         from . import insights
-
-        # Bound as closures over `self` so each tool call reads/writes the
-        # same cache, while still being registerable as standalone @tool
-        # functions (Strands inspects each function's own signature/docstring).
 
         @tool(name="savana_summarize")
         def summarize() -> str:
@@ -202,25 +180,155 @@ class SavanaTools:
         return [summarize, class_area, dominant_class, accuracy, change, refresh]
 
 
+class _SavanaMapTools:
+    """Map-control tools bound to a live geemap.Map, so the agent can put
+    things on the map, not just answer questions about them."""
+
+    def __init__(self, clf, map_instance=None):
+        self.clf = clf
+        self.map = map_instance
+        self._layer_names: list[str] = []
+
+    def _ensure_map(self):
+        import geemap
+
+        if self.map is None:
+            self.map = geemap.Map()
+            self.map.centerObject(self.clf.region, 12)
+        return self.map
+
+    def build_tools(self):
+        from strands import tool
+
+        from . import viz
+
+        @tool(name="savana_show_year")
+        def show_year(year: int) -> str:
+            """Add a classified land-system year to the map as a new
+            layer. The year must be one the classifier actually ran
+            (check with savana_summarize if unsure which years exist)."""
+            m = self._ensure_map()
+            if year not in self.clf.maps:
+                available = sorted(self.clf.maps.keys())
+                return f"Year {year} was not classified. Available years: {available}"
+            viz.show_classified_map(
+                self.clf.maps[year],
+                region=self.clf.region,
+                class_info=self.clf.class_info,
+                m=m,
+            )
+            name = f"Land System {year}"
+            if name not in self._layer_names:
+                self._layer_names.append(name)
+            return f"Added {name} to the map."
+
+        @tool(name="savana_show_all_years")
+        def show_all_years() -> str:
+            """Add every classified year to the map as separate,
+            individually toggleable layers."""
+            m = self._ensure_map()
+            viz.show_multi_year_map(
+                self.clf.maps,
+                region=self.clf.region,
+                class_info=self.clf.class_info,
+                m=m,
+            )
+            for year in sorted(self.clf.maps.keys()):
+                name = f"Land System {year}"
+                if name not in self._layer_names:
+                    self._layer_names.append(name)
+            return f"Added all classified years to the map: {sorted(self.clf.maps.keys())}."
+
+        @tool(name="savana_compare")
+        def compare(left: str, right: str) -> str:
+            """Side-by-side swipe comparison between two things on the
+            map. Each of left/right is either a classified year (as a
+            string, e.g. '2024') or a basemap name (e.g. 'SATELLITE',
+            'HYBRID', 'ROADMAP')."""
+            m = self._ensure_map()
+
+            def _resolve(side: str):
+                try:
+                    year = int(side)
+                except ValueError:
+                    return side  # basemap name
+                if year not in self.clf.maps:
+                    raise ValueError(f"Year {year} was not classified.")
+                return self.clf.maps[year]
+
+            try:
+                left_val, right_val = _resolve(left), _resolve(right)
+            except ValueError as exc:
+                return str(exc)
+            viz.compare_split_map(
+                left_val,
+                right_val,
+                left_label=left,
+                right_label=right,
+                region=self.clf.region,
+                class_info=self.clf.class_info,
+                m=m,
+            )
+            return f"Added a swipe comparison between {left} and {right}."
+
+        @tool(name="savana_center_map")
+        def center_map() -> str:
+            """Center and zoom the map on the classifier's AOI."""
+            m = self._ensure_map()
+            m.centerObject(self.clf.region, 12)
+            return "Centered the map on the classified area."
+
+        @tool(name="savana_list_map_layers")
+        def list_map_layers() -> str:
+            """List the names of layers currently added to the map by
+            this agent (does not include the base map)."""
+            if not self._layer_names:
+                return "No savana layers have been added to the map yet."
+            return "Layers on the map: " + ", ".join(self._layer_names)
+
+        @tool(name="savana_remove_layer")
+        def remove_layer(layer_name: str) -> str:
+            """Remove a previously-added layer from the map by name
+            (see savana_list_map_layers for exact names)."""
+            m = self._ensure_map()
+            try:
+                for layer in list(m.layers):
+                    if getattr(layer, "name", None) == layer_name:
+                        m.remove_layer(layer)
+                        if layer_name in self._layer_names:
+                            self._layer_names.remove(layer_name)
+                        return f"Removed {layer_name} from the map."
+                return f"No layer named {layer_name!r} found on the map."
+            except Exception as exc:  # noqa: BLE001
+                return f"Could not remove layer: {type(exc).__name__}: {exc}"
+
+        return [
+            show_year,
+            show_all_years,
+            compare,
+            center_map,
+            list_map_layers,
+            remove_layer,
+        ]
+
+
 DEFAULT_SYSTEM_PROMPT = """You are a geospatial analysis assistant for the savana package,
 which classifies savanna landscapes into land-system management classes
 (Core Woodland, Open Woodland, Shrub-Transition Savanna, Grassland,
 Riparian/Wetland Vegetation, Anthropogenic Disturbance).
 
-Answer questions ONLY using the savana_* tools available to you — never
-estimate or guess an area, percentage, or accuracy figure yourself.
-If a tool doesn't have the information needed to answer, say so plainly
-rather than inventing a plausible-sounding number."""
+You have two kinds of tools:
+- savana_* query tools (summarize, class_area, dominant_class, accuracy,
+  change) answer questions using ONLY real computed results — never
+  estimate or guess a figure yourself, and say so plainly if a tool can't
+  answer something rather than inventing a plausible-sounding number.
+- savana_show_year / savana_show_all_years / savana_compare /
+  savana_center_map / savana_list_map_layers / savana_remove_layer put
+  results on the interactive map or control what's shown."""
 
 
 class SavanaGeoAgent:
-    """A savana-native agent bound to a fitted SavanaClassifier's real results.
-
-    Built directly on Strands (the same engine geoai's own GeoAgent uses),
-    not through the standalone GeoAgent package — this avoids that
-    package's ``max_tokens`` bug and gives a foundation savana can extend
-    on its own terms (e.g. adding map-control tools later, the same way
-    geoai's GeoAgent grew from Q&A into full map control).
+    """The one agent class for savana: grounded Q&A + map control + chat UI.
 
     Args:
         clf: A ``SavanaClassifier`` that has already run.
@@ -230,6 +338,9 @@ class SavanaGeoAgent:
             instance for full control.
         model_id: Optional explicit model id, used only when ``model`` is
             a provider name string.
+        map_instance: Optional existing ``geemap.Map`` to control. If
+            omitted, one is created automatically (centered on the
+            classifier's AOI) the first time a map tool is used.
         system_prompt: Overrides the default savana-scoped system prompt.
         **model_kwargs: Passed through to the model factory (e.g.
             ``api_key=``, ``max_tokens=``).
@@ -240,13 +351,15 @@ class SavanaGeoAgent:
         clf,
         model: str = "anthropic",
         model_id: Optional[str] = None,
+        map_instance=None,
         system_prompt: str = DEFAULT_SYSTEM_PROMPT,
         **model_kwargs: Any,
     ):
         _require_strands()
         from strands import Agent
 
-        self.tools = SavanaTools(clf)
+        self._qa_tools = _SavanaQATools(clf)
+        self._map_tools = _SavanaMapTools(clf, map_instance=map_instance)
 
         if isinstance(model, str) and model.lower() in _MODEL_FACTORIES:
             factory = _MODEL_FACTORIES[model.lower()]
@@ -266,8 +379,13 @@ class SavanaGeoAgent:
             name="Savana Land-System Agent",
             model=model_instance,
             system_prompt=system_prompt,
-            tools=self.tools._make_tools(),
+            tools=self._qa_tools.build_tools() + self._map_tools.build_tools(),
         )
+
+    @property
+    def map(self):
+        """The live geemap.Map this agent controls (created on first use if not supplied)."""
+        return self._map_tools._ensure_map()
 
     def ask(self, prompt: str) -> str:
         """Send a single-turn question, get a plain-text answer back."""
@@ -278,17 +396,73 @@ class SavanaGeoAgent:
         """Full Strands result object (same as calling the agent directly)."""
         return self._agent(prompt)
 
+    def show_ui(self, height: int = 500):
+        """Display a live map + chat box side by side, inline in the notebook.
 
-# --- Scope note for future work -------------------------------------------
-# geoai's GeoAgent grew from a Q&A-only tool set into full interactive map
-# control (fly_to, add_basemap, add_vector, etc., see geoai.agents.map_tools)
-# plus a rich show_ui() split map+chat panel. The natural next additions
-# here, in the same spirit but scoped to savana's own domain, would be:
-#   1. Map-control tools bound to a geemap.Map (savana already depends on
-#      geemap for .show()/.show_years()), so the agent could add/toggle
-#      classified-year layers, fly to the AOI, etc. — not just answer
-#      questions about them.
-#   2. A show_ui() widget combining a live geemap.Map panel with the chat
-#      box from savana.agent.chat_widget().
-# Neither is built yet — this module intentionally ships the grounded-Q&A
-# foundation first, verified working, rather than a larger unverified whole.
+        Requires: ``ipywidgets`` (installed with the ``agents`` extra).
+        """
+        try:
+            import ipywidgets as widgets
+            from IPython.display import display
+        except ImportError as exc:  # pragma: no cover
+            raise ImportError(
+                "show_ui() requires ipywidgets. Install with: pip install ipywidgets"
+            ) from exc
+
+        m = self.map
+        map_panel = widgets.VBox(
+            [widgets.HTML("<b>Map</b>"), m],
+            layout=widgets.Layout(
+                flex="1 1 0%", min_width="480px", height=f"{height}px"
+            ),
+        )
+
+        output = widgets.Output(
+            layout=widgets.Layout(
+                border="1px solid #ccc",
+                padding="8px",
+                height=f"{height - 60}px",
+                overflow_y="auto",
+            )
+        )
+        text_box = widgets.Text(
+            placeholder="Ask about your results, or ask to show/compare years...",
+            layout=widgets.Layout(width="80%"),
+        )
+        send_button = widgets.Button(description="Send", button_style="primary")
+
+        history: list[str] = []
+
+        def _render():
+            output.clear_output(wait=True)
+            with output:
+                for line in history:
+                    print(line)
+
+        def _send(_=None):
+            question = text_box.value.strip()
+            if not question:
+                return
+            text_box.value = ""
+            history.append(f"You: {question}")
+            history.append("Agent is thinking...")
+            _render()
+            answer = self.ask(question)
+            history.pop()
+            history.append(f"Agent: {answer}")
+            history.append("")
+            _render()
+
+        send_button.on_click(_send)
+        text_box.on_submit(_send)
+
+        chat_panel = widgets.VBox(
+            [
+                widgets.HTML("<b>Chat</b>"),
+                output,
+                widgets.HBox([text_box, send_button]),
+            ],
+            layout=widgets.Layout(flex="1 1 0%", min_width="360px"),
+        )
+
+        display(widgets.HBox([map_panel, chat_panel]))

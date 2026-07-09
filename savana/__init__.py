@@ -19,6 +19,13 @@ Quick start
 >>> clf.show()                  # interactive map in Jupyter
 >>> clf.accuracy_summary()      # pandas.DataFrame
 
+For AI-assisted exploration of your results (grounded Q&A + map control
++ chat UI, all in one place):
+>>> from savana.agents import SavanaGeoAgent
+>>> agent = SavanaGeoAgent(clf, model="anthropic")
+>>> agent.ask("How much core woodland is there in 2024?")
+>>> agent.show_ui()             # live map + chat, inline in the notebook
+
 Uses PEP 562 module-level ``__getattr__`` for lazy imports, so
 ``import savana`` is fast and does not require ``earthengine-api`` /
 ``geemap`` / ``pandas`` to be importable until a specific symbol is
@@ -85,10 +92,7 @@ _LAZY_SYMBOL_MAP = {
     "compute_facts": ("insights", None),
     "summarize_facts": ("insights", "summarize"),
     "answer_facts": ("insights", "answer"),
-    # --- savana.agent (optional: pip install savana[agent]) ---
-    "for_savana": ("agent", None),
-    "chat_widget": ("agent", None),
-    # --- savana.agents (strands-native, optional: pip install savana[agents]) ---
+    # --- savana.agents (optional: pip install savana[agents]) ---
     "SavanaGeoAgent": ("agents", None),
     # --- savana.config ---
     "DEFAULT_CLASS_INFO": ("config", None),
@@ -112,7 +116,6 @@ _LAZY_SUBMODULES = {
     "viz",
     "viz_geolibre",
     "insights",
-    "agent",
     "agents",
     "pipeline",
 }
