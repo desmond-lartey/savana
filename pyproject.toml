@@ -27,8 +27,7 @@ dependencies = [
 [project.optional-dependencies]
 vector = ["geopandas>=0.14"]
 geolibre = ["geolibre>=1.0"]
-agent = ["GeoAgent", "ipywidgets"]
-agents = ["strands-agents", "anthropic", "openai", "google-genai"]
+agents = ["strands-agents", "anthropic", "openai", "google-genai", "ipywidgets"]
 dev = ["pytest>=7.0", "black", "flake8", "isort", "pre-commit", "bump-my-version"]
 docs = ["mkdocs", "mkdocs-material", "mkdocstrings[python]"]
 
