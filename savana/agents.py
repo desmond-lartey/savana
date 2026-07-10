@@ -1,114 +1,41 @@
 """SavanaGeoAgent: the one agent class for savana - grounded Q&A, map
 control, and a chat UI, all in one place.
 
-This is the single, recommended entry point for AI-assisted interaction
-with your savana results. Everything lives on one class so there's one
-thing to import and one thing to remember, instead of several separate
-pieces to keep straight:
+This is built directly ON TOP of geoai's own agent infrastructure
+(``geoai.agents``) rather than a parallel reimplementation: the map is a
+real ``geoai.Map`` (leafmap/MapLibre-based, the same class geoai's own
+demos use), map control comes from geoai's real, full-featured
+``MapTools`` (fly_to, add_basemap, add_vector, add_raster, add_cog_layer,
+remove_layer, and more), and model creation reuses geoai's own
+``create_anthropic_model``/``create_openai_model``/``create_gemini_model``.
+savana adds its own grounded Q&A tools (summarize, class_area, accuracy,
+change, etc.) alongside geoai's map tools on one combined Strands agent.
 
     from savana.agents import SavanaGeoAgent
 
     agent = SavanaGeoAgent(clf, model="anthropic")
-    agent.ask("How much core woodland is there in 2024?")   # grounded Q&A
-    agent.ask("Show 2019 and 2024 on the map")               # map control
+    agent.ask("How much core woodland is there in 2024?")   # savana Q&A
+    agent.ask("Fly to the study area and add a satellite basemap")  # geoai map tools
     agent.show_ui()                                          # chat UI + live map, inline
 
-Built directly on Strands (the same engine geoai's own GeoAgent uses),
-not through the standalone GeoAgent package — this avoids that package's
-``max_tokens`` bug and gives full control over the tool set.
-
-Requires: ``pip install "savana[agents]"``.
+Requires: ``pip install "savana[agents]"`` (installs ``geoai-py[agents]``,
+which brings in ``strands-agents``, ``leafmap``, and the LLM provider
+SDKs).
 """
 
 from __future__ import annotations
 
-import os
 from typing import Any, Optional
 
 
-def _require_strands():
+def _require_geoai_agents():
     try:
-        import strands  # noqa: F401
+        import geoai.agents  # noqa: F401
     except ImportError as exc:  # pragma: no cover
         raise ImportError(
             "SavanaGeoAgent requires the optional 'agents' extra. "
             'Install with: pip install "savana[agents]"'
         ) from exc
-
-
-def create_anthropic_model(
-    model_id: str = "claude-sonnet-4-6",
-    api_key: Optional[str] = None,
-    max_tokens: int = 4096,
-    client_args: Optional[dict] = None,
-    **kwargs: Any,
-):
-    """Create a Strands AnthropicModel, with max_tokens always explicit.
-
-    Always passing ``max_tokens`` (rather than only when the caller
-    supplies one) is deliberate — omitting it causes a bare
-    ``KeyError: 'max_tokens'`` in some Strands/Anthropic version
-    combinations, since the Anthropic API requires it on every request.
-    """
-    from strands.models.anthropic import AnthropicModel
-
-    api_key = api_key or os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key:
-        raise ValueError(
-            "No Anthropic API key found. Set ANTHROPIC_API_KEY or pass api_key=."
-        )
-    client_args = dict(client_args or {})
-    client_args.setdefault("api_key", api_key)
-    return AnthropicModel(
-        client_args=client_args, model_id=model_id, max_tokens=max_tokens, **kwargs
-    )
-
-
-def create_openai_model(
-    model_id: str = "gpt-4o-mini",
-    api_key: Optional[str] = None,
-    client_args: Optional[dict] = None,
-    **kwargs: Any,
-):
-    """Create a Strands OpenAIModel."""
-    from strands.models.openai import OpenAIModel
-
-    api_key = api_key or os.environ.get("OPENAI_API_KEY")
-    if not api_key:
-        raise ValueError(
-            "No OpenAI API key found. Set OPENAI_API_KEY or pass api_key=."
-        )
-    client_args = dict(client_args or {})
-    client_args.setdefault("api_key", api_key)
-    return OpenAIModel(client_args=client_args, model_id=model_id, **kwargs)
-
-
-def create_gemini_model(
-    model_id: str = "gemini-2.0-flash",
-    api_key: Optional[str] = None,
-    client_args: Optional[dict] = None,
-    **kwargs: Any,
-):
-    """Create a Strands GeminiModel."""
-    from strands.models.gemini import GeminiModel
-
-    api_key = (
-        api_key or os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
-    )
-    if not api_key:
-        raise ValueError(
-            "No Gemini API key found. Set GEMINI_API_KEY/GOOGLE_API_KEY or pass api_key=."
-        )
-    client_args = dict(client_args or {})
-    client_args.setdefault("api_key", api_key)
-    return GeminiModel(client_args=client_args, model_id=model_id, **kwargs)
-
-
-_MODEL_FACTORIES = {
-    "anthropic": create_anthropic_model,
-    "openai": create_openai_model,
-    "gemini": create_gemini_model,
-}
 
 
 class _SavanaQATools:
@@ -180,170 +107,144 @@ class _SavanaQATools:
         return [summarize, class_area, dominant_class, accuracy, change, refresh]
 
 
+# geoai's own system prompt for its map-control tools (verbatim, from
+# geoai.agents.geo_agents.GeoAgent) — reused rather than rewritten, since
+# its explicit "minimal parameters only" rules are what keep map-tool
+# calls fast and reliable in geoai's own demos.
+_GEOAI_MAP_SYSTEM_PROMPT = """
+You are a map control agent. Call tools with MINIMAL parameters only.
+
+CRITICAL: Treat all kwargs parameters as optional parameters.
+CRITICAL: NEVER include optional parameters unless user explicitly asks for them.
+
+TOOL CALL RULES:
+- zoom_to(zoom=N) - ONLY zoom parameter, OMIT options completely
+- add_cog_layer(url='X') - NEVER include bands, nodata, opacity, etc.
+- fly_to(longitude=N, latitude=N) - NEVER include zoom parameter
+- add_basemap(name='X') - NEVER include any other parameters
+- add_marker(lng_lat=[lon,lat]) - NEVER include popup or options
+
+- remove_layer(name='X') - call get_layer_names() to get the layer name closest to
+the name of the layer you want to remove before calling this tool
+
+- add_overture_3d_buildings(kwargs={}) - kwargs parameter required by tool validation
+FORBIDDEN: Optional parameters, string representations like '{}' or '[1,2,3]'
+REQUIRED: Minimal tool calls with only what's absolutely necessary
+"""
+
+_SAVANA_PROMPT_ADDENDUM = """
+
+You ALSO have savana_* tools for the land-system classification loaded
+in this session (Core Woodland, Open Woodland, Shrub-Transition Savanna,
+Grassland, Riparian/Wetland Vegetation, Anthropogenic Disturbance).
+Answer questions about area, dominant class, accuracy, or change using
+ONLY those tools — never estimate or guess a figure yourself. To put
+savana results on the map, use savana_show_year / savana_show_all_years
+/ savana_show_change / savana_center_on_aoi — the generic map tools
+(add_raster, add_cog_layer, etc.) don't know about savana's classified
+results, since those are Earth Engine images, not files or COG URLs.
+"""
+
+
 class _SavanaMapTools:
-    """Map-control tools bound to a live geemap.Map, so the agent can put
-    things on the map, not just answer questions about them."""
+    """Puts savana's classified (ee.Image) results onto the real geoai
+    map, via leafmap's ``add_ee_layer`` — the generic geoai map tools
+    (add_raster, add_cog_layer, etc.) expect file paths or COG URLs and
+    have no way to display an ee.Image, so savana needs its own bridge
+    for this specifically."""
 
-    def __init__(self, clf, map_instance=None):
+    def __init__(self, clf, session):
         self.clf = clf
-        self.map = map_instance
-        self._layer_names: list[str] = []
-
-    def _ensure_map(self):
-        import geemap
-
-        if self.map is None:
-            self.map = geemap.Map()
-            self.map.centerObject(self.clf.region, 12)
-        return self.map
+        self.session = session
 
     def build_tools(self):
         from strands import tool
 
-        from . import viz
+        from . import config
 
         @tool(name="savana_show_year")
         def show_year(year: int) -> str:
             """Add a classified land-system year to the map as a new
             layer. The year must be one the classifier actually ran
             (check with savana_summarize if unsure which years exist)."""
-            m = self._ensure_map()
             if year not in self.clf.maps:
                 available = sorted(self.clf.maps.keys())
                 return f"Year {year} was not classified. Available years: {available}"
-            viz.show_classified_map(
-                self.clf.maps[year],
-                region=self.clf.region,
-                class_info=self.clf.class_info,
-                m=m,
+            vis = config.class_vis_params(self.clf.class_info)
+            self.session.m.add_ee_layer(
+                self.clf.maps[year], vis, name=f"Land System {year}"
             )
-            name = f"Land System {year}"
-            if name not in self._layer_names:
-                self._layer_names.append(name)
-            return f"Added {name} to the map."
+            return f"Added Land System {year} to the map."
 
         @tool(name="savana_show_all_years")
         def show_all_years() -> str:
             """Add every classified year to the map as separate,
             individually toggleable layers."""
-            m = self._ensure_map()
-            viz.show_multi_year_map(
-                self.clf.maps,
-                region=self.clf.region,
-                class_info=self.clf.class_info,
-                m=m,
-            )
+            vis = config.class_vis_params(self.clf.class_info)
             for year in sorted(self.clf.maps.keys()):
-                name = f"Land System {year}"
-                if name not in self._layer_names:
-                    self._layer_names.append(name)
+                self.session.m.add_ee_layer(
+                    self.clf.maps[year], vis, name=f"Land System {year}"
+                )
             return f"Added all classified years to the map: {sorted(self.clf.maps.keys())}."
 
-        @tool(name="savana_compare")
-        def compare(left: str, right: str) -> str:
-            """Side-by-side swipe comparison between two things on the
-            map. Each of left/right is either a classified year (as a
-            string, e.g. '2024') or a basemap name (e.g. 'SATELLITE',
-            'HYBRID', 'ROADMAP')."""
-            m = self._ensure_map()
-
-            def _resolve(side: str):
-                try:
-                    year = int(side)
-                except ValueError:
-                    return side  # basemap name
-                if year not in self.clf.maps:
-                    raise ValueError(f"Year {year} was not classified.")
-                return self.clf.maps[year]
-
-            try:
-                left_val, right_val = _resolve(left), _resolve(right)
-            except ValueError as exc:
-                return str(exc)
-            viz.compare_split_map(
-                left_val,
-                right_val,
-                left_label=left,
-                right_label=right,
-                region=self.clf.region,
-                class_info=self.clf.class_info,
-                m=m,
+        @tool(name="savana_show_change")
+        def show_change() -> str:
+            """Add conservative/genuine/variable change-detection layers
+            to the map. Requires the classifier to have been run with
+            2+ epochs (check savana_change first if unsure)."""
+            if self.clf.change is None:
+                return "No change detection available — classifier was run with < 2 epochs."
+            chg = self.clf.change
+            self.session.m.add_ee_layer(
+                chg["conservative_change"].selfMask(),
+                {"palette": ["8b0000"]},
+                name="Conservative change",
             )
-            return f"Added a swipe comparison between {left} and {right}."
+            self.session.m.add_ee_layer(
+                chg["genuine_change"].selfMask(),
+                {"palette": ["d73027"]},
+                name="Genuine structural change",
+            )
+            self.session.m.add_ee_layer(
+                chg["variable_change"].selfMask(),
+                {"palette": ["fc8d59"]},
+                name="Rainfall-driven apparent change",
+            )
+            return "Added change-detection layers to the map."
 
-        @tool(name="savana_center_map")
-        def center_map() -> str:
-            """Center and zoom the map on the classifier's AOI."""
-            m = self._ensure_map()
-            m.centerObject(self.clf.region, 12)
-            return "Centered the map on the classified area."
+        @tool(name="savana_center_on_aoi")
+        def center_on_aoi() -> str:
+            """Center and zoom the map on the classifier's study area."""
+            lng, lat = self.clf.region.centroid(maxError=1).coordinates().getInfo()
+            self.session.m.set_center(lng, lat, zoom=11)
+            return "Centered the map on the study area."
 
-        @tool(name="savana_list_map_layers")
-        def list_map_layers() -> str:
-            """List the names of layers currently added to the map by
-            this agent (does not include the base map)."""
-            if not self._layer_names:
-                return "No savana layers have been added to the map yet."
-            return "Layers on the map: " + ", ".join(self._layer_names)
-
-        @tool(name="savana_remove_layer")
-        def remove_layer(layer_name: str) -> str:
-            """Remove a previously-added layer from the map by name
-            (see savana_list_map_layers for exact names)."""
-            m = self._ensure_map()
-            try:
-                for layer in list(m.layers):
-                    if getattr(layer, "name", None) == layer_name:
-                        m.remove_layer(layer)
-                        if layer_name in self._layer_names:
-                            self._layer_names.remove(layer_name)
-                        return f"Removed {layer_name} from the map."
-                return f"No layer named {layer_name!r} found on the map."
-            except Exception as exc:  # noqa: BLE001
-                return f"Could not remove layer: {type(exc).__name__}: {exc}"
-
-        return [
-            show_year,
-            show_all_years,
-            compare,
-            center_map,
-            list_map_layers,
-            remove_layer,
-        ]
-
-
-DEFAULT_SYSTEM_PROMPT = """You are a geospatial analysis assistant for the savana package,
-which classifies savanna landscapes into land-system management classes
-(Core Woodland, Open Woodland, Shrub-Transition Savanna, Grassland,
-Riparian/Wetland Vegetation, Anthropogenic Disturbance).
-
-You have two kinds of tools:
-- savana_* query tools (summarize, class_area, dominant_class, accuracy,
-  change) answer questions using ONLY real computed results — never
-  estimate or guess a figure yourself, and say so plainly if a tool can't
-  answer something rather than inventing a plausible-sounding number.
-- savana_show_year / savana_show_all_years / savana_compare /
-  savana_center_map / savana_list_map_layers / savana_remove_layer put
-  results on the interactive map or control what's shown."""
+        return [show_year, show_all_years, show_change, center_on_aoi]
 
 
 class SavanaGeoAgent:
-    """The one agent class for savana: grounded Q&A + map control + chat UI.
+    """The one agent class for savana: grounded Q&A + full map control + chat UI.
+
+    Built on geoai's real ``Map``/``MapTools``/model-factory infrastructure
+    (see module docstring) — savana adds its own grounded query tools
+    alongside geoai's map-control tools on one combined agent.
 
     Args:
         clf: A ``SavanaClassifier`` that has already run.
         model: Either a provider name (``"anthropic"``, ``"openai"``,
-            ``"gemini"`` — uses that provider's env-var API key and a
-            sensible default model id) or an already-built Strands model
-            instance for full control.
+            ``"gemini"``, ``"ollama"`` — uses that provider's env-var API
+            key, or a local Ollama server, and a sensible default model
+            id) or an already-built Strands model instance.
         model_id: Optional explicit model id, used only when ``model`` is
             a provider name string.
-        map_instance: Optional existing ``geemap.Map`` to control. If
-            omitted, one is created automatically (centered on the
-            classifier's AOI) the first time a map tool is used.
-        system_prompt: Overrides the default savana-scoped system prompt.
-        **model_kwargs: Passed through to the model factory (e.g.
-            ``api_key=``, ``max_tokens=``).
+        map_instance: Optional existing ``geoai.Map`` (leafmap/MapLibre)
+            to control. If omitted, geoai creates a default one.
+        max_tokens: Explicit max output tokens for the Anthropic provider
+            specifically — always set explicitly here (not left to
+            provider defaults), since omitting it is what causes a bare
+            ``KeyError: 'max_tokens'`` in some Strands/Anthropic version
+            combinations.
+        **model_kwargs: Passed through to geoai's model factory.
     """
 
     def __init__(
@@ -352,40 +253,86 @@ class SavanaGeoAgent:
         model: str = "anthropic",
         model_id: Optional[str] = None,
         map_instance=None,
-        system_prompt: str = DEFAULT_SYSTEM_PROMPT,
+        max_tokens: int = 4096,
         **model_kwargs: Any,
     ):
-        _require_strands()
+        _require_geoai_agents()
+        from geoai.agents import (
+            MapTools,
+            create_anthropic_model,
+            create_gemini_model,
+            create_ollama_model,
+            create_openai_model,
+        )
+        from geoai.agents.map_tools import MapSession
         from strands import Agent
 
-        self._qa_tools = _SavanaQATools(clf)
-        self._map_tools = _SavanaMapTools(clf, map_instance=map_instance)
+        # Real geoai map + map tools — not a savana-specific reimplementation.
+        self._session = MapSession(map_instance)
+        self._map_tools = MapTools(self._session)
 
-        if isinstance(model, str) and model.lower() in _MODEL_FACTORIES:
-            factory = _MODEL_FACTORIES[model.lower()]
+        self._qa_tools = _SavanaQATools(clf)
+        self._savana_map_tools = _SavanaMapTools(clf, self._session)
+
+        factories = {
+            "anthropic": lambda **kw: create_anthropic_model(
+                max_tokens=max_tokens, **kw
+            ),
+            "openai": create_openai_model,
+            "gemini": create_gemini_model,
+            "ollama": create_ollama_model,
+        }
+
+        if isinstance(model, str) and model.lower() in factories:
             kwargs = dict(model_kwargs)
             if model_id:
                 kwargs["model_id"] = model_id
-            model_instance = factory(**kwargs)
+            model_instance = factories[model.lower()](**kwargs)
         elif isinstance(model, str):
             raise ValueError(
-                f"Unknown provider {model!r}. Use one of {list(_MODEL_FACTORIES)}, "
+                f"Unknown provider {model!r}. Use one of {list(factories)}, "
                 "or pass an already-built Strands model instance."
             )
         else:
             model_instance = model  # assume caller passed a real Strands model
 
+        map_tool_names = [
+            "fly_to",
+            "create_map",
+            "zoom_to",
+            "jump_to",
+            "add_basemap",
+            "add_vector",
+            "add_raster",
+            "add_cog_layer",
+            "remove_layer",
+            "get_layer_names",
+            "set_terrain",
+            "remove_terrain",
+            "add_overture_3d_buildings",
+            "set_paint_property",
+            "set_layout_property",
+            "set_color",
+            "set_opacity",
+            "set_visibility",
+            "add_marker",
+            "set_pitch",
+        ]
+        map_tools = [getattr(self._map_tools, name) for name in map_tool_names]
+
         self._agent = Agent(
             name="Savana Land-System Agent",
             model=model_instance,
-            system_prompt=system_prompt,
-            tools=self._qa_tools.build_tools() + self._map_tools.build_tools(),
+            system_prompt=_GEOAI_MAP_SYSTEM_PROMPT + _SAVANA_PROMPT_ADDENDUM,
+            tools=map_tools
+            + self._qa_tools.build_tools()
+            + self._savana_map_tools.build_tools(),
         )
 
     @property
     def map(self):
-        """The live geemap.Map this agent controls (created on first use if not supplied)."""
-        return self._map_tools._ensure_map()
+        """The live geoai.Map (leafmap/MapLibre) this agent controls."""
+        return self._session.m
 
     def ask(self, prompt: str) -> str:
         """Send a single-turn question, get a plain-text answer back."""
@@ -396,8 +343,8 @@ class SavanaGeoAgent:
         """Full Strands result object (same as calling the agent directly)."""
         return self._agent(prompt)
 
-    def show_ui(self, height: int = 500):
-        """Display a live map + chat box side by side, inline in the notebook.
+    def show_ui(self, height: int = 600):
+        """Display the live geoai map + a chat box side by side, inline.
 
         Requires: ``ipywidgets`` (installed with the ``agents`` extra).
         """
@@ -409,9 +356,8 @@ class SavanaGeoAgent:
                 "show_ui() requires ipywidgets. Install with: pip install ipywidgets"
             ) from exc
 
-        m = self.map
         map_panel = widgets.VBox(
-            [widgets.HTML("<b>Map</b>"), m],
+            [widgets.HTML("<b>Map</b>"), self.map],
             layout=widgets.Layout(
                 flex="1 1 0%", min_width="480px", height=f"{height}px"
             ),
@@ -426,7 +372,7 @@ class SavanaGeoAgent:
             )
         )
         text_box = widgets.Text(
-            placeholder="Ask about your results, or ask to show/compare years...",
+            placeholder="Ask about your results, or ask to fly/add basemap/compare...",
             layout=widgets.Layout(width="80%"),
         )
         send_button = widgets.Button(description="Send", button_style="primary")
