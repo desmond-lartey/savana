@@ -257,31 +257,69 @@ class SavanaGeoAgent:
         **model_kwargs: Any,
     ):
         _require_geoai_agents()
-        from geoai.agents import (
-            MapTools,
-            create_anthropic_model,
-            create_gemini_model,
-            create_ollama_model,
-            create_openai_model,
-        )
+        from geoai.agents import MapTools
         from geoai.agents.map_tools import MapSession
         from strands import Agent
+
+        # Shared chat state — a plain agent.ask("...") call in any cell
+        # and typing into show_ui()'s own text box both write here, so
+        # whichever is currently displayed stays in sync with the other.
+        self._history: list[str] = []
+        self._chat_output = None  # set by show_ui() once displayed
+
+        # Import each provider's model factory individually — not every
+        # installed geoai version has every provider (e.g. some older
+        # versions lack create_gemini_model), so a missing one shouldn't
+        # block using a provider that IS available.
+        factories: dict = {}
+        try:
+            from geoai.agents import create_anthropic_model
+
+            factories["anthropic"] = lambda **kw: create_anthropic_model(
+                max_tokens=max_tokens, **kw
+            )
+        except ImportError:
+            pass
+        try:
+            from geoai.agents import create_openai_model
+
+            factories["openai"] = create_openai_model
+        except ImportError:
+            pass
+        try:
+            from geoai.agents import create_gemini_model
+
+            factories["gemini"] = create_gemini_model
+        except ImportError:
+            pass
+        try:
+            from geoai.agents import create_ollama_model
+
+            factories["ollama"] = create_ollama_model
+        except ImportError:
+            pass
 
         # Real geoai map + map tools — not a savana-specific reimplementation.
         self._session = MapSession(map_instance)
         self._map_tools = MapTools(self._session)
 
+        # Add the layer-toggle panel ONCE, up front — it's a live,
+        # reactive MapLibre control that automatically tracks every layer
+        # added afterward by any tool. Calling it again per-layer (an
+        # earlier version of this code did that) risks stacking duplicate
+        # panels instead of just staying in sync.
+        try:
+            self._session.m.add_layer_control()
+        except Exception as exc:  # noqa: BLE001
+            import warnings
+
+            warnings.warn(
+                f"Could not add the layer toggle panel: {type(exc).__name__}: {exc}",
+                stacklevel=2,
+            )
+
         self._qa_tools = _SavanaQATools(clf)
         self._savana_map_tools = _SavanaMapTools(clf, self._session)
-
-        factories = {
-            "anthropic": lambda **kw: create_anthropic_model(
-                max_tokens=max_tokens, **kw
-            ),
-            "openai": create_openai_model,
-            "gemini": create_gemini_model,
-            "ollama": create_ollama_model,
-        }
 
         if isinstance(model, str) and model.lower() in factories:
             kwargs = dict(model_kwargs)
@@ -290,7 +328,9 @@ class SavanaGeoAgent:
             model_instance = factories[model.lower()](**kwargs)
         elif isinstance(model, str):
             raise ValueError(
-                f"Unknown provider {model!r}. Use one of {list(factories)}, "
+                f"Provider {model!r} is not available (either unknown, or your "
+                f"installed geoai version doesn't export its model factory). "
+                f"Available in this environment: {list(factories)}, "
                 "or pass an already-built Strands model instance."
             )
         else:
@@ -327,6 +367,7 @@ class SavanaGeoAgent:
             tools=map_tools
             + self._qa_tools.build_tools()
             + self._savana_map_tools.build_tools(),
+            callback_handler=None,
         )
 
     @property
@@ -335,9 +376,38 @@ class SavanaGeoAgent:
         return self._session.m
 
     def ask(self, prompt: str) -> str:
-        """Send a single-turn question, get a plain-text answer back."""
-        result = self._agent(prompt)
-        return getattr(result, "final_text", str(result))
+        """Send a single-turn question, get a plain-text answer back.
+
+        If show_ui() is currently displayed, this also updates it —
+        asking from a plain cell and typing into the UI box both write
+        to the same visible chat log.
+        """
+        self._history.append(f"You: {prompt}")
+        self._history.append("Agent is thinking...")
+        self._render_chat()
+        try:
+            result = self._agent(prompt)
+            answer = getattr(result, "final_text", str(result))
+        except Exception as exc:  # noqa: BLE001
+            self._history.pop()
+            self._history.append(f"Agent error: {type(exc).__name__}: {exc}")
+            self._history.append("")
+            self._render_chat()
+            raise
+        self._history.pop()
+        self._history.append(f"Agent: {answer}")
+        self._history.append("")
+        self._render_chat()
+        return answer
+
+    def _render_chat(self):
+        """Redraw the show_ui() chat panel, if one is currently displayed."""
+        if self._chat_output is None:
+            return
+        self._chat_output.clear_output(wait=True)
+        with self._chat_output:
+            for line in self._history:
+                print(line)
 
     def __call__(self, prompt: str):
         """Full Strands result object (same as calling the agent directly)."""
@@ -345,6 +415,9 @@ class SavanaGeoAgent:
 
     def show_ui(self, height: int = 600):
         """Display the live geoai map + a chat box side by side, inline.
+
+        Calling ``agent.ask(...)`` in a separate cell also updates this
+        panel, if it's currently displayed — they share the same chat log.
 
         Requires: ``ipywidgets`` (installed with the ``agents`` extra).
         """
@@ -363,7 +436,7 @@ class SavanaGeoAgent:
             ),
         )
 
-        output = widgets.Output(
+        self._chat_output = widgets.Output(
             layout=widgets.Layout(
                 border="1px solid #ccc",
                 padding="8px",
@@ -371,33 +444,23 @@ class SavanaGeoAgent:
                 overflow_y="auto",
             )
         )
+        self._render_chat()  # show anything already asked before show_ui() was called
+
         text_box = widgets.Text(
             placeholder="Ask about your results, or ask to fly/add basemap/compare...",
             layout=widgets.Layout(width="80%"),
         )
         send_button = widgets.Button(description="Send", button_style="primary")
 
-        history: list[str] = []
-
-        def _render():
-            output.clear_output(wait=True)
-            with output:
-                for line in history:
-                    print(line)
-
         def _send(_=None):
             question = text_box.value.strip()
             if not question:
                 return
             text_box.value = ""
-            history.append(f"You: {question}")
-            history.append("Agent is thinking...")
-            _render()
-            answer = self.ask(question)
-            history.pop()
-            history.append(f"Agent: {answer}")
-            history.append("")
-            _render()
+            try:
+                self.ask(question)
+            except Exception:  # noqa: BLE001
+                pass  # already recorded to chat by ask() itself
 
         send_button.on_click(_send)
         text_box.on_submit(_send)
@@ -405,7 +468,7 @@ class SavanaGeoAgent:
         chat_panel = widgets.VBox(
             [
                 widgets.HTML("<b>Chat</b>"),
-                output,
+                self._chat_output,
                 widgets.HBox([text_box, send_button]),
             ],
             layout=widgets.Layout(flex="1 1 0%", min_width="360px"),
