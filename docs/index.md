@@ -1,4 +1,4 @@
-# savana
+# Savana: A Geosptaial Intelligence for Savannah Landscapes
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/desmond-lartey/savana/Fires/docs/assets/logo-readme.png" alt="savana logo" width="180">
