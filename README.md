@@ -16,45 +16,45 @@
 **An AI-embedded geospatial intelligence ecosystem for savanna landscapes.**
 
 `savana` is a growing Python ecosystem for understanding, monitoring, and reasoning
-about savanna landscapes — starting with a validated adaptive land-system
+about savanna landscapes. It's starting with a validated adaptive land-system
 classification method, and built from the ground up so that every result it produces
 can be queried, summarized, and acted on through natural language, not just read off
 a map. Classification is the foundation; the roadmap is everything a researcher or
-manager needs to go from raw satellite imagery to a defensible, explainable answer
+manager needs to go from raw satellite imagery to an explainable answer
 about a specific piece of land.
 
 ## Statement of need
 
 Savannas cover roughly a fifth of the Earth's land surface and support some of the
 highest concentrations of biodiversity, pastoralist livelihoods, and protected-area
-coverage anywhere in the world — nowhere more so than across West and Central Africa,
+coverage anywhere in the world. Nowhere more so than across West and Central Africa,
 where savanna mosaics form the ecological backbone of national parks, wildlife
 corridors, and rangelands under mounting pressure from land conversion, fire regime
-change, and rainfall variability. Yet the land use / land cover (LULC) products most
+change, and rainfall variability. But the land use / land cover (LULC) products most
 available to researchers and park managers in this region routinely collapse this
-entire structural complexity into one or two undifferentiated "grass/shrub" classes —
+entire structural complexity into one or two undifferentiated "grass/shrub" classes which is
 too coarse to answer the questions that actually matter for management: where is
 canopy genuinely closing versus opening, which areas show real structural
 degradation versus rainfall-driven greenness swings, and where should limited
 conservation and grazing-management resources actually go.
 
-This gap is not just a mapping problem — it is also an *access* problem. Analysts in
+This gap is not just a mapping problem, it is also an *access* problem. Analysts in
 under-resourced institutions often have the satellite data and the research question,
 but not the specialized remote-sensing pipeline needed to turn one into the other,
 nor the time to manually interrogate every output. `savana` addresses both halves at
-once: an adaptive classification method with no hardcoded thresholds, so it
+once. That is, an adaptive classification method with no hardcoded thresholds, so it
 recalibrates to any savanna landscape's own spectral distribution rather than
 assuming one park's canopy density applies to another's; and a built-in AI layer that
-lets anyone — not just remote-sensing specialists — ask what a result means, in plain
-language, grounded strictly in what was actually computed.
+lets anyone, not just remote-sensing specialists, ask what a result means, in plain
+language, based on strictly in what was actually computed.
 
-## Key features
+## Current Key features
 
 **Adaptive land-system classification**
-- Resolves savanna landscapes into ecologically meaningful classes — Core Woodland,
+- Resolves savanna landscapes into ecologically meaningful classes, Core Woodland,
   Open Woodland, Shrub-Transition Savanna, Grassland, Riparian/Wetland Vegetation,
-  Anthropogenic Disturbance — for *any* AOI, with every threshold derived from that
-  landscape's own index percentiles at run time
+  Anthropogenic Disturbance, for *any* AOI, with every threshold derived from that
+  landscape's own index percentiles at run time. Classes are extendable.
 - Four-model ablation (KNN baseline / RF-embeddings / RF-phenology /
   RF-embeddings+phenology) built on Sentinel-2, Google AlphaEarth satellite
   embeddings, and rainfall-normalised phenology
@@ -66,22 +66,21 @@ language, grounded strictly in what was actually computed.
   inter-annual variability, separating genuine structural change from
   rainfall-driven apparent change
 
-**Grounded analytical insights**
+**Analytical insights**
 - Plain-English summaries and question-answering generated entirely from real
-  computed results — every figure traces back to an actual pipeline output, never
+  computed results, every figure traces back to an actual pipeline output, never
   an estimate, so results stay trustworthy even before any AI is involved
 
-**AI agent — `SavanaGeoAgent`**
+**AI agent, `SavanaGeoAgent`**
 - Natural-language access to your results and your map in one place: ask about
   class areas, accuracy, or change; ask it to show years on the map, compare them,
   fly to locations, or add basemaps
-- Built on real, proven infrastructure (Strands + geoai's map tooling) rather than a
-  bespoke reimplementation, with savana's own grounded tools layered on top
+- Built on real, proven infrastructure (Strands + any geoai map tooling) with savana's own evidence tools layered on top
 - Ships with an inline chat + live-map UI (`agent.show_ui()`) for exploring results
   without writing further code
 
 **Interactive visualization**
-- `geemap`-based maps in Jupyter, with year-toggle, swipe/split comparison against
+- `geemap`, `geolibre` -based maps in Jupyter, with year-toggle, swipe/split comparison against
   another year or the underlying basemap, and change-layer visualization
 - Optional GeoLibre backend for teams already working in that ecosystem
 
@@ -114,8 +113,8 @@ clf = savana.classify_landscape(
 )
 
 clf.show()                  # interactive map in Jupyter (geemap)
-clf.accuracy_summary()      # pandas.DataFrame — one row per model (A/B/C/D)
-clf.class_areas()           # pandas.DataFrame — area (km2) per class per epoch
+clf.accuracy_summary()      # pandas.DataFrame, one row per model (A/B/C/D)
+clf.class_areas()           # pandas.DataFrame, area (km2) per class per epoch
 clf.show_change()           # conservative + RUE-validated change map
 clf.summarize()             # plain-English report, grounded in real computed results
 
@@ -152,7 +151,7 @@ agent.show_ui()   # live map + chat, inline in the notebook
 
 Every classification threshold (canopy density cutoffs, moisture cutoffs, seasonal
 amplitude cutoffs) is derived from **percentiles of that AOI's own spectral index
-distribution** at run time — nothing is hardcoded to one park's spectral range. Point
+distribution** at run time, nothing is hardcoded to one park's spectral range. Point
 this at a different savanna landscape and it recalibrates automatically.
 
 ## Core classification pipeline
@@ -161,7 +160,7 @@ this at a different savanna landscape and it recalibrates automatically.
    composites + AlphaEarth annual embeddings (64-dim).
 2. **Indices** (`savana.indices`): NDVI/NDMI/NDBI/MNDWI across annual, dry-season,
    wet-season, and percentile composites; a 14-band phenological feature stack.
-3. **RUE** (`savana.rue`): Rain Use Efficiency — integrated NDVI normalised by rainfall,
+3. **RUE** (`savana.rue`): Rain Use Efficiency, integrated NDVI normalised by rainfall,
    with valid-month normalisation to remove Sentinel-2 tile-boundary bias.
 4. **Thresholds** (`savana.thresholds`): fully adaptive, percentile-derived cutoffs.
 5. **Masks** (`savana.masks`): six mutually exclusive land-system masks.
