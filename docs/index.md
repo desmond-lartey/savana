@@ -51,6 +51,7 @@ language, based on strictly in what was actually computed.
 ## Current Key features
 
 **Adaptive land-system classification**
+
 - Resolves savanna landscapes into ecologically meaningful classes, Core Woodland,
   Open Woodland, Shrub-Transition Savanna, Grassland, Riparian/Wetland Vegetation,
   Anthropogenic Disturbance, for *any* AOI, with every threshold derived from that
@@ -62,16 +63,18 @@ language, based on strictly in what was actually computed.
   years lacking reliable seasonal Sentinel-2 coverage
 
 **Change detection**
+
 - Conservative change detection cross-validated against Rain Use Efficiency
   inter-annual variability, separating genuine structural change from
   rainfall-driven apparent change
 
 **Analytical insights**
+
 - Plain-English summaries and question-answering generated entirely from real
-  computed results, every figure traces back to an actual pipeline output, never
-  an estimate, so results stay trustworthy even before any AI is involved
+  computed results, every figure traces back to an actual pipeline output.
 
 **AI agent, `SavanaGeoAgent`**
+
 - Natural-language access to your results and your map in one place: ask about
   class areas, accuracy, or change; ask it to show years on the map, compare them,
   fly to locations, or add basemaps
@@ -80,11 +83,13 @@ language, based on strictly in what was actually computed.
   without writing further code
 
 **Interactive visualization**
+
 - `geemap`, `geolibre` -based maps in Jupyter, with year-toggle, swipe/split comparison against
   another year or the underlying basemap, and change-layer visualization
 - Optional GeoLibre backend for teams already working in that ecosystem
 
 **Data export**
+
 - Google Drive / Earth Engine Asset export for classified maps and change products;
   confusion matrices and area statistics as `pandas.DataFrame` or CSV
 
