@@ -825,38 +825,49 @@ assuming one park's canopy density applies to another's; and a built-in AI layer
 lets anyone, not just remote-sensing specialists, ask what a result means, in plain
 language, based on strictly in what was actually computed.</p>
 <h2 id="current-key-features">Current Key features<a class="headerlink" href="#current-key-features" title="Permanent link">&para;</a></h2>
-<p><strong>Adaptive land-system classification</strong>
-- Resolves savanna landscapes into ecologically meaningful classes, Core Woodland,
+<p><strong>Adaptive land-system classification</strong></p>
+<ul>
+<li>Resolves savanna landscapes into ecologically meaningful classes, Core Woodland,
   Open Woodland, Shrub-Transition Savanna, Grassland, Riparian/Wetland Vegetation,
   Anthropogenic Disturbance, for <em>any</em> AOI, with every threshold derived from that
-  landscape's own index percentiles at run time. Classes are extendable.
-- Four-model ablation (KNN baseline / RF-embeddings / RF-phenology /
+  landscape's own index percentiles at run time. Classes are extendable.</li>
+<li>Four-model ablation (KNN baseline / RF-embeddings / RF-phenology /
   RF-embeddings+phenology) built on Sentinel-2, Google AlphaEarth satellite
-  embeddings, and rainfall-normalised phenology
-- Multi-epoch mapping with automatic fallback to embeddings-only classification for
-  years lacking reliable seasonal Sentinel-2 coverage</p>
-<p><strong>Change detection</strong>
-- Conservative change detection cross-validated against Rain Use Efficiency
+  embeddings, and rainfall-normalised phenology</li>
+<li>Multi-epoch mapping with automatic fallback to embeddings-only classification for
+  years lacking reliable seasonal Sentinel-2 coverage</li>
+</ul>
+<p><strong>Change detection</strong></p>
+<ul>
+<li>Conservative change detection cross-validated against Rain Use Efficiency
   inter-annual variability, separating genuine structural change from
-  rainfall-driven apparent change</p>
-<p><strong>Analytical insights</strong>
-- Plain-English summaries and question-answering generated entirely from real
-  computed results, every figure traces back to an actual pipeline output, never
-  an estimate, so results stay trustworthy even before any AI is involved</p>
-<p><strong>AI agent, <code>SavanaGeoAgent</code></strong>
-- Natural-language access to your results and your map in one place: ask about
+  rainfall-driven apparent change</li>
+</ul>
+<p><strong>Analytical insights</strong></p>
+<ul>
+<li>Plain-English summaries and question-answering generated entirely from real
+  computed results, every figure traces back to an actual pipeline output.</li>
+</ul>
+<p><strong>AI agent, <code>SavanaGeoAgent</code></strong></p>
+<ul>
+<li>Natural-language access to your results and your map in one place: ask about
   class areas, accuracy, or change; ask it to show years on the map, compare them,
-  fly to locations, or add basemaps
-- Built on real, proven infrastructure (Strands + any geoai map tooling) with savana's own evidence tools layered on top
-- Ships with an inline chat + live-map UI (<code>agent.show_ui()</code>) for exploring results
-  without writing further code</p>
-<p><strong>Interactive visualization</strong>
-- <code>geemap</code>, <code>geolibre</code> -based maps in Jupyter, with year-toggle, swipe/split comparison against
-  another year or the underlying basemap, and change-layer visualization
-- Optional GeoLibre backend for teams already working in that ecosystem</p>
-<p><strong>Data export</strong>
-- Google Drive / Earth Engine Asset export for classified maps and change products;
-  confusion matrices and area statistics as <code>pandas.DataFrame</code> or CSV</p>
+  fly to locations, or add basemaps</li>
+<li>Built on real, proven infrastructure (Strands + any geoai map tooling) with savana's own evidence tools layered on top</li>
+<li>Ships with an inline chat + live-map UI (<code>agent.show_ui()</code>) for exploring results
+  without writing further code</li>
+</ul>
+<p><strong>Interactive visualization</strong></p>
+<ul>
+<li><code>geemap</code>, <code>geolibre</code> -based maps in Jupyter, with year-toggle, swipe/split comparison against
+  another year or the underlying basemap, and change-layer visualization</li>
+<li>Optional GeoLibre backend for teams already working in that ecosystem</li>
+</ul>
+<p><strong>Data export</strong></p>
+<ul>
+<li>Google Drive / Earth Engine Asset export for classified maps and change products;
+  confusion matrices and area statistics as <code>pandas.DataFrame</code> or CSV</li>
+</ul>
 <h2 id="install">Install<a class="headerlink" href="#install" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>savana
 <span class="c1"># or, for local vector file (shapefile/geopackage) AOI support:</span>
