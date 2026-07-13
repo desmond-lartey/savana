@@ -13,15 +13,13 @@
   <a href="https://www.youtube.com/@desmondlartey31" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/YouTube-Tutorials-red" alt="YouTube"></a>
 </p>
 
-**An AI-embedded geospatial intelligence ecosystem for savanna landscapes.**
+**A geospatial intelligence ecosystem for savanna landscapes.**
 
 `savana` is a growing Python ecosystem for understanding, monitoring, and reasoning
 about savanna landscapes. It's starting with a validated adaptive land-system
 classification method, and built from the ground up so that every result it produces
 can be queried, summarized, and acted on through natural language, not just read off
-a map. Classification is the foundation; the roadmap is everything a researcher or
-manager needs to go from raw satellite imagery to an explainable answer
-about a specific piece of land.
+a map. Classification of landscapes from raw satellite data to actionalble insights is the foundation.
 
 ## Statement of need
 
@@ -68,8 +66,7 @@ language, based on strictly in what was actually computed.
 
 **Analytical insights**
 - Plain-English summaries and question-answering generated entirely from real
-  computed results, every figure traces back to an actual pipeline output, never
-  an estimate, so results stay trustworthy even before any AI is involved
+  computed results, every figure traces back to an actual pipeline output.
 
 **AI agent, `SavanaGeoAgent`**
 - Natural-language access to your results and your map in one place: ask about
@@ -186,8 +183,7 @@ Contributions and issues welcome.
 
 ## Citation
 
-If you use this package in your research, please cite the associated manuscript
-(citation to be added on publication).
+If you use this package in your research, please cite the associated manuscript.
 
 ## License
 

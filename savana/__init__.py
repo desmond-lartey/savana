@@ -84,6 +84,7 @@ _LAZY_SYMBOL_MAP = {
     # --- savana.viz ---
     "show_classified_map": ("viz", None),
     "show_change_map": ("viz", None),
+    "show_gcps": ("viz", None),
     "add_legend": ("viz", None),
     # --- savana.viz_geolibre (optional: pip install savana[geolibre]) ---
     "show_classified_map_geolibre": ("viz_geolibre", "show_classified_map"),

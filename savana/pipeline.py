@@ -255,6 +255,34 @@ class SavanaClassifier:
             self.maps[year], region=self.region, class_info=self.class_info, m=m
         )
 
+    def show_gcps(self, with_background: bool = True, m=None):
+        """Display the ground control points on the map, colored by class.
+
+        A sanity check on the sampling/labelling step — where the
+        training points actually landed and whether their classes look
+        spatially sensible — before trusting the classifier they train.
+        Requires .sample_training_points() (or .run()) to have completed.
+
+        Args:
+            with_background: If True (default), shows the reference
+                year's classified map underneath the points, dimmed, so
+                you can visually compare point placement against the
+                result. If False, points are shown alone.
+        """
+        if self.gcps is None:
+            raise RuntimeError("Call .sample_training_points() (or .run()) first.")
+        background = None
+        if with_background and self.reference_year in self.maps:
+            background = self.maps[self.reference_year]
+        return viz.show_gcps(
+            self.gcps,
+            region=self.region,
+            class_info=self.class_info,
+            class_property=self.class_property,
+            background=background,
+            m=m,
+        )
+
     def show_years(self, years: list[int] | None = None, m=None):
         """Display several classified epochs as toggleable layers on one map.
 

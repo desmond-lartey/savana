@@ -27,6 +27,57 @@ def show_classified_map(
     return m
 
 
+def show_gcps(
+    gcps,
+    region=None,
+    class_info: dict | None = None,
+    class_property: str = config.CLASS_PROPERTY,
+    background=None,
+    m=None,
+    zoom: int = 12,
+    point_size: int = 5,
+):
+    """Display ground control points on a map, colored by assigned class.
+
+    Lets you visually sanity-check the sampling/labelling step — where
+    the training points actually landed, and whether their classes look
+    spatially sensible — before trusting the classifier trained on them.
+
+    Args:
+        gcps: The ``ee.FeatureCollection`` of ground control points
+            (e.g. ``clf.gcps``), with ``class_property`` set on each
+            feature.
+        region: AOI to center the map on (e.g. ``clf.region``).
+        class_info: Class scheme (defaults to the standard 6-class one).
+        class_property: Property name holding the class code on each
+            point (defaults to savana's standard ``"landSystem"``).
+        background: Optional ee.Image to show underneath the points
+            (e.g. a classified year, or a Sentinel-2 composite) — makes
+            it easier to judge whether points look correctly placed.
+        m: Existing geemap.Map to add to, or a new one is created.
+        point_size: Marker size in pixels.
+    """
+    import ee
+    import geemap
+
+    info = class_info or config.DEFAULT_CLASS_INFO
+    if m is None:
+        m = geemap.Map()
+    if region is not None:
+        m.centerObject(region, zoom)
+
+    if background is not None:
+        m.add_layer(background, config.class_vis_params(info), "Background", True, 0.6)
+
+    for code, entry in sorted(info.items()):
+        class_points = gcps.filter(ee.Filter.eq(class_property, code))
+        styled = class_points.style(color=entry["color"], pointSize=point_size)
+        m.add_layer(styled, {}, f"GCPs: {entry['name']}")
+
+    add_legend(m, info, title="Ground Control Points")
+    return m
+
+
 def add_legend(m, class_info: dict | None = None, title: str = "Land System Classes"):
     """Add a class legend to a geemap.Map."""
     info = class_info or config.DEFAULT_CLASS_INFO
