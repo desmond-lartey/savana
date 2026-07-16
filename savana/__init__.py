@@ -26,6 +26,14 @@ For AI-assisted exploration of your results (grounded Q&A + map control
 >>> agent.ask("How much core woodland is there in 2024?")
 >>> agent.show_ui()             # live map + chat, inline in the notebook
 
+For comparative evaluation and selection of global precipitation
+datasets (savana.rainfall — zone-stratified validation of CHIRPS,
+ERA5-Land, GPM IMERG, MERRA-2, PERSIANN-CDR, TerraClimate against gauge
+observations, producing an application-weighted decision matrix):
+>>> ra = savana.RainfallAssessment().run(start="2001-01-01", end="2020-12-31")
+>>> print(ra.summarize())
+>>> ra.export_workbook("decision_tool.xlsx")
+
 Uses PEP 562 module-level ``__getattr__`` for lazy imports, so
 ``import savana`` is fast and does not require ``earthengine-api`` /
 ``geemap`` / ``pandas`` to be importable until a specific symbol is
@@ -99,6 +107,8 @@ _LAZY_SYMBOL_MAP = {
     "DEFAULT_CLASS_INFO": ("config", None),
     "class_palette": ("config", None),
     "class_vis_params": ("config", None),
+    # --- savana.rainfall (optional: pip install savana[rainfall]) ---
+    "RainfallAssessment": ("rainfall", None),
 }
 
 _LAZY_SUBMODULES = {
@@ -119,6 +129,7 @@ _LAZY_SUBMODULES = {
     "insights",
     "agents",
     "pipeline",
+    "rainfall",
 }
 
 

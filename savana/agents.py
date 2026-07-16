@@ -107,6 +107,68 @@ class _SavanaQATools:
         return [summarize, class_area, dominant_class, accuracy, change, refresh]
 
 
+class _RainfallQATools:
+    """Grounded savana.rainfall query tools, bound to one scored
+    RainfallAssessment. Mirrors _SavanaQATools' shape exactly — same
+    facts-cache pattern, same insights.summarize/answer split — just
+    pointed at savana.rainfall.insights instead of savana.insights."""
+
+    def __init__(self, rainfall):
+        self.rainfall = rainfall
+        self._facts_cache: Optional[dict] = None
+
+    def _facts(self, force_refresh: bool = False) -> dict:
+        if force_refresh:
+            self.rainfall._facts = None
+        if force_refresh or self._facts_cache is None:
+            self._facts_cache = self.rainfall.facts()
+        return self._facts_cache
+
+    def build_tools(self):
+        from strands import tool
+
+        from .rainfall import insights as rainfall_insights
+
+        @tool(name="rainfall_summarize")
+        def rainfall_summarize() -> str:
+            """Full plain-English summary of the precipitation product
+            assessment: best product per application, best KGE per
+            zone, largest zone-level biases, and zone notes."""
+            return rainfall_insights.summarize(self._facts())
+
+        @tool(name="rainfall_best_product")
+        def rainfall_best_product(application: str, zone: Optional[str] = None) -> str:
+            """The best-scoring precipitation product for a specific
+            management application (e.g. 'Fire risk monitoring',
+            'Drought early warning'), optionally for one ecological
+            zone. Omit zone for the pooled (all-zone) recommendation."""
+            question = f"best product for {application}" + (
+                f" in {zone}" if zone else ""
+            )
+            return rainfall_insights.answer(self._facts(), question)
+
+        @tool(name="rainfall_zone_note")
+        def rainfall_zone_note(zone: str) -> str:
+            """The performance caveat/note for a specific ecological
+            zone (e.g. known dry bias, threshold instability)."""
+            return rainfall_insights.answer(self._facts(), f"note for {zone}")
+
+        @tool(name="rainfall_refresh")
+        def rainfall_refresh() -> str:
+            """Force-recompute the rainfall assessment's facts,
+            discarding cached values. Only needed if the underlying
+            RainfallAssessment was re-scored since the last question."""
+            self._facts(force_refresh=True)
+            return "Rainfall assessment facts refreshed."
+
+        return [
+            rainfall_summarize,
+            rainfall_best_product,
+            rainfall_zone_note,
+            rainfall_refresh,
+        ]
+
+
 # geoai's own system prompt for its map-control tools (verbatim, from
 # geoai.agents.geo_agents.GeoAgent) — reused rather than rewritten, since
 # its explicit "minimal parameters only" rules are what keep map-tool
@@ -143,6 +205,19 @@ savana results on the map, use savana_show_year / savana_show_all_years
 / savana_show_change / savana_center_on_aoi — the generic map tools
 (add_raster, add_cog_layer, etc.) don't know about savana's classified
 results, since those are Earth Engine images, not files or COG URLs.
+"""
+
+_RAINFALL_PROMPT_ADDENDUM = """
+
+You ALSO have rainfall_* tools for a precipitation product assessment
+loaded in this session (comparative evaluation of global precipitation
+datasets against gauge observations, by ecological zone and management
+application). Answer questions about which product is best for a given
+application/zone, or about zone-specific caveats, using ONLY those
+tools — never estimate or guess a figure yourself. Ecological zone
+boundaries and gauge station locations can be shown on the map with the
+generic add_vector/add_marker tools if the assessment's zones_gdf or
+stations_df is passed in as a file/GeoDataFrame.
 """
 
 
@@ -229,8 +304,18 @@ class SavanaGeoAgent:
     (see module docstring) — savana adds its own grounded query tools
     alongside geoai's map-control tools on one combined agent.
 
+    Deliberately one class, not two — pass ``clf``, ``rainfall``, or
+    both. Whichever you pass determines which grounded tool set(s) get
+    loaded, so someone working on both a land-system classification and
+    a rainfall assessment for the same study area gets one agent and
+    one ``ask()``, not two agents to keep track of.
+
     Args:
-        clf: A ``SavanaClassifier`` that has already run.
+        clf: A ``SavanaClassifier`` that has already run. Optional if
+            ``rainfall`` is given.
+        rainfall: A ``savana.rainfall.pipeline.RainfallAssessment`` that
+            has already been scored (``.score()`` called). Optional if
+            ``clf`` is given.
         model: Either a provider name (``"anthropic"``, ``"openai"``,
             ``"gemini"``, ``"ollama"`` — uses that provider's env-var API
             key, or a local Ollama server, and a sensible default model
@@ -249,13 +334,19 @@ class SavanaGeoAgent:
 
     def __init__(
         self,
-        clf,
+        clf=None,
+        rainfall=None,
         model: str = "anthropic",
         model_id: Optional[str] = None,
         map_instance=None,
         max_tokens: int = 4096,
         **model_kwargs: Any,
     ):
+        if clf is None and rainfall is None:
+            raise ValueError(
+                "SavanaGeoAgent needs at least one of clf= (a fitted "
+                "SavanaClassifier) or rainfall= (a scored RainfallAssessment)."
+            )
         _require_geoai_agents()
         from geoai.agents import MapTools
         from geoai.agents.map_tools import MapSession
@@ -318,8 +409,13 @@ class SavanaGeoAgent:
                 stacklevel=2,
             )
 
-        self._qa_tools = _SavanaQATools(clf)
-        self._savana_map_tools = _SavanaMapTools(clf, self._session)
+        self._qa_tools = _SavanaQATools(clf) if clf is not None else None
+        self._savana_map_tools = (
+            _SavanaMapTools(clf, self._session) if clf is not None else None
+        )
+        self._rainfall_qa_tools = (
+            _RainfallQATools(rainfall) if rainfall is not None else None
+        )
 
         if isinstance(model, str) and model.lower() in factories:
             kwargs = dict(model_kwargs)
@@ -360,13 +456,30 @@ class SavanaGeoAgent:
         ]
         map_tools = [getattr(self._map_tools, name) for name in map_tool_names]
 
+        system_prompt = _GEOAI_MAP_SYSTEM_PROMPT
+        combined_tools = list(map_tools)
+        if self._qa_tools is not None:
+            system_prompt += _SAVANA_PROMPT_ADDENDUM
+            combined_tools += (
+                self._qa_tools.build_tools() + self._savana_map_tools.build_tools()
+            )
+        if self._rainfall_qa_tools is not None:
+            system_prompt += _RAINFALL_PROMPT_ADDENDUM
+            combined_tools += self._rainfall_qa_tools.build_tools()
+
+        agent_name = "Savana Agent"
+        if clf is not None and rainfall is not None:
+            agent_name = "Savana Land-System + Rainfall Agent"
+        elif rainfall is not None:
+            agent_name = "Savana Rainfall Agent"
+        else:
+            agent_name = "Savana Land-System Agent"
+
         self._agent = Agent(
-            name="Savana Land-System Agent",
+            name=agent_name,
             model=model_instance,
-            system_prompt=_GEOAI_MAP_SYSTEM_PROMPT + _SAVANA_PROMPT_ADDENDUM,
-            tools=map_tools
-            + self._qa_tools.build_tools()
-            + self._savana_map_tools.build_tools(),
+            system_prompt=system_prompt,
+            tools=combined_tools,
             callback_handler=None,
         )
 
