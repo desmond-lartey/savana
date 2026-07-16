@@ -14,7 +14,7 @@
   <img src="https://visitor-badge.laobi.icu/badge?page_id=desmond-lartey.savana" alt="Visitors">
 </p>
 
-**An AI-embedded geospatial intelligence ecosystem for savanna landscapes.**
+**A geospatial intelligence ecosystem for savanna landscapes.**
 
 `savana` is a growing Python ecosystem for understanding, monitoring, and reasoning
 about savanna landscapes. It's starting with a validated adaptive land-system
