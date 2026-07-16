@@ -181,18 +181,17 @@ this at a different savanna landscape and it recalibrates automatically.
 ## Roadmap
 
 `savana` is the first module of a larger ecosystem. Planned additions include:
-- Additional class schemes / configurable taxonomies for other savanna biomes
-- Alternative embedding backbones (e.g. other foundation models) as drop-in options
-- Local (non-GEE) inference for pre-exported imagery
-- Deeper agent integration with map-hosted UIs, beyond the current notebook experience
-- A CLI
+  - Additional class schemes / configurable taxonomies for other savanna biomes
+  - Alternative embedding backbones (e.g. other foundation models) as drop-in options
+  - Local (non-GEE) inference for pre-exported imagery
+  - Deeper agent integration with map-hosted UIs, beyond the current notebook experience
+  - A CLI
 
 Contributions and issues welcome.
 
 ## Citation
 
-If you use this package in your research, please cite the associated manuscript
-(citation to be added on publication).
+If you use this package in your research, please cite the associated manuscript.
 
 ## License
 

@@ -17,6 +17,73 @@ def _get_fig_ax(figsize=(8, 6)):
     return fig, ax
 
 
+def preview_observations(obs_df, station_id: str | None = None):
+    """A quick time-series look at raw GPCC observations — before
+    extracting or validating any product, "does the reference data
+    itself look sane?" One line per station, or a single station if
+    ``station_id`` is given.
+    """
+    import pandas as pd
+
+    df = obs_df if station_id is None else obs_df[obs_df["station_id"] == station_id]
+    if df.empty:
+        raise ValueError(f"No observations found for station_id={station_id!r}")
+
+    fig, ax = _get_fig_ax(figsize=(10, 4))
+    for sid, sub in df.groupby("station_id"):
+        sub = sub.sort_values(["year", "month"])
+        t = pd.to_datetime(
+            sub["year"].astype(str) + "-" + sub["month"].astype(str) + "-01"
+        )
+        ax.plot(t, sub["obs_mm_day"], label=sid, linewidth=1)
+    ax.set_ylabel("Observed (mm/day)")
+    ax.set_title(
+        "GPCC observations" + (f" — {station_id}" if station_id else " — all stations")
+    )
+    if df["station_id"].nunique() > 1:
+        ax.legend(fontsize=7, ncol=4)
+    fig.tight_layout()
+    return fig
+
+
+def preview_comparison(
+    merged_df, station_id: str | None = None, product: str | None = None
+):
+    """A quick "does this look right?" comparison of observed vs
+    simulated values — before computing formal validation metrics.
+    Scatter with a 1:1 reference line, one color per product (or
+    filtered to one product/station if given). Mirrors the GEE app's
+    per-station validation scatter chart.
+    """
+    df = merged_df
+    if station_id is not None:
+        df = df[df["station_id"] == station_id]
+    if product is not None:
+        df = df[df["product"] == product]
+    if df.empty:
+        raise ValueError("No rows match the given station_id/product filter.")
+
+    fig, ax = _get_fig_ax(figsize=(6, 6))
+    for prod, sub in df.groupby("product"):
+        ax.scatter(sub["obs_mm_day"], sub["sim_mm_day"], s=10, alpha=0.5, label=prod)
+
+    lim = max(df["obs_mm_day"].max(), df["sim_mm_day"].max()) * 1.05
+    ax.plot([0, lim], [0, lim], "k--", linewidth=1, label="1:1")
+    ax.set_xlim(0, lim)
+    ax.set_ylim(0, lim)
+    ax.set_xlabel("Observed (mm/day)")
+    ax.set_ylabel("Simulated (mm/day)")
+    title = "Obs vs Sim"
+    if station_id:
+        title += f" — {station_id}"
+    if product:
+        title += f" — {product}"
+    ax.set_title(title)
+    ax.legend(fontsize=8)
+    fig.tight_layout()
+    return fig
+
+
 def metric_heatmap(validation_df, metric: str = "kge", group_col: str = "zone"):
     """Zone x product heatmap of one metric."""
     pivot = validation_df.pivot_table(index=group_col, columns="product", values=metric)

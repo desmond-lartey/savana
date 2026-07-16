@@ -38,6 +38,111 @@ REQUIRED_STATION_COLUMNS = {"station_id", "lon", "lat"}
 REQUIRED_OBS_COLUMNS = {"station_id", "year", "month", "obs_mm_day"}
 
 
+def load_stations_any(stations=None):
+    """Turn almost anything describing station locations into a proper
+    ``stations_df`` — the single entry point every high-level function
+    (:func:`savana.rainfall.pipeline.validate_against_gpcc`) uses so a
+    user never has to hand-build a DataFrame just to try one station.
+
+    Accepts:
+        - ``None`` -> :func:`savana.rainfall.config.default_stations_wa`
+          (the 16 WA GPCC stations).
+        - an existing ``stations_df`` (DataFrame with
+          ``station_id, lon, lat``) -> validated and returned as-is.
+        - a path to a ``.geojson``/``.json`` file of Point features ->
+          one station per feature; ``station_id``/``station_name`` are
+          read from feature properties if present, else auto-generated.
+        - a path to a ``.csv`` file -> loaded via
+          :func:`load_stations_from_csv`'s station-table shape.
+        - a list of ``(lon, lat)`` or ``(station_id, lon, lat)`` tuples,
+          or a list of dicts with at least ``lon``/``lat`` keys.
+        - a single ``(lon, lat)`` tuple -> one station.
+
+    Returns:
+        A validated ``stations_df``.
+    """
+    import pandas as pd
+
+    if stations is None:
+        return config.default_stations_wa()
+
+    if hasattr(stations, "columns"):  # already a DataFrame
+        _validate_stations_df(stations)
+        return stations
+
+    if isinstance(stations, (str, Path)):
+        path = Path(stations)
+        if path.suffix.lower() in (".geojson", ".json"):
+            return _stations_from_geojson(path)
+        if path.suffix.lower() == ".csv":
+            df, _ = load_stations_from_csv(path)
+            return df
+        raise ValueError(
+            f"Don't know how to load stations from {path.suffix!r} files. "
+            f"Expected .geojson, .json, or .csv."
+        )
+
+    if isinstance(stations, tuple) and len(stations) == 2:
+        stations = [stations]
+
+    if isinstance(stations, (list, tuple)):
+        rows = []
+        for i, item in enumerate(stations):
+            if isinstance(item, dict):
+                row = dict(item)
+                row.setdefault("station_id", f"S{i + 1:03d}")
+            elif len(item) == 2:
+                row = {"station_id": f"S{i + 1:03d}", "lon": item[0], "lat": item[1]}
+            elif len(item) == 3:
+                row = {"station_id": item[0], "lon": item[1], "lat": item[2]}
+            else:
+                raise ValueError(f"Can't parse station entry: {item!r}")
+            rows.append(row)
+        df = pd.DataFrame(rows)
+        _validate_stations_df(df)
+        return df
+
+    raise ValueError(
+        f"Don't know how to interpret stations={stations!r} (type "
+        f"{type(stations).__name__}). See load_stations_any() docstring "
+        f"for accepted formats."
+    )
+
+
+def _stations_from_geojson(path: Path):
+    """One station per Point feature in a GeoJSON file. No geopandas
+    required — this only needs to read plain Point coordinates."""
+    import json
+
+    import pandas as pd
+
+    with open(path) as f:
+        gj = json.load(f)
+
+    rows = []
+    for i, feat in enumerate(gj.get("features", [])):
+        geom = feat.get("geometry", {})
+        if geom.get("type") != "Point":
+            continue
+        lon, lat = geom["coordinates"][:2]
+        props = feat.get("properties") or {}
+        rows.append(
+            {
+                "station_id": props.get("station_id", f"S{i + 1:03d}"),
+                "station_name": props.get("station_name", props.get("name", "")),
+                "lon": lon,
+                "lat": lat,
+                "elevation_m": props.get("elevation_m", None),
+                "source": props.get("source", str(path.name)),
+            }
+        )
+    if not rows:
+        raise ValueError(f"No Point features found in {path}")
+    df = pd.DataFrame(rows)
+    _validate_stations_df(df)
+    return df
+
+
 def _validate_stations_df(stations_df) -> None:
     """Raise a clear error if ``stations_df`` is missing required columns.
 
@@ -64,6 +169,40 @@ def _validate_stations_df(stations_df) -> None:
 # ════════════════════════════════════════════════════════════
 # Earth Engine helpers
 # ════════════════════════════════════════════════════════════
+
+
+def preview_map(stations_df=None, m=None, zoom: int = 5):
+    """A quick interactive map of station locations — the first thing to
+    check before extracting or validating anything: "are these actually
+    where I think they are?"
+
+    Args:
+        stations_df: defaults to :func:`config.default_stations_wa`.
+        m: an existing ``geemap.Map`` to add to, or a new one is created.
+        zoom: zoom level when centering on the stations.
+
+    Returns:
+        A ``geemap.Map`` with one styled point layer for the stations.
+        Click a point on the map to see its properties
+        (``station_id``, ``station_name``, ``lon``, ``lat``) in
+        geemap's built-in inspector panel.
+    """
+    import geemap
+
+    stations_df = (
+        stations_df if stations_df is not None else config.default_stations_wa()
+    )
+    _validate_stations_df(stations_df)
+
+    if m is None:
+        m = geemap.Map()
+
+    fc = stations_to_ee_fc(stations_df)
+    center_lon = float(stations_df.lon.mean())
+    center_lat = float(stations_df.lat.mean())
+    m.set_center(center_lon, center_lat, zoom)
+    m.add_layer(fc.style(**{"color": "FFEB3B", "pointSize": 6}), {}, "Gauge Stations")
+    return m
 
 
 def stations_to_ee_fc(stations_df):
