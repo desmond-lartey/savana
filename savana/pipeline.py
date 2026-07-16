@@ -24,25 +24,14 @@ from __future__ import annotations
 
 from . import accuracy as accuracy_mod
 from . import change as change_mod
-from . import (
-    classifiers,
-    composites,
-    config,
-    ee_init,
-)
+from . import classifiers, composites, config, ee_init
 from . import exports as exports_mod
-from . import (
-    indices,
-)
+from . import indices
 from . import masks as masks_mod
 from . import rue as rue_mod
-from . import (
-    sampling,
-)
+from . import sampling
 from . import thresholds as thresholds_mod
-from . import (
-    viz,
-)
+from . import viz
 
 
 class SavanaClassifier:
