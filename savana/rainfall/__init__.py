@@ -43,6 +43,7 @@ _LAZY_SYMBOL_MAP: dict[str, tuple[str, str | None]] = {
     "default_stations_wa": ("config", None),
     # --- pipeline ---
     "RainfallAssessment": ("pipeline", None),
+    "validate_against_gpcc": ("pipeline", None),
 }
 
 _LAZY_SUBMODULES = {

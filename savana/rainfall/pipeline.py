@@ -33,10 +33,11 @@ class RainfallAssessment:
 
     Example (a different station network, subset of products)::
 
-        my_stations = pd.DataFrame({...})
         ra = (
             RainfallAssessment(
-                stations_df=my_stations,
+                stations=[(-1.5, 12.4), (2.1, 6.5)],  # or a DataFrame, a
+                                                        # .geojson/.csv path,
+                                                        # or a single (lon, lat)
                 products={"CHIRPS": config.DEFAULT_PRODUCTS["CHIRPS"],
                           "GPM_IMERG": config.DEFAULT_PRODUCTS["GPM_IMERG"]},
             )
@@ -51,7 +52,7 @@ class RainfallAssessment:
     def __init__(
         self,
         products: dict | None = None,
-        stations_df=None,
+        stations=None,
         zones_gdf=None,
         zones_fc=None,
         app_weights: dict | None = None,
@@ -60,8 +61,15 @@ class RainfallAssessment:
         cache_dir=None,
         ee_project: str | None = None,
     ):
+        from . import stations as _stations
+
         self.products = products if products is not None else config.DEFAULT_PRODUCTS
-        self.stations_df = stations_df
+        # Accepts anything load_stations_any() accepts: a DataFrame, a
+        # .geojson/.csv path, a list of (lon, lat)/(id, lon, lat)/dicts,
+        # or a single (lon, lat) tuple/list. Always resolves to a real
+        # stations_df immediately (never left as None), defaulting to
+        # the WA 16 stations if stations=None.
+        self.stations_df = _stations.load_stations_any(stations)
         self.zones_gdf = zones_gdf
         self.zones_fc = zones_fc
         self.app_weights = (
@@ -79,6 +87,8 @@ class RainfallAssessment:
         self.ee_project = ee_project
 
         # populated as stages run
+        self.start = None
+        self.end = None
         self.obs_df = None
         self.products_ic = None
         self.sim_df = None
@@ -119,6 +129,28 @@ class RainfallAssessment:
             else config.default_stations_wa()
         )
         self.stations_df = stations_df
+
+        # If .ingest() already ran and set a date range, and the caller
+        # didn't explicitly pass their own start_year/end_year, reuse
+        # it -- otherwise "download"/"demo" silently default to the
+        # full 2001-2020 range regardless of what .ingest() was told,
+        # which is surprising and easy to miss. Only applies to sources
+        # that actually take a year range ("csv"/"ee_asset" don't).
+        if (
+            source in ("download", "demo")
+            and "start_year" not in kwargs
+            and "end_year" not in kwargs
+            and self.start is not None
+            and self.end is not None
+        ):
+            kwargs["start_year"] = int(self.start[:4])
+            kwargs["end_year"] = int(self.end[:4])
+            print(
+                f"  Using date range from .ingest(): "
+                f"{kwargs['start_year']}-{kwargs['end_year']} "
+                f"(pass start_year=/end_year= explicitly to override)"
+            )
+
         self.obs_df = _stations.get_observations(stations_df, source=source, **kwargs)
         return self
 
@@ -221,12 +253,23 @@ class RainfallAssessment:
         product: str,
         kind: str = "daily",
         reference: str | None = None,
+        show_gpcc: bool = False,
         region=None,
         m=None,
     ):
         """Interactive map of one product's mean rainfall (``kind=
-        "daily"`` or ``"annual"``), or its bias against another product
-        if ``reference`` is given. Requires ``.ingest()`` to have run.
+        "daily"`` or ``"annual"``), or its bias against ANOTHER PRODUCT
+        if ``reference`` is given — a gridded-vs-gridded comparison,
+        never a GPCC comparison (GPCC has no gridded form here).
+
+        Set ``show_gpcc=True`` to overlay real GPCC station values (not
+        a rasterized surface — the true point observations, colored on
+        the same scale as the raster) on top of the mean map. Requires
+        ``.get_observations()`` to have already run. Ignored when
+        ``reference`` is also given (the overlay only applies to the
+        single-product mean map).
+
+        Requires ``.ingest()`` to have run.
         """
         from . import spatial
 
@@ -255,13 +298,36 @@ class RainfallAssessment:
                 region=region,
                 m=m,
             )
+
+        obs_df, stations_df = None, None
+        if show_gpcc:
+            if self.obs_df is None:
+                raise RuntimeError(
+                    "show_gpcc=True requires .get_observations() to " "have run first."
+                )
+            obs_df, stations_df = self.obs_df, self.stations_df
+
         return spatial.preview_mean_map(
             self.products_ic[product],
             product_name=product,
             region=region,
             kind=kind,
             m=m,
+            obs_df=obs_df,
+            stations_df=stations_df,
         )
+
+    def preview_station_bias(self, product: str, m=None, zoom: int = 5):
+        """Interactive map of per-station bias against REAL GPCC
+        observations for one product — the actual "does this agree with
+        ground truth, and where" spatial check. Requires ``.merge()``
+        (or ``.validate()``, which calls it) to have run.
+        """
+        from . import spatial
+
+        if self.merged_df is None:
+            self.merge()
+        return spatial.preview_station_bias_map(self.merged_df, product, m=m, zoom=zoom)
 
     def validate(self):
         from . import validation
@@ -515,7 +581,7 @@ def validate_against_gpcc(
 
     ra = RainfallAssessment(
         products=selected_products,
-        stations_df=stations_df,
+        stations=stations_df,
         zones_gdf=zones_gdf,
         zones_fc=zones_fc,
         rain_threshold=rain_threshold,

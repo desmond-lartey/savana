@@ -29,6 +29,26 @@ jobs:
           name: dist
           path: dist/
 
+  github-release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    # Only run for tag pushes (not when triggered by a Release already
+    # being published) — avoids creating a duplicate/conflicting Release.
+    if: github.event_name == 'push'
+    permissions:
+      contents: write  # required to create a Release
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true
+
   publish:
     name: Publish to PyPI
     needs: build

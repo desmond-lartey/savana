@@ -56,7 +56,8 @@ def load_stations_any(stations=None):
           :func:`load_stations_from_csv`'s station-table shape.
         - a list of ``(lon, lat)`` or ``(station_id, lon, lat)`` tuples,
           or a list of dicts with at least ``lon``/``lat`` keys.
-        - a single ``(lon, lat)`` tuple -> one station.
+        - a single station as ``(lon, lat)`` or ``[lon, lat]`` — both a
+          tuple and a plain 2-element list work.
 
     Returns:
         A validated ``stations_df``.
@@ -82,8 +83,18 @@ def load_stations_any(stations=None):
             f"Expected .geojson, .json, or .csv."
         )
 
-    if isinstance(stations, tuple) and len(stations) == 2:
-        stations = [stations]
+    # Single station shorthand: (lon, lat) or [lon, lat] -- two plain
+    # numbers, not a list of multiple stations. Deliberately checked
+    # before the general list/tuple-of-stations branch below, and
+    # deliberately accepts both tuple and list (parentheses around a
+    # single list literal in Python don't make it a tuple -- ([-1.5,
+    # 12.4]) is just [-1.5, 12.4] -- so both forms need to work).
+    if (
+        isinstance(stations, (tuple, list))
+        and len(stations) == 2
+        and all(isinstance(x, (int, float)) for x in stations)
+    ):
+        stations = [tuple(stations)]
 
     if isinstance(stations, (list, tuple)):
         rows = []

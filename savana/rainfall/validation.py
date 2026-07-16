@@ -275,6 +275,8 @@ def rank_products(
     ``group_cols`` defaults to every column in ``validation_df`` except
     ``"product"`` and the metric columns — i.e. whatever grouping level
     the input DataFrame already represents (zone, station, season...).
+    An empty result (e.g. pooled/overall validation with no zone column)
+    ranks across the whole table as a single group, rather than failing.
     """
     df = validation_df.copy()
     if group_cols is None:
@@ -290,10 +292,13 @@ def rank_products(
         group_cols = [c for c in df.columns if c not in non_metric]
 
     ascending = metric in ("far", "rmse", "mae", "bias")
-    df["rank"] = (
-        df.groupby(group_cols)[metric]
-        .rank(ascending=ascending, method="min")
-        .astype(int)
-    )
+    if group_cols:
+        df["rank"] = (
+            df.groupby(group_cols)[metric]
+            .rank(ascending=ascending, method="min")
+            .astype(int)
+        )
+    else:
+        df["rank"] = df[metric].rank(ascending=ascending, method="min").astype(int)
     sort_cols = group_cols + ["rank"]
     return df.sort_values(sort_cols).reset_index(drop=True)

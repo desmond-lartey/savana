@@ -7,6 +7,8 @@ purely a function of whatever station coordinates you give it.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from . import config
 
 
@@ -60,19 +62,45 @@ def extract_product_at_stations(product_ic, stations_df, product_name: str):
     return df
 
 
-def extract_all_products(products_ic: dict, stations_df):
+def extract_all_products(products_ic: dict, stations_df, cache_dir=None):
     """Extract every product in ``products_ic`` (from
     :func:`savana.rainfall.ingestion.load_all_products`) at every
     station, and stack into one long-format DataFrame.
 
-    Returns columns: ``station_id, year, month, product, sim_mm_day``.
+    Args:
+        products_ic: ``{name: ee.ImageCollection}``.
+        stations_df: any stations DataFrame.
+        cache_dir: if given, each product's extraction is cached to
+            ``cache_dir/precip_extraction_<NAME>.csv`` (matching the
+            original per-product CSV workflow) — a re-run with the same
+            ``cache_dir`` reuses whatever's already there instead of
+            re-extracting from Earth Engine, and any product missing
+            from the cache is extracted and added to it. Delete the
+            relevant CSV (or the whole folder) to force a fresh pull.
+
+    Returns:
+        Long-format DataFrame: ``station_id, year, month, product,
+        sim_mm_day``.
     """
     import pandas as pd
 
-    frames = [
-        extract_product_at_stations(ic, stations_df, name)
-        for name, ic in products_ic.items()
-    ]
+    frames = []
+    for name, ic in products_ic.items():
+        cache_path = (
+            Path(cache_dir) / f"precip_extraction_{name}.csv" if cache_dir else None
+        )
+        if cache_path is not None and cache_path.exists():
+            print(f"  Using cached extraction: {cache_path}")
+            frames.append(pd.read_csv(cache_path))
+            continue
+
+        df = extract_product_at_stations(ic, stations_df, name)
+        if cache_path is not None:
+            cache_path.parent.mkdir(parents=True, exist_ok=True)
+            df.to_csv(cache_path, index=False)
+            print(f"  Cached: {cache_path}")
+        frames.append(df)
+
     return pd.concat(frames, ignore_index=True)
 
 

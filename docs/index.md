@@ -11,6 +11,7 @@
   <a href="https://github.com/desmond-lartey/savana/stargazers" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/github/stars/desmond-lartey/savana?style=social" alt="Stars"></a>
   <a href="https://github.com/desmond-lartey/savana/network/members" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/github/forks/desmond-lartey/savana?style=social" alt="Forks"></a>
   <a href="https://www.youtube.com/@desmondlartey31" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/YouTube-Tutorials-red" alt="YouTube"></a>
+  <img src="https://visitor-badge.laobi.icu/badge?page_id=desmond-lartey.savana" alt="Visitors">
 </p>
 
 **An AI-embedded geospatial intelligence ecosystem for savanna landscapes.**
@@ -181,11 +182,12 @@ this at a different savanna landscape and it recalibrates automatically.
 ## Roadmap
 
 `savana` is the first module of a larger ecosystem. Planned additions include:
-  - Additional class schemes / configurable taxonomies for other savanna biomes
-  - Alternative embedding backbones (e.g. other foundation models) as drop-in options
-  - Local (non-GEE) inference for pre-exported imagery
-  - Deeper agent integration with map-hosted UIs, beyond the current notebook experience
-  - A CLI
+
+- Additional class schemes / configurable taxonomies for other savanna biomes
+- Alternative embedding backbones (e.g. other foundation models) as drop-in options
+- Local (non-GEE) inference for pre-exported imagery
+- Deeper agent integration with map-hosted UIs, beyond the current notebook experience
+- A CLI
 
 Contributions and issues welcome.
 
