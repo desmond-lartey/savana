@@ -6,7 +6,7 @@ one failure (e.g. no threshold data was run) doesn't take down the
 rest; :func:`summarize` turns facts into readable prose;
 :func:`answer` does grounded keyword-based retrieval against the facts
 dict. Every number in the output traces back to something actually
-computed, never fabricated — the same rule as savana.insights.
+computed, never fabricated, the same rule as savana.insights.
 """
 
 from __future__ import annotations

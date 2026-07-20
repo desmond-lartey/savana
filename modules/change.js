@@ -11,7 +11,7 @@ exports.analyse = function(classifiedMaps, epochs, geometry, parkName) {
     parkAreaKm2.lt(500),   30,
     ee.Algorithms.If(parkAreaKm2.lt(2000), 100, 500)));
 
-  print('=== PHASE 9: Change Analysis — ' + parkName + ' ===');
+  print('=== PHASE 9: Change Analysis, ' + parkName + ' ===');
   print('Park area (km2):', parkAreaKm2);
   print('Statistics scale:', STATS_SCALE, 'm');
 

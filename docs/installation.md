@@ -27,7 +27,7 @@ pip install "savana[vector,rainfall,agents]"
 
 - Python >= 3.10
 - A Google Earth Engine account with a registered Cloud project
-  ([register here](https://code.earthengine.google.com/register)) —
+  ([register here](https://code.earthengine.google.com/register)),
   required by both the classification and precipitation-assessment modules
 
 ## Verifying the install
@@ -56,7 +56,7 @@ have a valid Earth Engine session in your environment, `savana.initialize()`
 up automatically.
 
 For `savana.rainfall`, Earth Engine initialization is handled the same way
-but lazily — it only fires right before a call that actually needs it
+but lazily, it only fires right before a call that actually needs it
 (`.ingest()`, `.extract()`, `.preview_stations()`, `.preview_map()`, or
 `get_observations(source="ee_asset")`), so a purely offline run (e.g.
 `obs_source="csv"` or `"demo"`) never prompts for Earth Engine auth at all.
@@ -76,11 +76,11 @@ requiring you to manage local raster files:
 
 - **Gridded precipitation products** (CHIRPS, ERA5-Land, GPM IMERG, MERRA-2,
   PERSIANN-CDR, TerraClimate by default): pulled directly from their public
-  Earth Engine collections — nothing to download.
+  Earth Engine collections, nothing to download.
 - **GPCC gauge observations** (the validation reference): either the public
   GPCC Full Data Daily archive, downloaded and point-extracted automatically
   (`obs_source="download"`, works for any station location), or a
   pre-extracted Earth Engine table asset if you have one
   (`obs_source="ee_asset"`, faster but limited to whichever stations are in
-  that asset). Both stay point data — nothing here is rasterized or
+  that asset). Both stay point data, nothing here is rasterized or
   interpolated into a gridded GPCC surface.

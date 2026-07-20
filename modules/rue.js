@@ -1,6 +1,6 @@
 // ============================================================
 // MODULE: rue
-// Rain Use Efficiency — annual and per-epoch computation
+// Rain Use Efficiency, annual and per-epoch computation
 // ============================================================
 
 var S2_COLLECTION  = 'COPERNICUS/S2_SR_HARMONIZED';
@@ -37,7 +37,7 @@ exports.getEpochRUE = function(year, region) {
 };
 
 // Full integrated NDVI / CHIRPS RUE for training year (2024).
-// Returns {chirps, iNDVI, rue} — rue is named 'RUE'.
+// Returns {chirps, iNDVI, rue}, rue is named 'RUE'.
 exports.computeAnnual2024 = function(geometry) {
   var chirps = ee.ImageCollection(CHIRPS)
     .filter(ee.Filter.date('2024-01-01','2024-12-31'))

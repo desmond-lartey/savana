@@ -9,7 +9,7 @@ from __future__ import annotations
 def compute(s2_annual, s2_dry, s2_wet, p10, p90) -> dict:
     """Compute all spectral indices from seasonal/percentile composites.
 
-    Returns a dict — access as ``idx["ndvi"]``, ``idx["ndvi_dry"]``, etc.
+    Returns a dict, access as ``idx["ndvi"]``, ``idx["ndvi_dry"]``, etc.
     """
     ndvi = s2_annual.normalizedDifference(["B8", "B4"]).rename("NDVI")
     ndmi = s2_annual.normalizedDifference(["B8", "B11"]).rename("NDMI")
@@ -87,6 +87,6 @@ def build_pheno_stack(idx: dict, rue_img):
             idx["ndvi_p90"],  # 11
             idx["ndmi_p90"],  # 12
             idx["ndvi_p_amp"],  # 13
-            rue_img,  # 14 — RUE
+            rue_img,  # 14, RUE
         ]
     )

@@ -1,5 +1,5 @@
 // ============================================================
-// LAND SYSTEM CLASSIFICATION — v2
+// LAND SYSTEM CLASSIFICATION, v2
 // West Africa Protected Areas | Desmond Lartey | PhD Research
 //
 // Features:
@@ -8,7 +8,7 @@
 //     indices (14-dim) = 78-dim feature space (Model D)
 //   - RUE tile-boundary correction via valid-month normalisation
 //   - Four-model ablation: A (KNN/Emb), B (RF/Emb),
-//     C (RF/Pheno — circular), D (RF/Emb+Pheno — PRIMARY)
+//     C (RF/Pheno, circular), D (RF/Emb+Pheno, PRIMARY)
 //   - Conservative change detection + RUE inter-annual CV
 //   - All exports to LandSystem_PhD/ on Google Drive
 //
@@ -17,7 +17,7 @@
 
 
 // ============================================================
-// PHASE 1 — STUDY AREA AND GLOBAL PARAMETERS
+// PHASE 1, STUDY AREA AND GLOBAL PARAMETERS
 // ============================================================
 var protectedAreas = ee.FeatureCollection(
   'projects/ee-desmond/assets/NewParkMerged');
@@ -38,7 +38,7 @@ Map.setOptions('SATELLITE');
 Map.addLayer(
   ee.Image().byte().paint({
     featureCollection: parkFeature, color: 1, width: 2}),
-  {palette: ['ffffff']}, PARK_NAME + ' — Boundary', true);
+  {palette: ['ffffff']}, PARK_NAME + ', Boundary', true);
 
 var CLASS_PROPERTY = 'landSystem';
 var EXPORT_SCALE   = 10;
@@ -59,12 +59,12 @@ var CANDIDATE_POINTS_PER_CLUSTER = 50;
 var RANDOM_SEED                  = 42;
 var CONFIDENCE_MARGIN            = 0.03;
 
-print('=== ' + PARK_NAME + ' — LAND SYSTEM CLASSIFICATION ===');
+print('=== ' + PARK_NAME + ', LAND SYSTEM CLASSIFICATION ===');
 print('Epochs:', EPOCHS);
 
 
 // ============================================================
-// PHASE 2 — SENTINEL-2 REFERENCE IMAGERY (2024 baseline)
+// PHASE 2, SENTINEL-2 REFERENCE IMAGERY (2024 baseline)
 // ============================================================
 function getSentinel2Composite(year, region) {
   var startDate = ee.Date.fromYMD(year, 1, 1);
@@ -92,7 +92,7 @@ Map.addLayer(composite2024,
 
 
 // ============================================================
-// PHASE 3 — ALPHEARTH SATELLITE EMBEDDINGS
+// PHASE 3, ALPHEARTH SATELLITE EMBEDDINGS
 // ============================================================
 var embeddingCollection = ee.ImageCollection(
   'GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL');
@@ -115,10 +115,10 @@ Map.addLayer(embedding2024,
 
 
 // ============================================================
-// PHASE 4 — TRAINING SAMPLE COLLECTION (GCPs)
+// PHASE 4, TRAINING SAMPLE COLLECTION (GCPs)
 // ============================================================
 
-// 4.1 — Seasonal composites and percentile statistics
+// 4.1, Seasonal composites and percentile statistics
 var s2_2024 = getSentinel2Composite(2024, geometry);
 
 var csPlus_annual = ee.ImageCollection(
@@ -168,7 +168,7 @@ var s2_wet = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
     return img.updateMask(img.select('cs').gte(0.60));
   }).select('B.*').median().clip(geometry);
 
-// 4.2 — Spectral indices (2024 baseline)
+// 4.2, Spectral indices (2024 baseline)
 var ndvi     = s2_2024.normalizedDifference(['B8','B4']).rename('NDVI');
 var ndmi     = s2_2024.normalizedDifference(['B8','B11']).rename('NDMI');
 var mndwi    = s2_2024.normalizedDifference(['B3','B11']).rename('MNDWI');
@@ -186,7 +186,7 @@ var ndvi_p90   = s2_p90.normalizedDifference(['B8','B4']).rename('NDVI_p90');
 var ndmi_p90   = s2_p90.normalizedDifference(['B8','B11']).rename('NDMI_p90');
 var ndvi_p_amp = ndvi_p90.subtract(ndvi_p10).rename('NDVI_p_amp');
 
-// 4.3 — Coverage diagnostics
+// 4.3, Coverage diagnostics
 print('Percentile composite coverage (p10 B8):',
   s2_p10.select('B8').mask().reduceRegion({
     reducer:ee.Reducer.mean(), geometry:geometry,
@@ -200,7 +200,7 @@ print('Wet (May-Jul) coverage:',
     reducer:ee.Reducer.mean(), geometry:geometry,
     scale:100, maxPixels:1e9}));
 
-// 4.4 — Visualisation of spectral indices
+// 4.4, Visualisation of spectral indices
 Map.addLayer(ndvi,
   {min:0.1,max:0.8,palette:['8c510a','f6e8c3','01665e']},
   'NDVI Annual 2024', false);
@@ -223,7 +223,7 @@ Map.addLayer(ndbi,
   {min:-0.15,max:0.12,palette:['01665e','f5f5f5','b2182b']},
   'NDBI Annual 2024', false);
 
-// 4.5 — Unsupervised k-means clustering in embedding space
+// 4.5, Unsupervised k-means clustering in embedding space
 var clusterSamples6 = embedding2024.sample({
   region:geometry, scale:30, numPixels:3000,
   seed:RANDOM_SEED, tileScale:8});
@@ -236,7 +236,7 @@ print('cluster6 band type (must be int):',
 Map.addLayer(unsupervised6.randomVisualizer().clip(geometry),
   {}, 'Unsupervised Clusters (k=6)', false);
 
-// 4.6 — Cluster statistics
+// 4.6, Cluster statistics
 var clusterStatImage = ee.Image.cat([
   ndvi_dry, ndmi_dry, ndvi_amp, ndmi, ndbi,
   ndvi, ndvi_wet, ndmi_wet, unsupervised6
@@ -253,7 +253,7 @@ print('Bands: NDVI_dry NDMI_dry NDVI_amp NDMI NDBI ' +
       'NDVI NDVI_wet NDMI_wet');
 print(clusterStats);
 
-// 4.7 — Index percentiles (diagnostic)
+// 4.7, Index percentiles (diagnostic)
 print('=== INDEX PERCENTILES ===',
   ee.Image.cat([ndvi,ndmi,ndbi,ndvi_dry,ndmi_dry,
                 ndvi_wet,ndmi_wet,ndvi_amp])
@@ -264,7 +264,7 @@ print('=== INDEX PERCENTILES ===',
 
 
 // ============================================================
-// PHASE 4.7b — RAIN USE EFFICIENCY (RUE)
+// PHASE 4.7b, RAIN USE EFFICIENCY (RUE)
 // Monthly iNDVI normalised by valid observation count to
 // remove Sentinel-2 tile boundary bias.
 // ============================================================
@@ -334,9 +334,9 @@ Map.addLayer(iNDVI,
 
 
 // ============================================================
-// PHASE 4.8 — ADAPTIVE THRESHOLD DERIVATION
+// PHASE 4.8, ADAPTIVE THRESHOLD DERIVATION
 // All thresholds derived from park-specific index percentiles.
-// No hardcoded values — works identically for all parks.
+// No hardcoded values, works identically for all parks.
 // ============================================================
 var _pctImage = ee.Image.cat([
   ndvi, ndmi, ndbi, ndvi_dry, ndmi_dry,
@@ -395,7 +395,7 @@ var T_OPEN_NDMI_SPLIT_LOW  = pct('NDMI', 50);
 var T_OPEN_NDMI_SPLIT_HIGH = pct('NDMI',50).add(
   pct('NDMI',75).subtract(pct('NDMI',50)).multiply(0.5));
 
-print('=== ADAPTIVE THRESHOLDS — ' + PARK_NAME + ' ===');
+print('=== ADAPTIVE THRESHOLDS, ' + PARK_NAME + ' ===');
 print('NDVI_dry p25/p50/p75:',
   pct('NDVI_dry',25), '/', pct('NDVI_dry',50), '/',
   pct('NDVI_dry',75));
@@ -405,7 +405,7 @@ print('NDBI     p90:', pct('NDBI',90));
 
 
 // ============================================================
-// PHASE 4.9 — MASK DEFINITIONS
+// PHASE 4.9, MASK DEFINITIONS
 // ============================================================
 var mask_anthro = ndbi.gt(T_ANTHRO_NDBI)
   .or(ndvi.lt(T_ANTHRO_NDVI_MAX));
@@ -480,7 +480,7 @@ countMask(mask_anthro,   'Anthropogenic');
 
 
 // ============================================================
-// PHASE 4.10–4.11 — CLUSTER-STRATIFIED CANDIDATE SAMPLING
+// PHASE 4.10–4.11, CLUSTER-STRATIFIED CANDIDATE SAMPLING
 // ============================================================
 var candidateFeatureImage = ee.Image.cat([
   ndvi, ndmi, mndwi, ndbi,
@@ -532,7 +532,7 @@ print('By cluster:',
 
 
 // ============================================================
-// PHASE 4.12 — LABEL ASSIGNMENT WITH CONFIDENCE FILTER
+// PHASE 4.12, LABEL ASSIGNMENT WITH CONFIDENCE FILTER
 // ============================================================
 function assignProvisionalLabel(f) {
   var ndviV   = ee.Number(f.get('NDVI'));
@@ -615,7 +615,7 @@ print('Class distribution:',
 
 
 // ============================================================
-// PHASE 4.13–4.15 — CLASS BALANCING AND GCP EXTRACTION
+// PHASE 4.13–4.15, CLASS BALANCING AND GCP EXTRACTION
 // ============================================================
 function takeClassPoints(fc, classVal, n, seed) {
   var sub = fc.filter(ee.Filter.eq(CLASS_PROPERTY, classVal));
@@ -679,7 +679,7 @@ Map.addLayer(gcpsOutside,
 
 
 // ============================================================
-// PHASE 5 — FOUR-MODEL ABLATION TRAINING
+// PHASE 5, FOUR-MODEL ABLATION TRAINING
 // ============================================================
 var trainingData = embedding2024.sampleRegions({
   collection:gcps, properties:[CLASS_PROPERTY],
@@ -714,7 +714,7 @@ print('Active classifier:',
 
 
 // ============================================================
-// PHASE 6 — CLASSIFICATION AND VISUALISATION (2024 diagnostic)
+// PHASE 6, CLASSIFICATION AND VISUALISATION (2024 diagnostic)
 // ============================================================
 var classified2024_raw = embedding2024
   .classify(classifier2024)
@@ -724,9 +724,9 @@ var classified2024 = classified2024_raw
   .rename('landSystem').clip(geometry).toByte();
 
 Map.addLayer(classified2024_raw, VIS_CLASSIFIED,
-  '2024 Land System Map — DIAGNOSTIC raw (Model B)', false);
+  '2024 Land System Map, DIAGNOSTIC raw (Model B)', false);
 Map.addLayer(classified2024, VIS_CLASSIFIED,
-  '2024 Land System Map — DIAGNOSTIC smoothed (Model B)', false);
+  '2024 Land System Map, DIAGNOSTIC smoothed (Model B)', false);
 
 var classAreaStats2024 = ee.Image.pixelArea().divide(1e6)
   .addBands(classified2024)
@@ -741,7 +741,7 @@ print('NOTE: Definitive maps produced in Phase 8 using Model D.');
 
 
 // ============================================================
-// PHASE 7 — CONSOLIDATED ACCURACY ASSESSMENT (four models)
+// PHASE 7, CONSOLIDATED ACCURACY ASSESSMENT (four models)
 // ============================================================
 var splitSeed     = 42;
 var withRandom_aa = gcps.randomColumn('split', splitSeed);
@@ -752,7 +752,7 @@ var validSet_aa   = withRandom_aa.filter(
 
 print('');
 print('============================================================');
-print('  PHASE 7 — CONSOLIDATED ACCURACY ASSESSMENT');
+print('  PHASE 7, CONSOLIDATED ACCURACY ASSESSMENT');
 print('============================================================');
 print('Total GCPs:', gcps.size());
 print('Training set (70%):', trainSet_aa.size(),
@@ -789,7 +789,7 @@ print('Valid full size (must match across all models):',
   validFull.size());
 
 // Derive model-specific subsets from the same materialised
-// trainFull/validFull — guarantees identical sample sets
+// trainFull/validFull, guarantees identical sample sets
 var embBands  = embedding2024.bandNames();
 var classProp = ee.List([CLASS_PROPERTY]);
 var trainEmb7   = trainFull.select(embBands.cat(classProp));
@@ -797,7 +797,7 @@ var validEmb7   = validFull.select(embBands.cat(classProp));
 var trainPheno7 = trainFull.select(phenoBands.cat(classProp));
 var validPheno7 = validFull.select(phenoBands.cat(classProp));
 
-// Model A — KNN (k=3) | Embeddings only [baseline]
+// Model A, KNN (k=3) | Embeddings only [baseline]
 var modelA = ee.Classifier.smileKNN(3).train({
   features:trainEmb7, classProperty:CLASS_PROPERTY,
   inputProperties:embBands});
@@ -813,7 +813,7 @@ print('Kappa:', matrixA.kappa());
 print('Producer Accuracy:', matrixA.producersAccuracy());
 print('User Accuracy:', matrixA.consumersAccuracy());
 
-// Model B — RF (150 trees) | Embeddings only
+// Model B, RF (150 trees) | Embeddings only
 var modelB = ee.Classifier.smileRandomForest({
   numberOfTrees:150, variablesPerSplit:8,
   minLeafPopulation:1, bagFraction:0.632, seed:RANDOM_SEED
@@ -831,7 +831,7 @@ print('Kappa:', matrixB.kappa());
 print('Producer Accuracy:', matrixB.producersAccuracy());
 print('User Accuracy:', matrixB.consumersAccuracy());
 
-// Model C — RF (150 trees) | Phenology only [CIRCULAR — ablation only]
+// Model C, RF (150 trees) | Phenology only [CIRCULAR, ablation only]
 // Labels were assigned using same phenological thresholds,
 // so accuracy is artificially inflated. Not used operationally.
 var modelC = ee.Classifier.smileRandomForest({
@@ -851,7 +851,7 @@ print('Kappa:', matrixC.kappa());
 print('Producer Accuracy:', matrixC.producersAccuracy());
 print('User Accuracy:', matrixC.consumersAccuracy());
 
-// Model D — RF (150 trees) | Embeddings + Phenology [PRIMARY]
+// Model D, RF (150 trees) | Embeddings + Phenology [PRIMARY]
 var modelD = ee.Classifier.smileRandomForest({
   numberOfTrees:150, variablesPerSplit:9,
   minLeafPopulation:1, bagFraction:0.632, seed:RANDOM_SEED
@@ -884,7 +884,7 @@ print('============================================================');
 
 
 // ============================================================
-// PHASE 7 EXTENSION — CONFUSION MATRIX + ACCURACY CSV EXPORTS
+// PHASE 7 EXTENSION, CONFUSION MATRIX + ACCURACY CSV EXPORTS
 // Outputs per park:
 //   {PARK}_confusion_matrix_full.csv  (24 rows, 4 models × 6 classes)
 //   {PARK}_accuracy_summary.csv       (4 rows, one per model)
@@ -956,7 +956,7 @@ var accuracySummary_FC = ee.FeatureCollection([
     'Embeddings 64-dim', PARK_NAME),
   modelSummaryFeature(matrixC,'C',
     'RF 150 trees | Phenological Indices only [CIRCULAR]',
-    'Phenology 14-dim — circularity inflates OA', PARK_NAME),
+    'Phenology 14-dim, circularity inflates OA', PARK_NAME),
   modelSummaryFeature(matrixD,'D',
     'RF 150 trees | Embeddings + Phenology [PRIMARY]',
     'Embeddings 64-dim + Phenology 14-dim = 78-dim', PARK_NAME)
@@ -977,7 +977,7 @@ Export.table.toDrive({
 
 print('');
 print('============================================================');
-print('  ACCURACY TABLE EXPORTS — ' + PARK_NAME);
+print('  ACCURACY TABLE EXPORTS, ' + PARK_NAME);
 print('============================================================');
 print('Model A | KNN k=3   | OA:', matrixA.accuracy(),
   '| Kappa:', matrixA.kappa());
@@ -990,7 +990,7 @@ print('============================================================');
 
 
 // ============================================================
-// PHASE 8 — MULTI-EPOCH CLASSIFICATION
+// PHASE 8, MULTI-EPOCH CLASSIFICATION
 // 2017        : Model B (RF | Embeddings 64-dim)
 // 2019–2024   : Model D (RF | Embeddings + Phenology 78-dim)
 // Each epoch uses its own year-specific embeddings and
@@ -1020,8 +1020,8 @@ var masterClassifier_D = ee.Classifier.smileRandomForest({
   inputProperties:modelD_bandNames});
 
 print('Master classifiers trained:');
-print('  Model B — 2017 — embeddings only (64-dim)');
-print('  Model D — 2019/2021/2024 — embeddings + phenology (78-dim)');
+print('  Model B, 2017, embeddings only (64-dim)');
+print('  Model D, 2019/2021/2024, embeddings + phenology (78-dim)');
 
 function getSeasonalComposite(startDate, endDate, region) {
   var csPlus = ee.ImageCollection(
@@ -1198,7 +1198,7 @@ EPOCHS.forEach(function(year) {
 
   classifiedMaps[year] = classifiedImg;
   Map.addLayer(classifiedImg, VIS_CLASSIFIED,
-    PARK_NAME + ' — Land System Map ' + yr, year === 2024);
+    PARK_NAME + ', Land System Map ' + yr, year === 2024);
   print(yr + ' | Classification complete');
 
   Export.image.toDrive({
@@ -1222,14 +1222,14 @@ print('--- PHASE 8: All epochs classified and exported ---');
 
 
 // ============================================================
-// PHASE 9 — CHANGE ANALYSIS + RUE INTER-ANNUAL VARIABILITY
+// PHASE 9, CHANGE ANALYSIS + RUE INTER-ANNUAL VARIABILITY
 // ============================================================
 var parkAreaKm2 = geometry.area().divide(1e6);
 var STATS_SCALE = ee.Number(ee.Algorithms.If(
   parkAreaKm2.lt(500),  30,
   ee.Algorithms.If(parkAreaKm2.lt(2000), 100, 500)));
 
-print('=== PHASE 9: Change Analysis — ' + PARK_NAME + ' ===');
+print('=== PHASE 9: Change Analysis, ' + PARK_NAME + ' ===');
 print('Park area (km2):', parkAreaKm2);
 print('Statistics scale (adaptive):', STATS_SCALE, 'm');
 
@@ -1251,7 +1251,7 @@ var changeStack = ee.Image.cat([
       changeStack.select('ls_'+y1)
         .neq(changeStack.select('ls_'+y2)).selfMask(),
       {palette:['ff4444']},
-      PARK_NAME+' — Raw change '+y1+'>'+y2+' [diagnostic]',
+      PARK_NAME+', Raw change '+y1+'>'+y2+' [diagnostic]',
       false);
     Export.image.toDrive({
       image:transitionImg.toByte(),
@@ -1265,7 +1265,7 @@ var changeStack = ee.Image.cat([
 // Class area statistics per epoch
 print('=== CLASS AREA STATISTICS (km2) ===');
 EPOCHS.forEach(function(year) {
-  print('Class areas (km2) — '+year+':',
+  print('Class areas (km2), '+year+':',
     ee.Image.pixelArea().divide(1e6)
       .addBands(classifiedMaps[year]).reduceRegion({
         reducer: ee.Reducer.sum().group({
@@ -1298,10 +1298,10 @@ var conservativeTransition = changeStack.select('ls_2017')
 
 Map.addLayer(stableThroughout.selfMask(),
   {palette:['2166ac']},
-  PARK_NAME+' — Stable all epochs', false);
+  PARK_NAME+', Stable all epochs', false);
 Map.addLayer(conservativeChange.selfMask(),
   {palette:['8b0000']},
-  PARK_NAME+' — Conservative change 2017>2024', true);
+  PARK_NAME+', Conservative change 2017>2024', true);
 
 print('=== CONSERVATIVE CHANGE DETECTION ===');
 print('Stable all 4 epochs (km2):',
@@ -1361,13 +1361,13 @@ var variableChange = conservativeChange.and(rueCV.gte(0.15))
 
 Map.addLayer(rueCV,
   {min:0, max:0.3, palette:['1a9641','ffffbf','d73027']},
-  PARK_NAME+' — RUE CV', true);
+  PARK_NAME+', RUE CV', true);
 Map.addLayer(genuineChange.selfMask(),
   {palette:['d73027']},
-  PARK_NAME+' — Genuine structural change', false);
+  PARK_NAME+', Genuine structural change', false);
 Map.addLayer(variableChange.selfMask(),
   {palette:['fc8d59']},
-  PARK_NAME+' — Rainfall-driven apparent change', false);
+  PARK_NAME+', Rainfall-driven apparent change', false);
 
 print('=== RUE INTER-ANNUAL VARIABILITY ===');
 print('Mean RUE CV (< 0.15 = stable):',
@@ -1485,7 +1485,7 @@ print('--- All CSV exports submitted to LandSystem_PhD/ ---');
 var legend = ui.Panel({
   style:{position:'bottom-left', padding:'8px 12px'}});
 legend.add(ui.Label({
-  value:'Land System Classes — '+PARK_NAME,
+  value:'Land System Classes, '+PARK_NAME,
   style:{fontWeight:'bold', fontSize:'13px', margin:'0 0 6px 0'}
 }));
 Object.keys(CLASS_INFO).forEach(function(key) {
@@ -1504,7 +1504,7 @@ Map.add(legend);
 
 
 // ============================================================
-// SUPPLEMENTARY — PHENOLOGICAL VALIDATION LAYERS
+// SUPPLEMENTARY, PHENOLOGICAL VALIDATION LAYERS
 // ============================================================
 function getNDVISeasonalMetrics(year, region) {
   var startDate = ee.Date.fromYMD(year,1,1);
@@ -1549,7 +1549,7 @@ Map.addLayer(
 // ============================================================
 print('');
 print('================================================');
-print('  ' + PARK_NAME + ' — CLASSIFICATION COMPLETE');
+print('  ' + PARK_NAME + ', CLASSIFICATION COMPLETE');
 print('================================================');
 print('Thresholds   : auto-derived from park percentiles');
 print('2017         : Model B | RF | Embeddings only (64-dim)');
@@ -1559,7 +1559,7 @@ print('Epochs       :', EPOCHS);
 print('Export CRS   : EPSG:32630');
 print('Export scale :', EXPORT_SCALE, 'm');
 print('');
-print('TO USE FOR ANOTHER PARK — change only:');
+print('TO USE FOR ANOTHER PARK, change only:');
 print('  PARK_NAME_FILTER, PARK_NAME, EPOCHS');
 print('');
 print('ALL EXPORTS → LandSystem_PhD/ (Google Drive)');

@@ -1,7 +1,7 @@
 """Rain-detection threshold sensitivity analysis.
 
 Categorical metrics (POD, FAR, CSI, ETS) depend on the wet/dry
-threshold used to classify a record — this matters most in dryland
+threshold used to classify a record, this matters most in dryland
 zones where near-zero rainfall makes categorical detection structurally
 unstable (see manuscript sections 2.5 and the Saharian zone note in
 :data:`savana.rainfall.config.DEFAULT_ZONE_NOTES`). This module sweeps
@@ -62,7 +62,7 @@ def stability_summary(
     """Rank product/group robustness across the threshold sweep.
 
     Returns one row per group with the metric's mean, std, and
-    coefficient of variation across all swept thresholds — a low CV
+    coefficient of variation across all swept thresholds, a low CV
     means the product's performance on that metric is stable regardless
     of exactly where the wet/dry line is drawn; a high CV flags
     threshold-sensitive rankings (per manuscript 2.5's structural

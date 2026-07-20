@@ -99,7 +99,7 @@ class _SavanaQATools:
         @tool(name="savana_refresh")
         def refresh() -> str:
             """Force-recompute savana's results from Earth Engine,
-            discarding cached values. Slow — only call if the underlying
+            discarding cached values. Slow, only call if the underlying
             classifier's data actually changed since the last question."""
             self._facts(force_refresh=True)
             return "Results refreshed from Earth Engine."
@@ -109,8 +109,8 @@ class _SavanaQATools:
 
 class _RainfallQATools:
     """Grounded savana.rainfall query tools, bound to one scored
-    RainfallAssessment. Mirrors _SavanaQATools' shape exactly — same
-    facts-cache pattern, same insights.summarize/answer split — just
+    RainfallAssessment. Mirrors _SavanaQATools' shape exactly, same
+    facts-cache pattern, same insights.summarize/answer split, just
     pointed at savana.rainfall.insights instead of savana.insights."""
 
     def __init__(self, rainfall):
@@ -170,7 +170,7 @@ class _RainfallQATools:
 
 
 # geoai's own system prompt for its map-control tools (verbatim, from
-# geoai.agents.geo_agents.GeoAgent) — reused rather than rewritten, since
+# geoai.agents.geo_agents.GeoAgent), reused rather than rewritten, since
 # its explicit "minimal parameters only" rules are what keep map-tool
 # calls fast and reliable in geoai's own demos.
 _GEOAI_MAP_SYSTEM_PROMPT = """
@@ -200,9 +200,9 @@ You ALSO have savana_* tools for the land-system classification loaded
 in this session (Core Woodland, Open Woodland, Shrub-Transition Savanna,
 Grassland, Riparian/Wetland Vegetation, Anthropogenic Disturbance).
 Answer questions about area, dominant class, accuracy, or change using
-ONLY those tools — never estimate or guess a figure yourself. To put
+ONLY those tools, never estimate or guess a figure yourself. To put
 savana results on the map, use savana_show_year / savana_show_all_years
-/ savana_show_change / savana_center_on_aoi — the generic map tools
+/ savana_show_change / savana_center_on_aoi, the generic map tools
 (add_raster, add_cog_layer, etc.) don't know about savana's classified
 results, since those are Earth Engine images, not files or COG URLs.
 """
@@ -214,7 +214,7 @@ loaded in this session (comparative evaluation of global precipitation
 datasets against gauge observations, by ecological zone and management
 application). Answer questions about which product is best for a given
 application/zone, or about zone-specific caveats, using ONLY those
-tools — never estimate or guess a figure yourself. Ecological zone
+tools, never estimate or guess a figure yourself. Ecological zone
 boundaries and gauge station locations can be shown on the map with the
 generic add_vector/add_marker tools if the assessment's zones_gdf or
 stations_df is passed in as a file/GeoDataFrame.
@@ -223,7 +223,7 @@ stations_df is passed in as a file/GeoDataFrame.
 
 class _SavanaMapTools:
     """Puts savana's classified (ee.Image) results onto the real geoai
-    map, via leafmap's ``add_ee_layer`` — the generic geoai map tools
+    map, via leafmap's ``add_ee_layer``, the generic geoai map tools
     (add_raster, add_cog_layer, etc.) expect file paths or COG URLs and
     have no way to display an ee.Image, so savana needs its own bridge
     for this specifically."""
@@ -268,7 +268,9 @@ class _SavanaMapTools:
             to the map. Requires the classifier to have been run with
             2+ epochs (check savana_change first if unsure)."""
             if self.clf.change is None:
-                return "No change detection available — classifier was run with < 2 epochs."
+                return (
+                    "No change detection available, classifier was run with < 2 epochs."
+                )
             chg = self.clf.change
             self.session.m.add_ee_layer(
                 chg["conservative_change"].selfMask(),
@@ -301,10 +303,10 @@ class SavanaGeoAgent:
     """The one agent class for savana: grounded Q&A + full map control + chat UI.
 
     Built on geoai's real ``Map``/``MapTools``/model-factory infrastructure
-    (see module docstring) — savana adds its own grounded query tools
+    (see module docstring), savana adds its own grounded query tools
     alongside geoai's map-control tools on one combined agent.
 
-    Deliberately one class, not two — pass ``clf``, ``rainfall``, or
+    Deliberately one class, not two, pass ``clf``, ``rainfall``, or
     both. Whichever you pass determines which grounded tool set(s) get
     loaded, so someone working on both a land-system classification and
     a rainfall assessment for the same study area gets one agent and
@@ -317,7 +319,7 @@ class SavanaGeoAgent:
             has already been scored (``.score()`` called). Optional if
             ``clf`` is given.
         model: Either a provider name (``"anthropic"``, ``"openai"``,
-            ``"gemini"``, ``"ollama"`` — uses that provider's env-var API
+            ``"gemini"``, ``"ollama"``, uses that provider's env-var API
             key, or a local Ollama server, and a sensible default model
             id) or an already-built Strands model instance.
         model_id: Optional explicit model id, used only when ``model`` is
@@ -325,7 +327,7 @@ class SavanaGeoAgent:
         map_instance: Optional existing ``geoai.Map`` (leafmap/MapLibre)
             to control. If omitted, geoai creates a default one.
         max_tokens: Explicit max output tokens for the Anthropic provider
-            specifically — always set explicitly here (not left to
+            specifically, always set explicitly here (not left to
             provider defaults), since omitting it is what causes a bare
             ``KeyError: 'max_tokens'`` in some Strands/Anthropic version
             combinations.
@@ -352,13 +354,13 @@ class SavanaGeoAgent:
         from geoai.agents.map_tools import MapSession
         from strands import Agent
 
-        # Shared chat state — a plain agent.ask("...") call in any cell
+        # Shared chat state, a plain agent.ask("...") call in any cell
         # and typing into show_ui()'s own text box both write here, so
         # whichever is currently displayed stays in sync with the other.
         self._history: list[str] = []
         self._chat_output = None  # set by show_ui() once displayed
 
-        # Import each provider's model factory individually — not every
+        # Import each provider's model factory individually, not every
         # installed geoai version has every provider (e.g. some older
         # versions lack create_gemini_model), so a missing one shouldn't
         # block using a provider that IS available.
@@ -390,11 +392,11 @@ class SavanaGeoAgent:
         except ImportError:
             pass
 
-        # Real geoai map + map tools — not a savana-specific reimplementation.
+        # Real geoai map + map tools, not a savana-specific reimplementation.
         self._session = MapSession(map_instance)
         self._map_tools = MapTools(self._session)
 
-        # Add the layer-toggle panel ONCE, up front — it's a live,
+        # Add the layer-toggle panel ONCE, up front, it's a live,
         # reactive MapLibre control that automatically tracks every layer
         # added afterward by any tool. Calling it again per-layer (an
         # earlier version of this code did that) risks stacking duplicate
@@ -491,7 +493,7 @@ class SavanaGeoAgent:
     def ask(self, prompt: str) -> str:
         """Send a single-turn question, get a plain-text answer back.
 
-        If show_ui() is currently displayed, this also updates it —
+        If show_ui() is currently displayed, this also updates it,
         asking from a plain cell and typing into the UI box both write
         to the same visible chat log.
         """
@@ -530,7 +532,7 @@ class SavanaGeoAgent:
         """Display the live geoai map + a chat box side by side, inline.
 
         Calling ``agent.ask(...)`` in a separate cell also updates this
-        panel, if it's currently displayed — they share the same chat log.
+        panel, if it's currently displayed, they share the same chat log.
 
         Requires: ``ipywidgets`` (installed with the ``agents`` extra).
         """

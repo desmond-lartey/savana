@@ -1,6 +1,6 @@
 """Default configuration for savanna landscape classification.
 
-Everything here is a *default* — every public function in the package
+Everything here is a *default*, every public function in the package
 accepts overrides, so a user classifying a different savanna system
 with a different class scheme is not locked into these values.
 """

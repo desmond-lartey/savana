@@ -1,7 +1,7 @@
 """Static matplotlib figures for a rainfall assessment.
 
 Reads directly from the DataFrames produced by :mod:`.validation` and
-:mod:`.decision` — no Excel round-trip required, though
+:mod:`.decision`, no Excel round-trip required, though
 :func:`recommendation_heatmap` also happily reads a ``SCORES`` sheet
 exported by :func:`savana.rainfall.decision.build_workbook` if that's
 more convenient (same shape either way: app, zone, product, score).
@@ -18,7 +18,7 @@ def _get_fig_ax(figsize=(8, 6)):
 
 
 def preview_observations(obs_df, station_id: str | None = None):
-    """A quick time-series look at raw GPCC observations — before
+    """A quick time-series look at raw GPCC observations, before
     extracting or validating any product, "does the reference data
     itself look sane?" One line per station, or a single station if
     ``station_id`` is given.
@@ -38,7 +38,7 @@ def preview_observations(obs_df, station_id: str | None = None):
         ax.plot(t, sub["obs_mm_day"], label=sid, linewidth=1)
     ax.set_ylabel("Observed (mm/day)")
     ax.set_title(
-        "GPCC observations" + (f" — {station_id}" if station_id else " — all stations")
+        "GPCC observations" + (f", {station_id}" if station_id else ", all stations")
     )
     if df["station_id"].nunique() > 1:
         ax.legend(fontsize=7, ncol=4)
@@ -50,7 +50,7 @@ def preview_comparison(
     merged_df, station_id: str | None = None, product: str | None = None
 ):
     """A quick "does this look right?" comparison of observed vs
-    simulated values — before computing formal validation metrics.
+    simulated values, before computing formal validation metrics.
     Scatter with a 1:1 reference line, one color per product (or
     filtered to one product/station if given). Mirrors the GEE app's
     per-station validation scatter chart.
@@ -75,9 +75,9 @@ def preview_comparison(
     ax.set_ylabel("Simulated (mm/day)")
     title = "Obs vs Sim"
     if station_id:
-        title += f" — {station_id}"
+        title += f", {station_id}"
     if product:
-        title += f" — {product}"
+        title += f", {product}"
     ax.set_title(title)
     ax.legend(fontsize=8)
     fig.tight_layout()
@@ -147,7 +147,7 @@ def taylor_diagram(validation_df, zone: str | None = None, ref_std: float = 1.0)
         radius = row.get("std_ratio", 1.0)
         ax.plot(theta, radius, "o", label=row["product"], markersize=8)
 
-    ax.set_title(f"Taylor diagram{f' — {zone}' if zone else ''}")
+    ax.set_title(f"Taylor diagram{f', {zone}' if zone else ''}")
     ax.legend(loc="upper left", bbox_to_anchor=(1.05, 1.0), fontsize=8)
     fig.tight_layout()
     return fig
@@ -177,7 +177,7 @@ def application_ranking_bars(scores_df, app: str):
     ax.set_xticks(x + width * (len(products) - 1) / 2)
     ax.set_xticklabels(zones, rotation=30, ha="right")
     ax.set_ylabel("Application-weighted score")
-    ax.set_title(f"Product ranking — {app}")
+    ax.set_title(f"Product ranking, {app}")
     ax.legend(fontsize=8, ncol=2)
     fig.tight_layout()
     return fig
@@ -185,7 +185,7 @@ def application_ranking_bars(scores_df, app: str):
 
 def recommendation_heatmap(scores_df):
     """App x zone grid, each cell showing the single best product +
-    its score — the "decision matrix" view, folding in
+    its score, the "decision matrix" view, folding in
     fig_application_rankings_v4.py's recommendation-heatmap figure.
     """
     from . import decision

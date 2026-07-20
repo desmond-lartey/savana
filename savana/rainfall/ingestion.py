@@ -1,4 +1,4 @@
-"""Precipitation product ingestion — harmonise any product catalogue to
+"""Precipitation product ingestion, harmonise any product catalogue to
 a common monthly mean mm/day ImageCollection.
 
 Every function accepts a ``products`` dict (see
@@ -6,7 +6,7 @@ Every function accepts a ``products`` dict (see
 and a ``roi``, so this works for a different product catalogue or a
 different region, not just the WA six-product/study-area default.
 
-Nothing here calls ``ee.Initialize()`` — that's the caller's
+Nothing here calls ``ee.Initialize()``, that's the caller's
 responsibility (see :mod:`savana.ee_init`, reused as-is), consistent
 with the rest of ``savana`` never initialising EE as a side effect of
 import.
@@ -23,7 +23,7 @@ def build_roi(stations_df=None, bounds=None, buffer_deg: float = 2.0):
     Args:
         stations_df: if given (and ``bounds`` is None), the ROI is the
             bounding box of the stations plus ``buffer_deg`` on each
-            side — works for any station set, anywhere.
+            side, works for any station set, anywhere.
         bounds: explicit ``(min_lon, min_lat, max_lon, max_lat)``, takes
             priority over ``stations_df`` if given.
         buffer_deg: degrees of padding added around the station bbox.
@@ -105,7 +105,7 @@ def _load_hourly_to_monthly(name, spec, roi, start, end):
     """MERRA-2: pre-aggregate hourly -> daily before the monthly mean, to
     keep the intermediate collection size manageable (~7,300 vs ~175,000
     images over 20 years). This is the workaround for GEE's per-request
-    compute/timeout limits — kept as the permanent code path (not a
+    compute/timeout limits, kept as the permanent code path (not a
     one-off historical fix), per confirmed direction.
     """
     import ee
@@ -181,7 +181,7 @@ def load_product(name: str, start: str, end: str, roi, products: dict | None = N
             :data:`config.DEFAULT_PRODUCT_DATE_RANGES`).
         roi: ``ee.Geometry`` (see :func:`build_roi`).
         products: catalogue dict. Bring your own for a different
-            product set — must have the shape of
+            product set, must have the shape of
             :data:`config.DEFAULT_PRODUCTS`.
     """
     products = products if products is not None else config.DEFAULT_PRODUCTS
@@ -221,7 +221,7 @@ def load_all_products(
 
 
 # ════════════════════════════════════════════════════════════
-# MERRA-2 yearly-asset export/reload — permanent workaround for GEE
+# MERRA-2 yearly-asset export/reload, permanent workaround for GEE
 # per-request timeouts on the full hourly->daily->monthly chain.
 # ════════════════════════════════════════════════════════════
 
@@ -234,7 +234,7 @@ def export_merra2_yearly_assets(
 
     Splitting the export by year keeps each task well under GEE's
     per-request compute/timeout limits. Returns the list of submitted
-    ``ee.batch.Task`` objects — check ``task.status()`` for progress;
+    ``ee.batch.Task`` objects, check ``task.status()`` for progress;
     this can take hours for a full 20-year run and is meant to be
     fire-and-forget, not awaited synchronously.
     """

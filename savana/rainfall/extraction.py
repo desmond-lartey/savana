@@ -1,7 +1,7 @@
 """Point-sample precipitation products at gauge stations, and merge with
 observations into the long-format table :mod:`.validation` consumes.
 
-Works for any ``stations_df``, not just the WA 16 — extraction is
+Works for any ``stations_df``, not just the WA 16, extraction is
 purely a function of whatever station coordinates you give it.
 """
 
@@ -72,7 +72,7 @@ def extract_all_products(products_ic: dict, stations_df, cache_dir=None):
         stations_df: any stations DataFrame.
         cache_dir: if given, each product's extraction is cached to
             ``cache_dir/precip_extraction_<NAME>.csv`` (matching the
-            original per-product CSV workflow) — a re-run with the same
+            original per-product CSV workflow), a re-run with the same
             ``cache_dir`` reuses whatever's already there instead of
             re-extracting from Earth Engine, and any product missing
             from the cache is extracted and added to it. Delete the
@@ -109,9 +109,9 @@ def merge_with_observations(sim_long_df, obs_df, stations_df=None):
     attaching station metadata (including ``zone`` if already assigned).
 
     Args:
-        sim_long_df: from :func:`extract_all_products` — columns
+        sim_long_df: from :func:`extract_all_products`, columns
             ``station_id, year, month, product, sim_mm_day``.
-        obs_df: from :mod:`.stations` — columns
+        obs_df: from :mod:`.stations`, columns
             ``station_id, year, month, obs_mm_day``.
         stations_df: optional, to bring along ``zone`` (from
             :func:`savana.rainfall.zones.assign_zones`) or any other
@@ -135,7 +135,7 @@ def merge_with_observations(sim_long_df, obs_df, stations_df=None):
     if n_after < n_before:
         print(
             f"  Merge: {n_after:,}/{n_before:,} simulated station-months matched "
-            f"an observation ({n_before - n_after:,} unmatched — check obs "
+            f"an observation ({n_before - n_after:,} unmatched, check obs "
             f"coverage for those station-months)."
         )
     return merged

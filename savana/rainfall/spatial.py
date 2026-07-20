@@ -1,10 +1,10 @@
-"""Pixel-wise spatial diagnostics — the scripted counterpart to the
+"""Pixel-wise spatial diagnostics, the scripted counterpart to the
 interactive GEE app's on-demand map layers (bias/correlation/trend/
 agreement), so those ~20 exploratory analyses produce real exportable
 outputs instead of only living as live map interaction.
 
 Every function takes an explicit ``reference`` ImageCollection rather
-than assuming GPCC gridded data is available — the manuscript's GPCC
+than assuming GPCC gridded data is available, the manuscript's GPCC
 reference is point-station only (see :mod:`.stations`), so by default
 these functions compare products *against each other* (inter-product
 agreement) or use whichever gridded product you designate as the
@@ -18,7 +18,7 @@ from . import config
 
 def _bin_color(value: float, vis: dict) -> str:
     """Pick a palette color for ``value`` using the same min/max/palette
-    as a raster's vis params — so a station marker's fill color lands on
+    as a raster's vis params, so a station marker's fill color lands on
     the same visual scale as the raster underneath it. Simple linear
     binning, not a true continuous ramp, but enough to eyeball agreement
     at a glance.
@@ -41,7 +41,7 @@ def preview_mean_map(
     stations_df=None,
 ):
     """A quick look at one product's long-term mean rainfall on an
-    interactive map — before running any validation, just "does this
+    interactive map, before running any validation, just "does this
     product's spatial pattern look sane over my area?"
 
     Direct port of the GEE app's Annual Total / Mean Daily Rate map
@@ -53,11 +53,11 @@ def preview_mean_map(
         product_name: label for the map layer.
         region: clip to this ``ee.Geometry`` if given.
         kind: ``"daily"`` (mm/day, default) or ``"annual"`` (mm/yr,
-            mean daily rate x 365.25) — selects which
+            mean daily rate x 365.25), selects which
             :data:`config.DEFAULT_VIS_PARAMS` entry is used.
         m: an existing ``geemap.Map`` to add to, or a new one is created.
         obs_df, stations_df: if BOTH given, overlays real GPCC station
-            values as colored markers on top of the raster — NOT a
+            values as colored markers on top of the raster, NOT a
             rasterized/interpolated GPCC surface (GPCC stays point data
             throughout this package), just each gauge's true mean
             observed value, plotted at its real location, colored on the
@@ -88,7 +88,7 @@ def preview_mean_map(
             m.centerObject(region, 6)
 
     vis = config.DEFAULT_VIS_PARAMS[kind]
-    label = f"{'Annual Total' if kind == 'annual' else 'Mean Daily'} — {product_name}"
+    label = f"{'Annual Total' if kind == 'annual' else 'Mean Daily'}, {product_name}"
     m.add_layer(mean_img, vis, label)
 
     if obs_df is not None and stations_df is not None:
@@ -104,7 +104,7 @@ def _add_gpcc_overlay(m, obs_df, stations_df, vis, kind):
     pts = stations_df.merge(mean_obs, on="station_id", how="inner")
     if pts.empty:
         print(
-            "  \u26a0  No stations in stations_df have matching obs_df rows — "
+            "  \u26a0  No stations in stations_df have matching obs_df rows, "
             "no GPCC overlay added."
         )
         return
@@ -136,23 +136,23 @@ def preview_bias_map(
     product_ic, reference_ic, product_name="", reference_name="", region=None, m=None
 ):
     """A quick INTER-PRODUCT bias map (product minus another gridded
-    product) — before running formal validation, "roughly where do
+    product), before running formal validation, "roughly where do
     these two products disagree spatially?" Direct port of the GEE
     app's Bias Map button.
 
     IMPORTANT: this is product vs. product, never product vs. GPCC.
     GPCC exists in this package only as point gauge observations (see
-    :mod:`.stations`) — there's no gridded GPCC raster to difference a
+    :mod:`.stations`), there's no gridded GPCC raster to difference a
     product against pixel-by-pixel. For the actual "does this product
     agree with real GPCC ground truth" spatial check, use
     :func:`preview_station_bias_map` instead, which plots true bias at
     each gauge location. This function is for a different, valid
-    question — "how much do CHIRPS and GPM-IMERG disagree with each
-    other spatially" — not a validation check.
+    question, "how much do CHIRPS and GPM-IMERG disagree with each
+    other spatially", not a validation check.
 
     Args:
         product_ic, reference_ic: monthly mm/day ImageCollections (both
-            gridded products — neither is GPCC).
+            gridded products, neither is GPCC).
         product_name, reference_name: labels for the map layers.
         region: clip to this ``ee.Geometry`` if given.
         m: an existing ``geemap.Map`` to add to, or a new one is created.
@@ -181,21 +181,21 @@ def preview_bias_map(
             m.centerObject(region, 6)
 
     suffix = f"{product_name} vs {reference_name}" if product_name else "Bias"
-    m.add_layer(bias, config.DEFAULT_VIS_PARAMS["bias"], f"Bias (mm/d) — {suffix}")
-    m.add_layer(pbias, config.DEFAULT_VIS_PARAMS["pbias"], f"% Bias — {suffix}")
+    m.add_layer(bias, config.DEFAULT_VIS_PARAMS["bias"], f"Bias (mm/d), {suffix}")
+    m.add_layer(pbias, config.DEFAULT_VIS_PARAMS["pbias"], f"% Bias, {suffix}")
     return m
 
 
 def preview_station_bias_map(merged_df, product: str, m=None, zoom: int = 5):
     """Per-station mean bias against REAL GPCC observations, plotted as
-    colored markers — the spatial check that's actually anchored to
+    colored markers, the spatial check that's actually anchored to
     ground truth, unlike :func:`preview_bias_map` (which can only ever
     compare two gridded products against each other, since GPCC has no
     gridded form in this package).
 
     Args:
         merged_df: long-format obs/sim table with station coordinates
-            already joined in — i.e. from
+            already joined in, i.e. from
             :func:`savana.rainfall.extraction.merge_with_observations`
             called with ``stations_df=`` (which
             :meth:`savana.rainfall.pipeline.RainfallAssessment.merge`
@@ -204,7 +204,7 @@ def preview_station_bias_map(merged_df, product: str, m=None, zoom: int = 5):
         m: an existing ``geemap.Map`` to add to, or a new one is created.
 
     Returns:
-        A ``geemap.Map`` with one marker per station — blue if that
+        A ``geemap.Map`` with one marker per station, blue if that
         product overestimates GPCC there, red if it underestimates.
         Click a marker to see the exact bias value.
     """
@@ -217,7 +217,7 @@ def preview_station_bias_map(merged_df, product: str, m=None, zoom: int = 5):
     missing = {"lon", "lat"} - set(sub.columns)
     if missing:
         raise ValueError(
-            f"merged_df is missing {sorted(missing)} — station coordinates "
+            f"merged_df is missing {sorted(missing)}, station coordinates "
             f"weren't joined in. Call merge_with_observations(..., "
             f"stations_df=your_stations_df), or just use "
             f"RainfallAssessment.merge(), which does this automatically."
@@ -326,7 +326,7 @@ def agreement_map(products_ic: dict):
 def zonal_rank_table(
     products_ic: dict, zones_gdf, reference_ic=None, name_field: str | None = None
 ):
-    """Zone-mean bias/trend per product, as a flat table — the scripted
+    """Zone-mean bias/trend per product, as a flat table, the scripted
     counterpart to the GEE app's zonal-ranking map layer.
 
     Requires ``zones_gdf`` (see
@@ -370,7 +370,7 @@ def zonal_rank_table(
 def threshold_sensitivity_map(
     product_ic, reference_ic, thresholds: list[float] | None = None
 ):
-    """Pixel-wise CSI at each of several thresholds — spatial counterpart
+    """Pixel-wise CSI at each of several thresholds, spatial counterpart
     to :func:`savana.rainfall.thresholds.threshold_sensitivity`.
 
     Returns ``{threshold: ee.Image}`` of pixel-wise CSI.

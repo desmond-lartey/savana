@@ -2,7 +2,7 @@
 
 Ported from ``kogyae.js`` Phase 2 (Sentinel-2 reference imagery) and
 Phase 3 (AlphaEarth embeddings), and from the year-loop composite logic
-in Phase 8 — the standalone ``composites.js`` module you use in
+in Phase 8, the standalone ``composites.js`` module you use in
 ``mainrun.js`` was empty, so this reconstructs it from the working
 monolithic script with the exact same signatures ``mainrun.js`` expects
 (``getSentinel2Annual``, ``getSeasonalComposite``, ``getPercentileComposites``,
@@ -108,7 +108,7 @@ def percentile_composites(
     """Per-band percentile composites (default p10/p90) for a calendar year.
 
     Used to build the seasonal-amplitude / stability indices.
-    Equivalent to ``C.getPercentileComposites`` — returns a dict keyed
+    Equivalent to ``C.getPercentileComposites``, returns a dict keyed
     ``"p{percentile}"`` (e.g. ``{"p10": image, "p90": image}``).
     """
     import ee

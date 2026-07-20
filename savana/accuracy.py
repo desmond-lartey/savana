@@ -2,7 +2,7 @@
 
 Ports the CSV structure from ``accuracy.js`` (24-row full confusion
 matrix across 4 models x 6 classes, plus a 4-row per-model summary),
-but returns ``pandas.DataFrame`` directly for notebook use — Drive/CSV
+but returns ``pandas.DataFrame`` directly for notebook use, Drive/CSV
 export is available separately via :mod:`savana.exports`.
 """
 
@@ -114,7 +114,7 @@ def print_summary(matrices: dict, park_name: str = "AOI") -> None:
         if key not in matrices:
             continue
         cm = matrices[key]
-        note = " [CIRCULAR — inflated, diagnostic only]" if key == "c" else ""
+        note = " [CIRCULAR, inflated, diagnostic only]" if key == "c" else ""
         oa = cm.accuracy().getInfo()
         kappa = cm.kappa().getInfo()
         print(f"Model {key.upper()} | OA: {oa:.4f} | Kappa: {kappa:.4f}{note}")
@@ -123,5 +123,5 @@ def print_summary(matrices: dict, park_name: str = "AOI") -> None:
     print("  B > A  -> RF outperforms KNN on the same embeddings")
     print("  D > B  -> phenology adds value beyond embeddings alone")
     print("  D > C  -> embeddings add value beyond indices alone")
-    print("  C is circular (labels derived from the same indices) — diagnostic only")
+    print("  C is circular (labels derived from the same indices), diagnostic only")
     print("  Model D (primary) is used for all epoch mapping.")

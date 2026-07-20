@@ -1,6 +1,6 @@
 """Import-time smoke tests.
 
-These deliberately do NOT call ee.Initialize() / hit Earth Engine —
+These deliberately do NOT call ee.Initialize() / hit Earth Engine,
 they only verify that the lazy-loading package structure resolves
 correctly, so CI can run them without EE credentials.
 """

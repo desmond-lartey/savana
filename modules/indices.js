@@ -4,7 +4,7 @@
 // ============================================================
 
 // Compute all spectral indices from seasonal composites.
-// Returns a named object — access as idx.ndvi, idx.ndvi_dry etc.
+// Returns a named object, access as idx.ndvi, idx.ndvi_dry etc.
 exports.compute = function(s2Annual, s2Dry, s2Wet, p10, p90) {
   var ndvi     = s2Annual.normalizedDifference(['B8','B4']).rename('NDVI');
   var ndmi     = s2Annual.normalizedDifference(['B8','B11']).rename('NDMI');
@@ -48,6 +48,6 @@ exports.buildPhenoStack = function(idx, rue) {
     idx.ndvi_p90,   // 11
     idx.ndmi_p90,   // 12
     idx.ndvi_p_amp, // 13
-    rue             // 14 — RUE (must be named 'RUE')
+    rue             // 14, RUE (must be named 'RUE')
   ]);
 };

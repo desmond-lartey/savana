@@ -4,7 +4,7 @@ Classifies savanna landscapes into ecologically meaningful land-system
 management classes (e.g. Core Woodland, Open Woodland, Shrub-Transition,
 Grassland, Riparian, Anthropogenic Disturbance) using Sentinel-2,
 AlphaEarth satellite embeddings, and rainfall data on Google Earth
-Engine — filling a gap left by conventional LULC products, which
+Engine, filling a gap left by conventional LULC products, which
 typically lump all savanna structure into one or two undifferentiated
 "grass/shrub" classes.
 
@@ -27,7 +27,7 @@ For AI-assisted exploration of your results (grounded Q&A + map control
 >>> agent.show_ui()             # live map + chat, inline in the notebook
 
 For comparative evaluation and selection of global precipitation
-datasets (savana.rainfall — zone-stratified validation of CHIRPS,
+datasets (savana.rainfall, zone-stratified validation of CHIRPS,
 ERA5-Land, GPM IMERG, MERRA-2, PERSIANN-CDR, TerraClimate against gauge
 observations, producing an application-weighted decision matrix):
 >>> ra = savana.RainfallAssessment().run(start="2001-01-01", end="2020-12-31")

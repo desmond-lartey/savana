@@ -3,15 +3,15 @@
 Two metric classes, matching the manuscript's dual-class framework:
 
 - **Continuous** (:func:`compute_continuous`): bias, pbias, mae, rmse,
-  r, r2, nse, kge — how well magnitude and pattern agree.
+  r, r2, nse, kge, how well magnitude and pattern agree.
 - **Categorical** (:func:`compute_categorical`): pod, far, csi, ets,
-  freq_bias — how well wet/dry events are detected above a threshold.
+  freq_bias, how well wet/dry events are detected above a threshold.
 
 Both take plain ``obs``/``sim`` array-likes, so they work regardless of
 which stations, products, or zones produced them. The four levels of
 spatial/temporal aggregation used in the manuscript (per-station,
 per-zone, per-season, pooled) are all just different ``group_cols`` to
-the single :func:`validate_grouped` function — there's no separate
+the single :func:`validate_grouped` function, there's no separate
 per-station/per-zone/per-season implementation to keep in sync.
 """
 
@@ -168,7 +168,7 @@ def compute_all_metrics(obs, sim, threshold: float | None = None) -> dict:
 
 
 # ════════════════════════════════════════════════════════════
-# Grouped validation — one function, any aggregation level
+# Grouped validation, one function, any aggregation level
 # ════════════════════════════════════════════════════════════
 
 
@@ -186,7 +186,7 @@ def validate_grouped(
     (see :func:`savana.rainfall.extraction.merge_with_observations`).
 
     This single function implements all four aggregation levels used in
-    the manuscript — pass the ``group_cols`` that define the level:
+    the manuscript, pass the ``group_cols`` that define the level:
 
     - per-station:  ``["station_id", "product"]``
     - per-zone:     ``["zone", "product"]``
@@ -229,19 +229,19 @@ def add_season_column(merged_df, month_col: str = "month"):
 
 
 def validate_by_station(merged_df, threshold=None):
-    """Metrics per (station_id, product) — manuscript's finest level."""
+    """Metrics per (station_id, product), manuscript's finest level."""
     return validate_grouped(merged_df, ["station_id", "product"], threshold=threshold)
 
 
 def validate_by_zone(merged_df, threshold=None):
-    """Metrics per (zone, product) — the manuscript's primary analytical lens.
+    """Metrics per (zone, product), the manuscript's primary analytical lens.
 
     ``merged_df`` must already have a ``zone`` column
     (see :func:`savana.rainfall.zones.assign_zones`).
     """
     if "zone" not in merged_df.columns:
         raise ValueError(
-            "merged_df has no 'zone' column — run zones.assign_zones() on your "
+            "merged_df has no 'zone' column, run zones.assign_zones() on your "
             "stations_df and merge it in before calling validate_by_zone()."
         )
     return validate_grouped(merged_df, ["zone", "product"], threshold=threshold)
@@ -270,10 +270,10 @@ def rank_products(
     validation_df, metric: str = "kge", group_cols: list[str] | None = None
 ):
     """Rank products within each group by a single metric (default KGE,
-    the manuscript's primary ranking metric — see methods 2.4.1).
+    the manuscript's primary ranking metric, see methods 2.4.1).
 
     ``group_cols`` defaults to every column in ``validation_df`` except
-    ``"product"`` and the metric columns — i.e. whatever grouping level
+    ``"product"`` and the metric columns, i.e. whatever grouping level
     the input DataFrame already represents (zone, station, season...).
     An empty result (e.g. pooled/overall validation with no zone column)
     ranks across the whole table as a single group, rather than failing.

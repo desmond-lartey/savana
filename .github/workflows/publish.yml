@@ -34,7 +34,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     # Only run for tag pushes (not when triggered by a Release already
-    # being published) — avoids creating a duplicate/conflicting Release.
+    # being published), avoids creating a duplicate/conflicting Release.
     if: github.event_name == 'push'
     permissions:
       contents: write  # required to create a Release
@@ -57,7 +57,7 @@ jobs:
       name: pypi
       url: https://pypi.org/p/savana
     permissions:
-      id-token: write  # required for Trusted Publishing (OIDC) — no token/secret needed
+      id-token: write  # required for Trusted Publishing (OIDC), no token/secret needed
     steps:
       - uses: actions/download-artifact@v4
         with:

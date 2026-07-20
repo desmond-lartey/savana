@@ -39,9 +39,9 @@ def show_gcps(
 ):
     """Display ground control points on a map, colored by assigned class.
 
-    Lets you visually sanity-check the sampling/labelling step — where
+    Lets you visually sanity-check the sampling/labelling step, where
     the training points actually landed, and whether their classes look
-    spatially sensible — before trusting the classifier trained on them.
+    spatially sensible, before trusting the classifier trained on them.
 
     Args:
         gcps: The ``ee.FeatureCollection`` of ground control points
@@ -52,7 +52,7 @@ def show_gcps(
         class_property: Property name holding the class code on each
             point (defaults to savana's standard ``"landSystem"``).
         background: Optional ee.Image to show underneath the points
-            (e.g. a classified year, or a Sentinel-2 composite) — makes
+            (e.g. a classified year, or a Sentinel-2 composite), makes
             it easier to judge whether points look correctly placed.
         m: Existing geemap.Map to add to, or a new one is created.
         point_size: Marker size in pixels.
@@ -96,7 +96,7 @@ def show_multi_year_map(
 ):
     """Add every requested epoch as its own toggleable layer on one map.
 
-    Uses geemap's built-in layer panel — each year gets its own checkbox,
+    Uses geemap's built-in layer panel, each year gets its own checkbox,
     so you can flip between them (or view several at once with opacity
     sliders) without re-running anything.
     """
@@ -129,12 +129,12 @@ def compare_split_map(
     """Side-by-side swipe comparison between two layers.
 
     Each of ``left``/``right`` can be either:
-        - an ``ee.Image`` (e.g. a classified year, or ``clf.maps[2019]``) —
+        - an ``ee.Image`` (e.g. a classified year, or ``clf.maps[2019]``),
           rendered with the land-system palette/legend
         - a basemap name string (e.g. ``"SATELLITE"``, ``"HYBRID"``,
-          ``"ROADMAP"``, ``"Esri.WorldImagery"``) — passed straight to geemap
+          ``"ROADMAP"``, ``"Esri.WorldImagery"``), passed straight to geemap
 
-    Drag the handle in the middle of the map to swipe between them —
+    Drag the handle in the middle of the map to swipe between them,
     this also works for "classified year vs. underlying satellite
     imagery" by passing a basemap name string as one side.
     """
@@ -145,7 +145,7 @@ def compare_split_map(
 
     def _to_layer(side, label):
         if isinstance(side, str):
-            return side  # basemap name — geemap resolves this itself
+            return side  # basemap name, geemap resolves this itself
         if isinstance(side, ee.Image):
             return geemap.ee_tile_layer(side, config.class_vis_params(info), label)
         raise TypeError(

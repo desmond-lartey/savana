@@ -1,7 +1,7 @@
 # Quick Start
 
 `savana` ships two independently-usable modules today. Pick the section for
-the one you need — nothing here requires the other.
+the one you need, nothing here requires the other.
 
 ## Land-system classification
 
@@ -17,8 +17,8 @@ clf = savana.classify_landscape(
 )
 
 clf.show()                  # interactive map in Jupyter (geemap)
-clf.accuracy_summary()      # pandas.DataFrame — one row per model (A/B/C/D)
-clf.class_areas()           # pandas.DataFrame — area (km2) per class per epoch
+clf.accuracy_summary()      # pandas.DataFrame, one row per model (A/B/C/D)
+clf.class_areas()           # pandas.DataFrame, area (km2) per class per epoch
 clf.show_change()           # conservative + RUE-validated change map
 
 clf.export(drive_folder="MyProject")   # push results to Google Drive
@@ -77,7 +77,7 @@ print(result.summarize())
 result.export_workbook("decision_tool.xlsx")
 ```
 
-Your own stations, your own products, your own years — same call:
+Your own stations, your own products, your own years, same call:
 
 ```python
 result = validate_against_gpcc(
@@ -94,7 +94,7 @@ print(result.answer("which product is best for drought early warning?"))
 
 ### Step-by-step control, with previews before you commit
 
-Every stage can be inspected before moving to the next — useful before
+Every stage can be inspected before moving to the next, useful before
 running a full multi-year, multi-product assessment.
 
 ```python
@@ -117,7 +117,7 @@ ra.compare_table()                            # GPCC vs every product, side by s
 ra.preview_comparison()                       # obs-vs-sim scatter, before any formal metric
 ra.preview_station_bias("CHIRPS")             # per-station bias against real GPCC, on the map
 
-ra.assign_zones()                             # optional — pooled validation if skipped
+ra.assign_zones()                             # optional, pooled validation if skipped
 ra.validate().analyze_thresholds().score()
 
 print(ra.summarize())

@@ -7,14 +7,14 @@ URLs (via Earth Engine's own tile server) that GeoLibre's
 ``add_tile_layer()`` can display, the same way you'd add any other raster
 tile source.
 
-This is intentionally a *lightweight* integration — it depends only on the
+This is intentionally a *lightweight* integration, it depends only on the
 public ``geolibre`` PyPI package, versioned and released the same way as
 every other savana dependency. It is not a GeoLibre plugin (that would be
 TypeScript code living inside GeoLibre's own repo/build system); see the
 project roadmap for that as a possible future, separate effort.
 
 Requires: ``pip install "savana[geolibre]"`` (needs Python >= 3.11, since
-that is GeoLibre's own minimum — this is stricter than savana's core
+that is GeoLibre's own minimum, this is stricter than savana's core
 Python >= 3.10 requirement).
 
 Known limitation: GeoLibre's swipe/compare tool is currently a UI-only
@@ -50,7 +50,7 @@ def show_classified_map(
 ):
     """Display one classified land-system image inside the GeoLibre widget.
 
-    Returns a ``geolibre.Map`` — display it in a notebook cell by putting
+    Returns a ``geolibre.Map``, display it in a notebook cell by putting
     it as the last expression, same as any other Jupyter widget.
     """
     from geolibre import Map
@@ -85,7 +85,7 @@ def show_multi_year_map(
 
     Each year appears as its own entry in GeoLibre's Layers panel, with its
     own visibility checkbox and opacity slider (the same panel you already
-    saw in the app) — no extra code needed on your end to toggle between
+    saw in the app), no extra code needed on your end to toggle between
     them once this cell has run.
     """
     from geolibre import Map

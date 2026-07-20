@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- New module: `savana.rainfall` — zone-stratified validation of global
+- New module: `savana.rainfall`, zone-stratified validation of global
   precipitation products (CHIRPS, ERA5-Land, GPM IMERG, MERRA-2,
   PERSIANN-CDR, TerraClimate by default) against GPCC gauge observations,
   reproducing a published West Africa study's methodology as the default
@@ -22,7 +22,7 @@
 - Grounded facts/summary/Q&A (`savana.rainfall.insights`), following the same
   pattern as the classification module's `savana.insights`
 - `SavanaGeoAgent` now accepts a `RainfallAssessment` (`rainfall=`) in
-  addition to, or instead of, a `SavanaClassifier` (`clf=`) — one agent, one
+  addition to, or instead of, a `SavanaClassifier` (`clf=`), one agent, one
   conversation, either or both result sets
 - New optional dependency group: `savana[rainfall]`
 

@@ -5,20 +5,20 @@ support workbook.
 
 - ``"fixed"`` (default): each metric normalised against a fixed
   plausible range (KGE against -1..1, NSE against -5..1, |PBIAS|
-  against 0..60, etc — see
+  against 0..60, etc, see
   :data:`savana.rainfall.config.DEFAULT_NORMALIZATION_BOUNDS`). This is
   what the shipped decision workbook and reported figures actually use
-  — verified by reproducing ``WA_Precipitation_Decision_Tool_v2.xlsx``'s
+ , verified by reproducing ``WA_Precipitation_Decision_Tool_v2.xlsx``'s
   SELECTOR-sheet scores exactly (Fire-risk x Saharian x CHIRPS = 0.7551).
 - ``"zone_relative"``: per-zone min-max across whatever products are
   being compared, matching the manuscript's written formula (section
-  2.6). Scale-invariant — recommended if you add/remove products from
+  2.6). Scale-invariant, recommended if you add/remove products from
   the default six, since fixed bounds were tuned for the original
   product set's plausible range.
 
 :func:`build_workbook` writes a live spreadsheet tool (data-validation
 dropdowns + INDEX/MATCH formulas that recompute instantly), not a
-static report — the same design as the current
+static report, the same design as the current
 ``WA_Precipitation_Decision_Tool_v2.xlsx``, generalised to any
 products/zones/apps rather than hardcoded to the WA six.
 """
@@ -57,15 +57,15 @@ def score_products(
         weights: ``{application_name: {metric: weight, ...}}``, weights
             summing to 1.0 per application. Defaults to
             :data:`config.DEFAULT_APP_WEIGHTS` (the 7 conservation/
-            water-management applications) — pass your own for
+            water-management applications), pass your own for
             different applications or priorities.
         normalization: ``"fixed"`` (default, matches shipped results) or
             ``"zone_relative"`` (matches the manuscript's written
-            formula — see module docstring).
+            formula, see module docstring).
         bounds: only used when ``normalization="fixed"``. Defaults to
             :data:`config.DEFAULT_NORMALIZATION_BOUNDS`.
         group_cols: columns identifying each row's context (default:
-            ``["zone"]`` if present, else none — i.e. pooled).
+            ``["zone"]`` if present, else none, i.e. pooled).
 
     Returns:
         Long-format DataFrame: ``group_cols + ["app", "product", "score"]``.
@@ -165,7 +165,7 @@ def build_workbook(
 
     Sheet layout matches the current (v2) design: flat ``DATA_*`` sheets
     holding the real numbers, ``APP_WEIGHTS`` as a visible reference
-    table, ``SCORES`` (flat app/zone/product/score — restores
+    table, ``SCORES`` (flat app/zone/product/score, restores
     compatibility with ``fig_application_rankings_v4.py``, which reads
     this exact sheet name/shape), and two live sheets driven by
     data-validation dropdowns + ``INDEX``/``MATCH`` formulas:
@@ -178,7 +178,7 @@ def build_workbook(
             :func:`savana.rainfall.validation.validate_by_zone`.
         validation_overall_df, ranking_df, threshold_df: optional
             companion tables (validate_overall, rank_products,
-            threshold_sensitivity outputs) — written as-is if given.
+            threshold_sensitivity outputs), written as-is if given.
         scores_df: from :func:`score_products`. Computed automatically
             from ``validation_by_zone_df`` + ``app_weights`` if not
             given.
@@ -281,7 +281,7 @@ def build_workbook(
         ws_sel.cell(header_row, c).fill = header_fill
 
     # Helper lookup table (hidden columns J:M): app, zone, product, score,
-    # plus a concatenated key — same shape as the SCORES sheet, written
+    # plus a concatenated key, same shape as the SCORES sheet, written
     # again here so SELECTOR's formulas don't depend on sheet order.
     key_col, app_col, zone_col, prod_col, score_col = "J", "K", "L", "M", "N"
     ws_sel[f"{app_col}1"], ws_sel[f"{zone_col}1"] = "app", "zone"

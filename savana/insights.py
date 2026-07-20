@@ -3,9 +3,9 @@
 The design principle here is deliberate: every number in ``summarize()``
 and ``answer()`` traces back to something actually computed by the
 pipeline (``class_areas()``, ``accuracy_summary()``, the change-detection
-stats) — never invented, interpolated, or guessed. ``compute_facts()``
+stats), never invented, interpolated, or guessed. ``compute_facts()``
 is the single source of truth; both text-producing functions only ever
-read from it. This keeps savana's reporting honest even as it grows —
+read from it. This keeps savana's reporting honest even as it grows,
 if a future version adds LLM-phrased summaries, that layer should sit
 *on top* of these same facts, never replace them.
 """
@@ -17,11 +17,11 @@ def compute_facts(clf) -> dict:
     """Extract a structured dict of real, computed facts from a fitted classifier.
 
     Requires ``clf.run()`` (or at least ``.classify()``) to have completed.
-    This is the "knowledge base" — everything else in this module reads
+    This is the "knowledge base", everything else in this module reads
     from its output, never from the raw ee.Image objects directly.
 
     Each section (area, accuracy, change) is computed independently and
-    guarded against Earth Engine timeouts — a slow/large AOI causing one
+    guarded against Earth Engine timeouts, a slow/large AOI causing one
     section to time out will not prevent the others from returning. Any
     section that fails is set to ``None`` and noted in ``facts["warnings"]``
     rather than raising, since a partial, honest answer is better than a
@@ -72,7 +72,7 @@ def compute_facts(clf) -> dict:
             f"Area statistics unavailable ({type(exc).__name__}: {exc})."
         )
 
-    # --- Accuracy — best model by overall accuracy, plus the primary model (D) specifically ---
+    # --- Accuracy, best model by overall accuracy, plus the primary model (D) specifically ---
     try:
         acc_df = clf.accuracy_summary()
         if acc_df is not None and len(acc_df) > 0:
@@ -96,13 +96,13 @@ def compute_facts(clf) -> dict:
             f"Accuracy statistics unavailable ({type(exc).__name__}: {exc})."
         )
 
-    # --- Change detection — only attempted if >= 2 epochs were run ---
+    # --- Change detection, only attempted if >= 2 epochs were run ---
     if clf.change is not None:
         try:
             chg = clf.change
             first_year, last_year = chg["first_year"], chg["last_year"]
             # Single combined image + single reduceRegion call instead of two
-            # separate ones — halves the round trips to Earth Engine for this section.
+            # separate ones, halves the round trips to Earth Engine for this section.
             combined = (
                 chg["conservative_change"]
                 .unmask(0)
@@ -209,7 +209,7 @@ def summarize(facts: dict) -> str:
 def answer(facts: dict, question: str) -> str:
     """Answer a natural-language question using only precomputed facts.
 
-    This is deliberately simple keyword matching, not an LLM — it can
+    This is deliberately simple keyword matching, not an LLM, it can
     only ever report numbers that are actually in ``facts``, so it
     cannot hallucinate a result the pipeline didn't produce. Questions
     it doesn't recognise get an honest "don't know" rather than a guess.
@@ -268,6 +268,6 @@ def answer(facts: dict, question: str) -> str:
         return f"The total classified area of {facts['park_name']} in {year} was {total:.1f} km2."
 
     return (
-        "I can only answer from what the pipeline actually computed — try asking about "
+        "I can only answer from what the pipeline actually computed, try asking about "
         "a specific class's area, the dominant class, overall accuracy, or change between years."
     )

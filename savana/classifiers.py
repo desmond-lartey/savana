@@ -1,7 +1,7 @@
 """Four-model ablation training and multi-epoch classification.
 
 Ported from ``kogyae.js`` Phase 5 (training), Phase 7 (accuracy split),
-and Phase 8 (multi-epoch classification) — the standalone
+and Phase 8 (multi-epoch classification), the standalone
 ``classifers.js`` module referenced by ``mainrun.js`` was empty, so this
 reconstructs it with the exact signatures ``mainrun.js`` expects
 (``trainAllModels``, ``classifyAllEpochs``).
@@ -9,10 +9,10 @@ reconstructs it with the exact signatures ``mainrun.js`` expects
 Models:
     A: KNN (k=3)              | AlphaEarth embeddings only [baseline]
     B: Random Forest          | AlphaEarth embeddings only
-    C: Random Forest          | Phenology indices only [CIRCULAR — ablation only,
+    C: Random Forest          | Phenology indices only [CIRCULAR, ablation only,
                                  not used operationally, since labels were
                                  derived from the same indices]
-    D: Random Forest          | Embeddings + Phenology [PRIMARY — used for mapping]
+    D: Random Forest          | Embeddings + Phenology [PRIMARY, used for mapping]
 """
 
 from __future__ import annotations
@@ -81,7 +81,7 @@ def train_all_models(
     train_pheno = train_full.select(pheno_bands.cat(class_prop_list))
     valid_pheno = valid_full.select(pheno_bands.cat(class_prop_list))
 
-    # Model A — KNN (k=3) | Embeddings only [baseline]
+    # Model A, KNN (k=3) | Embeddings only [baseline]
     model_a = ee.Classifier.smileKNN(3).train(
         features=train_emb, classProperty=class_property, inputProperties=emb_bands
     )
@@ -89,7 +89,7 @@ def train_all_models(
         actual=class_property, predicted="classification", order=class_order
     )
 
-    # Model B — RF (150 trees) | Embeddings only
+    # Model B, RF (150 trees) | Embeddings only
     model_b = ee.Classifier.smileRandomForest(
         numberOfTrees=n_trees,
         variablesPerSplit=8,
@@ -101,7 +101,7 @@ def train_all_models(
         actual=class_property, predicted="classification", order=class_order
     )
 
-    # Model C — RF (150 trees) | Phenology only [CIRCULAR — ablation diagnostic only]
+    # Model C, RF (150 trees) | Phenology only [CIRCULAR, ablation diagnostic only]
     model_c = ee.Classifier.smileRandomForest(
         numberOfTrees=n_trees,
         variablesPerSplit=4,
@@ -115,7 +115,7 @@ def train_all_models(
         actual=class_property, predicted="classification", order=class_order
     )
 
-    # Model D — RF (150 trees) | Embeddings + Phenology [PRIMARY]
+    # Model D, RF (150 trees) | Embeddings + Phenology [PRIMARY]
     model_d = ee.Classifier.smileRandomForest(
         numberOfTrees=n_trees,
         variablesPerSplit=9,
@@ -187,17 +187,17 @@ def classify_all_epochs(
 ) -> dict:
     """Classify every epoch year with the appropriate master classifier.
 
-    Years >= ``phenology_min_year`` use Model D (embeddings + phenology,
-    recomputed for that specific year). Earlier years — where seasonal
-    Sentinel-2 coverage is typically too sparse for reliable phenology
-    — fall back to Model B (embeddings only). This generalises the
-    hardcoded "if year === 2017" special case in the original script.
+     Years >= ``phenology_min_year`` use Model D (embeddings + phenology,
+     recomputed for that specific year). Earlier years, where seasonal
+     Sentinel-2 coverage is typically too sparse for reliable phenology
+    , fall back to Model B (embeddings only). This generalises the
+     hardcoded "if year === 2017" special case in the original script.
 
-    ``embedding_current_year``/``embedding_current_image``: if one of
-    the epochs is the same year the embedding used for training was
-    already computed for, pass it in to avoid recomputing it.
+     ``embedding_current_year``/``embedding_current_image``: if one of
+     the epochs is the same year the embedding used for training was
+     already computed for, pass it in to avoid recomputing it.
 
-    Returns ``{year: classified_image}``.
+     Returns ``{year: classified_image}``.
     """
     import ee
 

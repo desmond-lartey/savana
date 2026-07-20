@@ -8,7 +8,7 @@ matrix for conservation/water-management product selection.
 
 Ships with the West Africa study configuration (16 GPCC FDD v2022
 stations, 5 ecological zones, 7 applications) as the default, but every
-stage accepts overrides — a different product set, a different gauge
+stage accepts overrides, a different product set, a different gauge
 network, a different zone scheme, or different application weights.
 
 Typical use, via the chainable orchestrator::
@@ -19,7 +19,7 @@ Typical use, via the chainable orchestrator::
     print(ra.summarize())
     ra.export_workbook("decision_tool.xlsx")
 
-Or call each stage module directly for finer control — see
+Or call each stage module directly for finer control, see
 :mod:`.config`, :mod:`.stations`, :mod:`.zones`, :mod:`.ingestion`,
 :mod:`.extraction`, :mod:`.validation`, :mod:`.thresholds`,
 :mod:`.spatial`, :mod:`.decision`, :mod:`.insights`, :mod:`.viz`.

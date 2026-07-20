@@ -1,25 +1,25 @@
 """Ecological/climatic zone construction and station assignment.
 
-No packaged shapefile — zones are *built*, from whatever base regions
+No packaged shapefile, zones are *built*, from whatever base regions
 and split logic you give :func:`build_zones_from_bands`. This is a
 direct, generalised port of the author's GEE zone-delineation script:
 3 named base climatic regions, each optionally split by a latitude band
 into one or more final ecological zones. The West Africa 5-zone scheme
 (:data:`config.DEFAULT_ZONE_DEFS_WA` + :data:`config.DEFAULT_ZONE_BASE_ASSETS_WA`)
 is just one *configuration* of this generic builder, not special-cased
-logic — a different region, a different number of base regions, or no
+logic, a different region, a different number of base regions, or no
 latitude splitting at all, all use the same function.
 
 Three ways to get zone geometry, in order of generality:
 
-1. :func:`build_zones_from_bands` — build zones yourself from any named
+1. :func:`build_zones_from_bands`, build zones yourself from any named
    base regions (EE assets, or ``ee.FeatureCollection``/``ee.Geometry``
-   objects you already have) plus your own split rules. Fully general —
+   objects you already have) plus your own split rules. Fully general,
    works for any region, any number of zones, any split logic (or none).
-2. :func:`load_zones_from_file` — you already have a zone boundary file
+2. :func:`load_zones_from_file`, you already have a zone boundary file
    (shapefile, GeoJSON, GeoPackage, ...) from QGIS or elsewhere. Fully
    general, no Earth Engine involved at all.
-3. :func:`single_region_zone` — you don't want zone stratification at
+3. :func:`single_region_zone`, you don't want zone stratification at
    all, just one study-area boundary. Wraps any boundary (a file path,
    a geojson dict, an ``ee.Geometry``, or a bounding box) into a
    one-zone table so the rest of the package (which only ever asks "is
@@ -43,7 +43,7 @@ def _lat_band(
     lat_min: float, lat_max: float, bounds: tuple[float, float, float, float]
 ):
     """A latitude-band ``ee.Geometry`` clipped to ``bounds``
-    (min_lon, min_lat, max_lon, max_lat) — port of the GEE script's
+    (min_lon, min_lat, max_lon, max_lat), port of the GEE script's
     ``latBand()`` helper, generalised to any bounds rather than a
     hardcoded West Africa rectangle.
     """
@@ -66,14 +66,14 @@ def build_zones_from_bands(
     regions, each optionally split by a latitude band.
 
     This is the generic version of the GEE script's whole zone-building
-    pipeline (its Sections 1, 3, 4) — nothing here is specific to West
+    pipeline (its Sections 1, 3, 4), nothing here is specific to West
     Africa or to exactly 3 base regions / 5 output zones.
 
     Args:
         base_zones: ``{name: source}`` where each ``source`` is an EE
             asset ID (str), an already-loaded ``ee.FeatureCollection``,
             or an ``ee.Geometry``. These are your raw regions before any
-            splitting — e.g. ``{"Sahelian": "projects/x/assets/y", ...}``
+            splitting, e.g. ``{"Sahelian": "projects/x/assets/y", ...}``
             for the WA case, or e.g. ``{"my_watershed": my_geometry}``
             for a single custom region.
         zone_defs: list of dicts, each describing one output zone:
@@ -84,14 +84,14 @@ def build_zones_from_bands(
               output zone is derived from.
             - ``lat_min``, ``lat_max`` (optional): latitude band to
               clip to. Omit both (or span the full region) to pass the
-              source region through unmodified — the pattern for "one
+              source region through unmodified, the pattern for "one
               base region = one output zone, no further splitting".
             - any other keys (``zone_id``, ``color_hex``,
               ``rainfall_mm_yr``, notes, ...) are copied through as
               feature properties, same as the GEE script's ZONE_DEFS.
         bounds: ``(min_lon, min_lat, max_lon, max_lat)`` used only to
             clip latitude bands to a sensible extent. Defaults to a
-            generous global-ish box if not given — set this to your own
+            generous global-ish box if not given, set this to your own
             study area's bounds for anything other than West Africa.
 
     Returns:
@@ -143,7 +143,7 @@ def build_zones_from_bands(
 
 
 def zone_areas_km2(zones_fc, name_field: str | None = None):
-    """Add an ``area_km2`` property to every feature — port of the GEE
+    """Add an ``area_km2`` property to every feature, port of the GEE
     script's area-reporting section. Returns the FeatureCollection with
     the extra property; call ``.getInfo()`` or use
     :func:`zones_fc_to_gdf` to inspect it locally.
@@ -171,7 +171,7 @@ def export_zones(
     drive_description: str = "ecological_zones",
     file_format: str = "GeoJSON",
 ):
-    """Export a built zones FeatureCollection — port of the GEE script's
+    """Export a built zones FeatureCollection, port of the GEE script's
     three export buttons (asset / GeoJSON / Shapefile), as background
     ``ee.batch`` tasks rather than a UI panel.
 
@@ -188,7 +188,7 @@ def export_zones(
             ``"GeoJSON"``, ``"SHP"``, ``"CSV"``, ...).
 
     Returns:
-        list of submitted ``ee.batch.Task`` objects (already started —
+        list of submitted ``ee.batch.Task`` objects (already started,
         check ``task.status()`` for progress, same as any other GEE
         batch export).
     """
@@ -215,7 +215,7 @@ def export_zones(
         print(f"  Submitted Drive export ({file_format}) to folder {drive_folder!r}")
 
     if not tasks:
-        print("  Nothing submitted — pass asset_id and/or drive_folder.")
+        print("  Nothing submitted, pass asset_id and/or drive_folder.")
     return tasks
 
 
@@ -225,11 +225,11 @@ def default_wa_zones(bounds=None):
     :data:`config.DEFAULT_ZONE_DEFS_WA`.
 
     This is just the WA study's *configuration* of
-    :func:`build_zones_from_bands` — call that function directly with
+    :func:`build_zones_from_bands`, call that function directly with
     your own ``base_zones``/``zone_defs`` for a different region.
 
     Requires the 3 base assets to actually exist and be readable by the
-    caller's EE account — they're the author's own uploaded shapefiles,
+    caller's EE account, they're the author's own uploaded shapefiles,
     not a public dataset. If you're not the author, either ask for read
     access, upload your own copies and pass your own
     ``base_zones`` dict, or use a completely different region's data.
@@ -247,11 +247,11 @@ def default_wa_zones(bounds=None):
 
 
 def single_region_zone(boundary, zone_name: str = "Study Area"):
-    """Wrap one boundary as a one-row zones table — for a user who
+    """Wrap one boundary as a one-row zones table, for a user who
     wants a specific area of interest but no zone stratification.
 
     Args:
-        boundary: any of — a local vector file path (shapefile,
+        boundary: any of, a local vector file path (shapefile,
             GeoJSON, ...), a GeoJSON-like dict, an ``ee.Geometry``, or
             a ``(min_lon, min_lat, max_lon, max_lat)`` bounding box.
         zone_name: the single zone label everything in ``boundary``
@@ -299,7 +299,7 @@ def single_region_zone(boundary, zone_name: str = "Study Area"):
 
 def load_zones_from_file(path):
     """Load your own zone boundaries from any vector file geopandas can
-    read (shapefile, GeoJSON, GeoPackage, ...). Fully general — for a
+    read (shapefile, GeoJSON, GeoPackage, ...). Fully general, for a
     user who already has zone geometry from QGIS or elsewhere and
     doesn't need :func:`build_zones_from_bands` at all.
     """
@@ -309,7 +309,7 @@ def load_zones_from_file(path):
 
 
 def zones_fc_to_gdf(zones_fc, name_field: str | None = None):
-    """Pull a (typically small — a handful of zone polygons) EE
+    """Pull a (typically small, a handful of zone polygons) EE
     FeatureCollection down to a local ``geopandas.GeoDataFrame``, for
     use with :func:`assign_zones`'s local-join path, or for saving to a
     file yourself.
@@ -329,7 +329,7 @@ def zones_fc_to_gdf(zones_fc, name_field: str | None = None):
 
 # Rough latitude bands, used ONLY when no zone geometry is available at
 # all (no base regions to build from, no file, no default). Derived
-# from the WA zones' own published rainfall thresholds — this ignores
+# from the WA zones' own published rainfall thresholds, this ignores
 # longitude entirely and will misclassify stations near zone boundaries
 # or far from West Africa. Real zone geometry (built, loaded, or
 # single-region) is always preferred; this exists so validate-by-zone
@@ -361,25 +361,25 @@ def assign_zones(
         stations_df: any DataFrame with ``station_id, lon, lat``.
         zones_gdf: a local ``geopandas.GeoDataFrame`` (from
             :func:`load_zones_from_file`, :func:`single_region_zone`, or
-            :func:`zones_fc_to_gdf`) — joined locally via geopandas.
+            :func:`zones_fc_to_gdf`), joined locally via geopandas.
         zones_fc: a live ``ee.FeatureCollection`` (from
             :func:`build_zones_from_bands` or :func:`default_wa_zones`)
-            — joined via Earth Engine (``filterBounds`` per station), no
+           , joined via Earth Engine (``filterBounds`` per station), no
             geopandas required.
         name_field: property/column holding the zone name. Defaults to
             :data:`config.DEFAULT_ZONE_NAME_FIELD` (``"zone_name"``).
         use_default_if_none: if True and neither ``zones_gdf`` nor
-            ``zones_fc`` is given, attempts :func:`default_wa_zones` —
+            ``zones_fc`` is given, attempts :func:`default_wa_zones`,
             only useful if you're the author (or have access to the
             same EE assets). False by default, since that default is
-            not portable to other users/regions — pass your own
+            not portable to other users/regions, pass your own
             ``zones_gdf``/``zones_fc`` instead, or accept the coarse
             latitude fallback.
 
     Returns:
         Copy of ``stations_df`` with a new ``zone`` column. Any station
         that can't be matched to a real zone polygon falls back to the
-        latitude-band heuristic, with a printed warning — this always
+        latitude-band heuristic, with a printed warning, this always
         returns a usable ``zone`` column, never leaves it null.
     """
     stations_df = stations_df.copy()
@@ -438,7 +438,7 @@ def assign_zones(
             stations_df["zone"] = joined[name_field].values
         except ImportError:
             print(
-                "  \u26a0  geopandas/shapely not installed — using latitude-band "
+                "  \u26a0  geopandas/shapely not installed, using latitude-band "
                 'fallback. Install with `pip install "savana[rainfall]"`.'
             )
             stations_df["zone"] = None

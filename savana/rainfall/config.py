@@ -1,6 +1,6 @@
 """Default configuration for global precipitation product assessment.
 
-Everything here is a *default* — every public function in
+Everything here is a *default*, every public function in
 ``savana.rainfall`` accepts overrides, so a user assessing a different
 region, a different subset of products, their own gauge network, or
 their own application weights is not locked into the West Africa study
@@ -10,7 +10,7 @@ applications) ships as the default so ``savana.rainfall`` is useful out
 of the box and reproduces the original manuscript, but nothing here is
 required to use the package on a different AOI.
 
-Nothing in this module touches Earth Engine or hits the network — it is
+Nothing in this module touches Earth Engine or hits the network, it is
 pure data, safe to import eagerly. EE objects (``ee.FeatureCollection``,
 ``ee.Geometry``) are built lazily, inside functions in :mod:`.stations`
 and :mod:`.ingestion`, exactly where the JS/EE equivalents built them.
@@ -22,13 +22,13 @@ from __future__ import annotations
 # Study period & spatial resolution
 # ════════════════════════════════════════════════════════════
 
-# Default study window — matches the GPCC gauge extraction and the
+# Default study window, matches the GPCC gauge extraction and the
 # published validation (2001-2020). Override per-call for a different
 # period; product availability is still clipped via PRODUCT_DATE_RANGES.
 DEFAULT_START_DATE = "2001-01-01"
 DEFAULT_END_DATE = "2020-12-31"
 
-# 0.25 deg ~ 25 km — matches the coarsest product in the default catalogue
+# 0.25 deg ~ 25 km, matches the coarsest product in the default catalogue
 # (MERRA-2). All products are resampled to this common grid for
 # inter-comparison. Override if your own product set has a different
 # coarsest native resolution.
@@ -52,12 +52,12 @@ DEFAULT_THRESHOLD_SWEEP_MM_DAY = [0.1, 0.5, 1.0, 2.0, 5.0]
 # ──────
 # collection      : GEE ImageCollection ID
 # band            : band name to select
-# native_temporal : "daily" | "monthly" | "hourly" — controls how
+# native_temporal : "daily" | "monthly" | "hourly", controls how
 #                   ingestion.py aggregates to monthly mean mm/day
 # conversion      : "none" | "scale" | "era5_monthly" | "terra_monthly"
-#                   — selects the harmonisation function in ingestion.py
+#                  , selects the harmonisation function in ingestion.py
 # scale_factor    : multiplier applied before monthly aggregation
-#                   (None for era5_monthly/terra_monthly — those need a
+#                   (None for era5_monthly/terra_monthly, those need a
 #                   per-image days-in-month division, done in ingestion.py)
 # units_raw       : physical unit of the raw band values
 # units_out       : always "mm/day" after harmonisation
@@ -151,7 +151,7 @@ DEFAULT_PRODUCTS: dict[str, dict] = {
     },
 }
 
-# Full known availability window per product — ingestion.py clips the
+# Full known availability window per product, ingestion.py clips the
 # requested [start, end] to this AND to CONFIG dates, so no product is
 # ever queried outside its real availability.
 DEFAULT_PRODUCT_DATE_RANGES: dict[str, tuple[str, str]] = {
@@ -197,7 +197,7 @@ DEFAULT_METRICS_FLAT = DEFAULT_METRICS["continuous"] + DEFAULT_METRICS["categori
 # plausible range rather than the min/max actually observed across
 # products in a given zone. A relative (per-zone min-max) normalisation,
 # closer to the manuscript's written formula, is available as an
-# alternative — see rainfall.decision.score_products(normalization=...).
+# alternative, see rainfall.decision.score_products(normalization=...).
 #
 # Tuple shape: (metric_name -> (min, max, invert)). ``invert=True`` means
 # lower-is-better (FAR, |PBIAS|) so the normalised score is 1 - fraction.
@@ -341,7 +341,7 @@ DEFAULT_ZONE_NOTES: dict[str, str] = {
 # different gauge network builds their own stations DataFrame with this
 # same shape (station_id, station_name, lon, lat, elevation_m, source)
 # and passes it to any savana.rainfall function that accepts
-# ``stations_df=`` — nothing downstream assumes exactly these 16.
+# ``stations_df=``, nothing downstream assumes exactly these 16.
 
 DEFAULT_STATIONS_WA_RAW: list[tuple] = [
     ("WA001", "Dakar", -17.47, 14.73, 27, "GPCC_FDD_v2022"),
@@ -393,7 +393,7 @@ def default_stations_wa():
     """The 16 West Africa GPCC gauge stations, as a pandas.DataFrame.
 
     This is the manuscript's real validation network, not a synthetic
-    placeholder — the default ``stations_df`` used throughout
+    placeholder, the default ``stations_df`` used throughout
     ``savana.rainfall`` when no ``stations_df`` is supplied. Any function
     accepting ``stations_df=`` accepts a DataFrame with this same shape
     (station_id, station_name, lon, lat, elevation_m, source) for a
@@ -408,18 +408,18 @@ def default_stations_wa():
 # Default ecological zones (West Africa, 5-class scheme)
 # ════════════════════════════════════════════════════════════
 #
-# NOT a packaged shapefile — the 5 WA zones are built on demand from 3
+# NOT a packaged shapefile, the 5 WA zones are built on demand from 3
 # base climatic-zone EE assets via rainfall.zones.build_zones_from_bands()
 # (a direct, generalised port of the author's GEE zone-delineation
 # script: 3 climatic zones split into 5 ecological zones by intersecting
 # with latitude bands). This is just the WA study's *configuration* of
-# that generic builder — a different region/scheme is a different
+# that generic builder, a different region/scheme is a different
 # base_zones dict + zone_defs list passed to the same function; see
 # rainfall.zones for the fully generic version, including a
 # single-boundary convenience path for a user who just wants one AOI
 # with no zone stratification at all.
 #
-# DEFAULT_ZONE_BASE_ASSETS_WA are the author's own EE table assets —
+# DEFAULT_ZONE_BASE_ASSETS_WA are the author's own EE table assets,
 # usable as-is only within that EE project. Anyone else building the WA
 # zones from scratch needs their own uploaded copies of the same 3
 # source shapefiles (Sahelian-Desert, Soudanian_dissolved,
@@ -435,7 +435,7 @@ DEFAULT_ZONE_BASE_ASSETS_WA: dict[str, str] = {
 # lat_min/lat_max define the latitude band each ecological zone is
 # clipped to within its source climatic zone. A zone_def with no
 # latitude split at all (lat_min/lat_max spanning the full source
-# region) just passes the source zone through unmodified — the pattern
+# region) just passes the source zone through unmodified, the pattern
 # to use when your own base regions don't need further splitting.
 DEFAULT_ZONE_DEFS_WA: list[dict] = [
     {
@@ -492,7 +492,7 @@ DEFAULT_ZONE_DEFS_WA: list[dict] = [
 
 # West Africa bounding box used to clip latitude bands to a sensible
 # extent (matches the GEE script's WA_BOUNDS). A different region uses
-# its own bounds — see build_zones_from_bands(bounds=...).
+# its own bounds, see build_zones_from_bands(bounds=...).
 DEFAULT_ZONE_BOUNDS_WA = (
     -20.0,
     -5.0,
@@ -508,7 +508,7 @@ DEFAULT_ZONE_ASSET_WA = "projects/ee-desmond/assets/ecological_zones_5class"
 # Preview map visualisation params (geemap)
 # ════════════════════════════════════════════════════════════
 #
-# Direct port of the GEE app's VIS object — used by
+# Direct port of the GEE app's VIS object, used by
 # rainfall.spatial's preview_*_map() functions so a quick look at a
 # product's climatology/bias/correlation looks the same whether you're
 # in the GEE Code Editor or a Jupyter notebook.

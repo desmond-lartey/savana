@@ -1,6 +1,6 @@
 """Gauge station metadata and precipitation observation loading.
 
-Every function here works on an arbitrary ``stations_df`` — a
+Every function here works on an arbitrary ``stations_df``, a
 ``pandas.DataFrame`` with at minimum ``station_id, lon, lat`` columns
 (``station_name``, ``elevation_m``, ``source`` are recommended but not
 required). ``savana.rainfall.config.default_stations_wa()`` supplies the
@@ -12,18 +12,18 @@ DataFrame in that shape and passing it as ``stations_df=`` throughout.
 Four ways to get observations, in increasing order of "how much can
 this handle a station set that isn't the WA 16":
 
-1. :func:`load_stations_from_csv` — you already have your own
+1. :func:`load_stations_from_csv`, you already have your own
    station metadata + observation CSVs. Fully general.
-2. :func:`download_gpcc` — downloads the public GPCC Full Data Daily
+2. :func:`download_gpcc`, downloads the public GPCC Full Data Daily
    v2022 archive and extracts at whatever station coordinates you
    give it. Fully general, works for any station anywhere GPCC has
    coverage, but downloads ~440 MB and is slow the first time.
-3. :func:`load_gpcc_obs_from_asset` — fast, but only returns rows for
+3. :func:`load_gpcc_obs_from_asset`, fast, but only returns rows for
    station_ids that exist in the given EE table asset. The packaged
    default asset (:data:`config.DEFAULT_GPCC_ASSET_WA`) covers only the
    16 WA stations; point ``asset_id`` at your own pre-extracted table
    for a different network, or use option 1/2 instead.
-4. :func:`generate_demo_observations` — synthetic placeholder data for
+4. :func:`generate_demo_observations`, synthetic placeholder data for
    quick testing/tutorials only. Never used silently; you have to ask
    for it explicitly via ``source="demo"`` in :func:`get_observations`.
 """
@@ -40,7 +40,7 @@ REQUIRED_OBS_COLUMNS = {"station_id", "year", "month", "obs_mm_day"}
 
 def load_stations_any(stations=None):
     """Turn almost anything describing station locations into a proper
-    ``stations_df`` — the single entry point every high-level function
+    ``stations_df``, the single entry point every high-level function
     (:func:`savana.rainfall.pipeline.validate_against_gpcc`) uses so a
     user never has to hand-build a DataFrame just to try one station.
 
@@ -56,7 +56,7 @@ def load_stations_any(stations=None):
           :func:`load_stations_from_csv`'s station-table shape.
         - a list of ``(lon, lat)`` or ``(station_id, lon, lat)`` tuples,
           or a list of dicts with at least ``lon``/``lat`` keys.
-        - a single station as ``(lon, lat)`` or ``[lon, lat]`` — both a
+        - a single station as ``(lon, lat)`` or ``[lon, lat]``, both a
           tuple and a plain 2-element list work.
 
     Returns:
@@ -122,7 +122,7 @@ def load_stations_any(stations=None):
 
 def _stations_from_geojson(path: Path):
     """One station per Point feature in a GeoJSON file. No geopandas
-    required — this only needs to read plain Point coordinates."""
+    required, this only needs to read plain Point coordinates."""
     import json
 
     import pandas as pd
@@ -158,7 +158,7 @@ def _validate_stations_df(stations_df) -> None:
     """Raise a clear error if ``stations_df`` is missing required columns.
 
     Deliberately strict about the minimum shape (fail fast with a
-    useful message) but otherwise imposes nothing on the caller — extra
+    useful message) but otherwise imposes nothing on the caller, extra
     columns are fine, and only ``station_id``/``lon``/``lat`` are
     actually required for extraction to work.
     """
@@ -183,7 +183,7 @@ def _validate_stations_df(stations_df) -> None:
 
 
 def preview_map(stations_df=None, m=None, zoom: int = 5):
-    """A quick interactive map of station locations — the first thing to
+    """A quick interactive map of station locations, the first thing to
     check before extracting or validating anything: "are these actually
     where I think they are?"
 
@@ -219,9 +219,9 @@ def preview_map(stations_df=None, m=None, zoom: int = 5):
 def stations_to_ee_fc(stations_df):
     """Convert any stations DataFrame to an ``ee.FeatureCollection`` of points.
 
-    Works for any ``stations_df`` meeting :data:`REQUIRED_STATION_COLUMNS`
-    — not specific to the WA network. Extra columns are copied through
-    as feature properties.
+     Works for any ``stations_df`` meeting :data:`REQUIRED_STATION_COLUMNS`
+    , not specific to the WA network. Extra columns are copied through
+     as feature properties.
     """
     import ee
 
@@ -243,7 +243,7 @@ def load_gpcc_obs_from_asset(stations_df=None, asset_id: str | None = None):
     Fast (no download, no NetCDF processing) but only returns rows for
     ``station_id`` values that already exist in the asset. Any station in
     ``stations_df`` not found in the asset is reported via a printed
-    warning, not silently dropped without explanation — use
+    warning, not silently dropped without explanation, use
     :func:`download_gpcc` for those instead, or build your own asset with
     ``station_id, year, month, obs_mm_day`` columns and pass its ID here.
 
@@ -251,7 +251,7 @@ def load_gpcc_obs_from_asset(stations_df=None, asset_id: str | None = None):
         stations_df: defaults to :func:`config.default_stations_wa`.
         asset_id: EE table asset ID. Defaults to
             :data:`config.DEFAULT_GPCC_ASSET_WA`, which only covers the
-            16 default WA stations — pass your own asset_id for any
+            16 default WA stations, pass your own asset_id for any
             other station set.
 
     Returns:
@@ -305,7 +305,7 @@ def load_gpcc_obs_from_asset(stations_df=None, asset_id: str | None = None):
 
 
 # ════════════════════════════════════════════════════════════
-# Public GPCC NetCDF archive — works for any station, anywhere
+# Public GPCC NetCDF archive, works for any station, anywhere
 # ════════════════════════════════════════════════════════════
 
 
@@ -348,7 +348,7 @@ def _extract_monthly_means(nc_path: Path, stations_df):
     """Extract monthly mean mm/day at arbitrary station coordinates from
     one GPCC daily NetCDF file, via nearest-neighbour lookup.
 
-    Generalised from the original station-specific extractor — takes
+    Generalised from the original station-specific extractor, takes
     ``stations_df`` instead of a hardcoded station dict, so it works for
     any station set falling within the GPCC grid's coverage.
     """
@@ -396,7 +396,7 @@ def download_gpcc(
     """Download the public GPCC archive and extract at any station set.
 
     Works for any ``stations_df`` (defaults to the WA 16), anywhere the
-    GPCC 1.0-degree grid has coverage — this is the fully general path,
+    GPCC 1.0-degree grid has coverage, this is the fully general path,
     unlike :func:`load_gpcc_obs_from_asset` which only covers whatever
     stations happen to already be in an EE asset.
 
@@ -469,7 +469,7 @@ def download_gpcc(
 
 
 # ════════════════════════════════════════════════════════════
-# User-supplied CSVs — fully general, no assumptions at all
+# User-supplied CSVs, fully general, no assumptions at all
 # ════════════════════════════════════════════════════════════
 
 
@@ -483,7 +483,7 @@ def load_stations_from_csv(stations_csv: str | Path, obs_csv: str | Path | None 
     ``station_id, year, month, obs_mm_day``.
 
     This is the fully general entry point for a station network that
-    isn't West Africa's 16 GPCC stations at all — bring your own gauge
+    isn't West Africa's 16 GPCC stations at all, bring your own gauge
     metadata and (optionally) your own already-extracted observations.
     """
     import pandas as pd
@@ -511,7 +511,7 @@ def load_stations_from_csv(stations_csv: str | Path, obs_csv: str | Path | None 
 
 
 # ════════════════════════════════════════════════════════════
-# Synthetic demo data — testing/tutorials only, never silent
+# Synthetic demo data, testing/tutorials only, never silent
 # ════════════════════════════════════════════════════════════
 
 
@@ -523,7 +523,7 @@ def generate_demo_observations(
 ):
     """Synthetic monthly precipitation observations for quick testing only.
 
-    NOT real data — a plausible seasonal-cycle-plus-noise placeholder so
+    NOT real data, a plausible seasonal-cycle-plus-noise placeholder so
     the rest of the pipeline can be exercised without waiting on a real
     GPCC download or an EE asset. Only used when explicitly requested
     (``source="demo"`` in :func:`get_observations`); never a silent
@@ -560,7 +560,7 @@ def generate_demo_observations(
                 )
     print(
         f"  \u26a0  SYNTHETIC demo observations generated "
-        f"({len(stations_df)} stations, {start_year}-{end_year}) — "
+        f"({len(stations_df)} stations, {start_year}-{end_year}), "
         f"not real data, testing/tutorial use only."
     )
     return pd.DataFrame(rows)
@@ -577,13 +577,13 @@ def get_observations(stations_df=None, source: str = "download", **kwargs):
     Args:
         stations_df: defaults to :func:`config.default_stations_wa`.
         source: one of
-            - ``"download"`` (default): :func:`download_gpcc` — fully
+            - ``"download"`` (default): :func:`download_gpcc`, fully
               general, works for any station, slow on first run.
-            - ``"ee_asset"``: :func:`load_gpcc_obs_from_asset` — fast,
+            - ``"ee_asset"``: :func:`load_gpcc_obs_from_asset`, fast,
               limited to whatever stations are already in the asset.
-            - ``"csv"``: :func:`load_stations_from_csv`'s obs half —
+            - ``"csv"``: :func:`load_stations_from_csv`'s obs half,
               requires ``obs_csv=`` in ``kwargs``.
-            - ``"demo"``: :func:`generate_demo_observations` — synthetic,
+            - ``"demo"``: :func:`generate_demo_observations`, synthetic,
               testing only.
         **kwargs: forwarded to the selected loader.
 

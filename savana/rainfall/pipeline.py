@@ -2,7 +2,7 @@
 ``savana.rainfall`` stage together, mirroring
 :class:`savana.pipeline.SavanaClassifier`'s builder pattern.
 
-Every constructor argument is a default that can be overridden — a
+Every constructor argument is a default that can be overridden, a
 different product catalogue, a different gauge network, a different
 zone scheme, or different application weights all work the same way
 they do calling the individual stage functions directly. This class is
@@ -17,7 +17,7 @@ from . import config
 class RainfallAssessment:
     """Chainable orchestrator for a precipitation product assessment.
 
-    Example (defaults — reproduces the WA study)::
+    Example (defaults, reproduces the WA study)::
 
         ra = (
             RainfallAssessment()
@@ -102,7 +102,7 @@ class RainfallAssessment:
 
     def _ensure_ee(self):
         """Initialize Earth Engine with this instance's ``ee_project``,
-        called lazily right before any EE-touching operation — not at
+        called lazily right before any EE-touching operation, not at
         construction time, so a purely offline run (demo/csv
         observations, no ``.ingest()``/``.preview_*`` calls) never
         prompts for EE auth at all. Safe to call repeatedly; a no-op
@@ -205,12 +205,12 @@ class RainfallAssessment:
         return self
 
     # ────────────────────────────────────────────────────
-    # Preview — look before you validate
+    # Preview, look before you validate
     # ────────────────────────────────────────────────────
 
     def preview_stations(self, m=None, zoom: int = 5):
         """Interactive map of station locations. Works as soon as
-        stations are set (before ``.get_observations()`` even) — the
+        stations are set (before ``.get_observations()`` even), the
         first sanity check: are these actually where you think they are?
         """
         from . import stations as _stations
@@ -225,7 +225,7 @@ class RainfallAssessment:
 
     def preview_observations(self, station_id: str | None = None):
         """Quick time-series plot of raw GPCC observations. Requires
-        ``.get_observations()`` to have run — no product data needed."""
+        ``.get_observations()`` to have run, no product data needed."""
         from . import viz
 
         if self.obs_df is None:
@@ -259,11 +259,11 @@ class RainfallAssessment:
     ):
         """Interactive map of one product's mean rainfall (``kind=
         "daily"`` or ``"annual"``), or its bias against ANOTHER PRODUCT
-        if ``reference`` is given — a gridded-vs-gridded comparison,
+        if ``reference`` is given, a gridded-vs-gridded comparison,
         never a GPCC comparison (GPCC has no gridded form here).
 
         Set ``show_gpcc=True`` to overlay real GPCC station values (not
-        a rasterized surface — the true point observations, colored on
+        a rasterized surface, the true point observations, colored on
         the same scale as the raster) on top of the mean map. Requires
         ``.get_observations()`` to have already run. Ignored when
         ``reference`` is also given (the overlay only applies to the
@@ -319,7 +319,7 @@ class RainfallAssessment:
 
     def preview_station_bias(self, product: str, m=None, zoom: int = 5):
         """Interactive map of per-station bias against REAL GPCC
-        observations for one product — the actual "does this agree with
+        observations for one product, the actual "does this agree with
         ground truth, and where" spatial check. Requires ``.merge()``
         (or ``.validate()``, which calls it) to have run.
         """
@@ -477,20 +477,20 @@ def validate_against_gpcc(
     ee_project: str | None = None,
 ):
     """Validate one or more precipitation products against GPCC gauge
-    observations at one or more stations, over a chosen year range —
+    observations at one or more stations, over a chosen year range,
     the one-call version of the whole assessment, matching the original
     paper's exact logic (16 WA stations, 6 products, 2001-2020) as the
     default, everything else overridable by simple parameters.
 
     This is the function to reach for first. It does exactly what the
-    original per-station CSV workflow did — extract each requested
+    original per-station CSV workflow did, extract each requested
     product at each requested station, save/reuse a per-product CSV
     (``cache_dir/precip_extraction_<PRODUCT>.csv``, same as before),
     merge against GPCC observations
     (``cache_dir/gpcc_obs_<start>_<end>.csv``), and write the same
     result CSVs the original scripts did (``validation_by_zone.csv``,
     ``validation_overall.csv``, ``product_ranking.csv``,
-    ``threshold_sensitivity.csv``) — just wrapped in one call instead of
+    ``threshold_sensitivity.csv``), just wrapped in one call instead of
     six separate scripts.
 
     Args:
@@ -498,19 +498,19 @@ def validate_against_gpcc(
             - ``None`` (default): the 16 WA GPCC stations from the paper.
             - a ``stations_df``, a path to a ``.geojson``/``.csv`` file
               of station points, a list of ``(lon, lat)`` tuples, or a
-              single ``(lon, lat)`` tuple — see
+              single ``(lon, lat)`` tuple, see
               :func:`savana.rainfall.stations.load_stations_any` for
               the full list of accepted shapes. Works the same whether
               you give it 1 station or 100.
         products: which products to check, by name (e.g.
             ``["CHIRPS", "GPM_IMERG"]``). ``None`` (default) uses all 6
             in :data:`config.DEFAULT_PRODUCTS`. Any subset works.
-        start_year, end_year: inclusive year range (plain ints — the
+        start_year, end_year: inclusive year range (plain ints, the
             paper used 2001-2020; pick whatever you need).
-        obs_source: where GPCC observations come from —
+        obs_source: where GPCC observations come from,
             ``"ee_asset"`` (fast, only covers the 16 WA stations),
             ``"download"`` (slower, works for any station anywhere),
-            ``"csv"`` (use ``obs_csv=`` — you already have one), or
+            ``"csv"`` (use ``obs_csv=``, you already have one), or
             ``"demo"`` (synthetic, testing only). Defaults to
             ``"ee_asset"`` when ``stations`` is the WA default (fastest
             path for the paper's own network) and ``"download"``
@@ -527,15 +527,15 @@ def validate_against_gpcc(
             metrics. Defaults to the WMO standard (1.0 mm/day).
         ee_project: Google Cloud project registered for Earth Engine use
             (only needed for ``obs_source="ee_asset"`` or the default
-            Earth Engine ingestion — not needed at all if you only use
+            Earth Engine ingestion, not needed at all if you only use
             ``obs_source="csv"``/``"demo"``). If omitted, uses whatever
             is already configured for the environment (see
-            ``savana.ee_init.initialize``) — set this explicitly if
+            ``savana.ee_init.initialize``), set this explicitly if
             you have more than one Google Cloud project and the wrong
             one keeps getting picked up.
 
     Returns:
-        A fully populated :class:`RainfallAssessment` — inspect
+        A fully populated :class:`RainfallAssessment`, inspect
         ``.validation_by_zone_df`` / ``.validation_overall_df``
         directly, or call ``.summarize()``, ``.answer("...")``,
         ``.show()``, ``.export_workbook(...)`` on it, same as building
@@ -600,7 +600,7 @@ def validate_against_gpcc(
             obs_kwargs["data_dir"] = cache_path
     elif obs_source == "demo":
         obs_kwargs = {"start_year": start_year, "end_year": end_year}
-    # "ee_asset" takes no year kwargs — filtered to the requested range below instead
+    # "ee_asset" takes no year kwargs, filtered to the requested range below instead
 
     ra.get_observations(source=obs_source, **obs_kwargs)
     ra.obs_df = ra.obs_df[

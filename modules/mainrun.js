@@ -1,5 +1,5 @@
 // ============================================================
-// MAIN — Land System Classification
+// MAIN, Land System Classification
 // Change only the 3 lines below when switching parks
 // ============================================================
 
@@ -35,7 +35,7 @@ Map.addLayer(
     featureCollection: protectedAreas.filter(
       ee.Filter.eq('NAME', PARK_NAME_FILTER)),
     color:1, width:2}),
-  {palette:['ffffff']}, PARK_NAME + ' — Boundary', true);
+  {palette:['ffffff']}, PARK_NAME + ', Boundary', true);
 print('=== ' + PARK_NAME + ' ===');
 
 // ── Build composites, indices, RUE, thresholds, masks ────────
@@ -79,5 +79,5 @@ EXP.changeProducts(chg, geometry, PARK_NAME);
 EXP.csvTables(classifiedMaps, chg, EPOCHS, geometry, PARK_NAME);
 EXP.addLegend(PARK_NAME);
 
-print('=== ' + PARK_NAME + ' — COMPLETE ===');
+print('=== ' + PARK_NAME + ', COMPLETE ===');
 print('Switch park: change PARK_NAME_FILTER, PARK_NAME, EPOCHS only.');

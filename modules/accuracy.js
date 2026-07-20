@@ -2,8 +2,8 @@
 // MODULE: accuracy
 // Confusion matrix and accuracy summary CSV exports.
 // Produces 2 files per park:
-//   {park}_confusion_matrix_full.csv  — 24 rows (4 models × 6 classes)
-//   {park}_accuracy_summary.csv       — 4 rows (one per model)
+//   {park}_confusion_matrix_full.csv , 24 rows (4 models × 6 classes)
+//   {park}_accuracy_summary.csv      , 4 rows (one per model)
 // ============================================================
 
 var CLASS_INFO = [
@@ -16,8 +16,8 @@ var CLASS_INFO = [
 ];
 
 // Convert a ConfusionMatrix to a labelled FeatureCollection.
-// producersAccuracy() returns shape (6,1) — use Array.get([i,0])
-// consumersAccuracy() returns shape (1,6) — use Array.get([0,i])
+// producersAccuracy() returns shape (6,1), use Array.get([i,0])
+// consumersAccuracy() returns shape (1,6), use Array.get([0,i])
 var cmToFC = function(cm, modelName, parkName) {
   var oa    = cm.accuracy();
   var kappa = cm.kappa();
@@ -65,7 +65,7 @@ var modelSummary = function(cm, code, desc, space, parkName) {
   return ee.Feature(null, props);
 };
 
-// Main export function — call with the 4 error matrices and park name.
+// Main export function, call with the 4 error matrices and park name.
 exports.exportTables = function(mA, mB, mC, mD, parkName) {
   var fullCM = ee.FeatureCollection([])
     .merge(cmToFC(mA, 'A_KNN3_Embeddings64',        parkName))
@@ -82,7 +82,7 @@ exports.exportTables = function(mA, mB, mC, mD, parkName) {
       'Embeddings 64-dim', parkName),
     modelSummary(mC,'C',
       'RF 150 trees | Phenological Indices only [CIRCULAR]',
-      'Phenology 14-dim — label-feature circularity inflates OA',
+      'Phenology 14-dim, label-feature circularity inflates OA',
       parkName),
     modelSummary(mD,'D',
       'RF 150 trees | Embeddings + Phenology [PRIMARY]',
@@ -107,6 +107,6 @@ exports.exportTables = function(mA, mB, mC, mD, parkName) {
   print('--- ACCURACY: ' + parkName + ' ---');
   print('Model A | OA:', mA.accuracy(), '| κ:', mA.kappa());
   print('Model B | OA:', mB.accuracy(), '| κ:', mB.kappa());
-  print('Model C | OA:', mC.accuracy(), '[CIRCULAR — inflated]');
+  print('Model C | OA:', mC.accuracy(), '[CIRCULAR, inflated]');
   print('Model D | OA:', mD.accuracy(), '| κ:', mD.kappa());
 };
