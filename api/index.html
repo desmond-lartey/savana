@@ -2065,7 +2065,7 @@
         <p><code>RainfallAssessment</code>: the chainable orchestrator tying every
 <code>savana.rainfall</code> stage together, mirroring
 :class:<code>savana.pipeline.SavanaClassifier</code>'s builder pattern.</p>
-<p>Every constructor argument is a default that can be overridden — a
+<p>Every constructor argument is a default that can be overridden, a
 different product catalogue, a different gauge network, a different
 zone scheme, or different application weights all work the same way
 they do calling the individual stage functions directly. This class is
@@ -2106,7 +2106,7 @@ a convenience, not a new capability.</p>
 
 
         <p>Chainable orchestrator for a precipitation product assessment.</p>
-<p>Example (defaults — reproduces the WA study)::</p>
+<p>Example (defaults, reproduces the WA study)::</p>
 <div class="highlight"><pre><span></span><code>ra = (
     RainfallAssessment()
     .get_observations(source=&quot;ee_asset&quot;)
@@ -2612,7 +2612,7 @@ ra.export_workbook(&quot;decision_tool.xlsx&quot;)
 <span class="normal">481</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">RainfallAssessment</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Chainable orchestrator for a precipitation product assessment.</span>
 
-<span class="sd">    Example (defaults — reproduces the WA study)::</span>
+<span class="sd">    Example (defaults, reproduces the WA study)::</span>
 
 <span class="sd">        ra = (</span>
 <span class="sd">            RainfallAssessment()</span>
@@ -2697,7 +2697,7 @@ ra.export_workbook(&quot;decision_tool.xlsx&quot;)
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_ensure_ee</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Earth Engine with this instance&#39;s ``ee_project``,</span>
-<span class="sd">        called lazily right before any EE-touching operation — not at</span>
+<span class="sd">        called lazily right before any EE-touching operation, not at</span>
 <span class="sd">        construction time, so a purely offline run (demo/csv</span>
 <span class="sd">        observations, no ``.ingest()``/``.preview_*`` calls) never</span>
 <span class="sd">        prompts for EE auth at all. Safe to call repeatedly; a no-op</span>
@@ -2800,12 +2800,12 @@ ra.export_workbook(&quot;decision_tool.xlsx&quot;)
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="c1"># ────────────────────────────────────────────────────</span>
-    <span class="c1"># Preview — look before you validate</span>
+    <span class="c1"># Preview, look before you validate</span>
     <span class="c1"># ────────────────────────────────────────────────────</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">preview_stations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zoom</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Interactive map of station locations. Works as soon as</span>
-<span class="sd">        stations are set (before ``.get_observations()`` even) — the</span>
+<span class="sd">        stations are set (before ``.get_observations()`` even), the</span>
 <span class="sd">        first sanity check: are these actually where you think they are?</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">stations</span> <span class="k">as</span> <span class="n">_stations</span>
@@ -2820,7 +2820,7 @@ ra.export_workbook(&quot;decision_tool.xlsx&quot;)
 
     <span class="k">def</span><span class="w"> </span><span class="nf">preview_observations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">station_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Quick time-series plot of raw GPCC observations. Requires</span>
-<span class="sd">        ``.get_observations()`` to have run — no product data needed.&quot;&quot;&quot;</span>
+<span class="sd">        ``.get_observations()`` to have run, no product data needed.&quot;&quot;&quot;</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">viz</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -2844,7 +2844,7 @@ ra.export_workbook(&quot;decision_tool.xlsx&quot;)
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">compare_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Obs vs. every product&#39;s simulated value, side by side — one</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Obs vs. every product&#39;s simulated value, side by side, one</span>
 <span class="sd">        row per (station, year, month), GPCC in its own column, one</span>
 <span class="sd">        column per product. The plain &quot;just let me look at the numbers&quot;</span>
 <span class="sd">        table, underlying every bias/KGE/etc. computed later. Requires</span>
@@ -2860,7 +2860,7 @@ ra.export_workbook(&quot;decision_tool.xlsx&quot;)
             <span class="n">index</span><span class="o">=</span><span class="n">idx_cols</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;product&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s2">&quot;sim_mm_day&quot;</span>
         <span class="p">)</span>
         <span class="c1"># obs_mm_day is identical across products for the same</span>
-        <span class="c1"># station/year/month (it&#39;s the same real GPCC observation) —</span>
+        <span class="c1"># station/year/month (it&#39;s the same real GPCC observation),</span>
         <span class="c1"># any one row&#39;s value is the right one to pull in as the GPCC column.</span>
         <span class="n">obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">merged_df</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">idx_cols</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">idx_cols</span><span class="p">)[</span><span class="s2">&quot;obs_mm_day&quot;</span><span class="p">]</span>
         <span class="n">pivot</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;GPCC&quot;</span><span class="p">,</span> <span class="n">obs</span><span class="p">)</span>
@@ -2877,11 +2877,11 @@ ra.export_workbook(&quot;decision_tool.xlsx&quot;)
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Interactive map of one product&#39;s mean rainfall (``kind=</span>
 <span class="sd">        &quot;daily&quot;`` or ``&quot;annual&quot;``), or its bias against ANOTHER PRODUCT</span>
-<span class="sd">        if ``reference`` is given — a gridded-vs-gridded comparison,</span>
+<span class="sd">        if ``reference`` is given, a gridded-vs-gridded comparison,</span>
 <span class="sd">        never a GPCC comparison (GPCC has no gridded form here).</span>
 
 <span class="sd">        Set ``show_gpcc=True`` to overlay real GPCC station values (not</span>
-<span class="sd">        a rasterized surface — the true point observations, colored on</span>
+<span class="sd">        a rasterized surface, the true point observations, colored on</span>
 <span class="sd">        the same scale as the raster) on top of the mean map. Requires</span>
 <span class="sd">        ``.get_observations()`` to have already run. Ignored when</span>
 <span class="sd">        ``reference`` is also given (the overlay only applies to the</span>
@@ -2937,7 +2937,7 @@ ra.export_workbook(&quot;decision_tool.xlsx&quot;)
 
     <span class="k">def</span><span class="w"> </span><span class="nf">preview_station_bias</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">product</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zoom</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Interactive map of per-station bias against REAL GPCC</span>
-<span class="sd">        observations for one product — the actual &quot;does this agree with</span>
+<span class="sd">        observations for one product, the actual &quot;does this agree with</span>
 <span class="sd">        ground truth, and where&quot; spatial check. Requires ``.merge()``</span>
 <span class="sd">        (or ``.validate()``, which calls it) to have run.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -3101,7 +3101,7 @@ ra.export_workbook(&quot;decision_tool.xlsx&quot;)
 
     <div class="doc doc-contents ">
 
-        <p>Obs vs. every product's simulated value, side by side — one
+        <p>Obs vs. every product's simulated value, side by side, one
 row per (station, year, month), GPCC in its own column, one
 column per product. The plain "just let me look at the numbers"
 table, underlying every bias/KGE/etc. computed later. Requires
@@ -3132,7 +3132,7 @@ table, underlying every bias/KGE/etc. computed later. Requires
 <span class="normal">270</span>
 <span class="normal">271</span>
 <span class="normal">272</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">compare_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Obs vs. every product&#39;s simulated value, side by side — one</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Obs vs. every product&#39;s simulated value, side by side, one</span>
 <span class="sd">    row per (station, year, month), GPCC in its own column, one</span>
 <span class="sd">    column per product. The plain &quot;just let me look at the numbers&quot;</span>
 <span class="sd">    table, underlying every bias/KGE/etc. computed later. Requires</span>
@@ -3148,7 +3148,7 @@ table, underlying every bias/KGE/etc. computed later. Requires
         <span class="n">index</span><span class="o">=</span><span class="n">idx_cols</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;product&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s2">&quot;sim_mm_day&quot;</span>
     <span class="p">)</span>
     <span class="c1"># obs_mm_day is identical across products for the same</span>
-    <span class="c1"># station/year/month (it&#39;s the same real GPCC observation) —</span>
+    <span class="c1"># station/year/month (it&#39;s the same real GPCC observation),</span>
     <span class="c1"># any one row&#39;s value is the right one to pull in as the GPCC column.</span>
     <span class="n">obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">merged_df</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">idx_cols</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">idx_cols</span><span class="p">)[</span><span class="s2">&quot;obs_mm_day&quot;</span><span class="p">]</span>
     <span class="n">pivot</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;GPCC&quot;</span><span class="p">,</span> <span class="n">obs</span><span class="p">)</span>
@@ -3221,10 +3221,10 @@ it) to have run.</p>
 
         <p>Interactive map of one product's mean rainfall (<code>kind=
 "daily"</code> or <code>"annual"</code>), or its bias against ANOTHER PRODUCT
-if <code>reference</code> is given — a gridded-vs-gridded comparison,
+if <code>reference</code> is given, a gridded-vs-gridded comparison,
 never a GPCC comparison (GPCC has no gridded form here).</p>
 <p>Set <code>show_gpcc=True</code> to overlay real GPCC station values (not
-a rasterized surface — the true point observations, colored on
+a rasterized surface, the true point observations, colored on
 the same scale as the raster) on top of the mean map. Requires
 <code>.get_observations()</code> to have already run. Ignored when
 <code>reference</code> is also given (the overlay only applies to the
@@ -3312,11 +3312,11 @@ single-product mean map).</p>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Interactive map of one product&#39;s mean rainfall (``kind=</span>
 <span class="sd">    &quot;daily&quot;`` or ``&quot;annual&quot;``), or its bias against ANOTHER PRODUCT</span>
-<span class="sd">    if ``reference`` is given — a gridded-vs-gridded comparison,</span>
+<span class="sd">    if ``reference`` is given, a gridded-vs-gridded comparison,</span>
 <span class="sd">    never a GPCC comparison (GPCC has no gridded form here).</span>
 
 <span class="sd">    Set ``show_gpcc=True`` to overlay real GPCC station values (not</span>
-<span class="sd">    a rasterized surface — the true point observations, colored on</span>
+<span class="sd">    a rasterized surface, the true point observations, colored on</span>
 <span class="sd">    the same scale as the raster) on top of the mean map. Requires</span>
 <span class="sd">    ``.get_observations()`` to have already run. Ignored when</span>
 <span class="sd">    ``reference`` is also given (the overlay only applies to the</span>
@@ -3387,7 +3387,7 @@ single-product mean map).</p>
     <div class="doc doc-contents ">
 
         <p>Quick time-series plot of raw GPCC observations. Requires
-<code>.get_observations()</code> to have run — no product data needed.</p>
+<code>.get_observations()</code> to have run, no product data needed.</p>
 
 
             <details class="mkdocstrings-source">
@@ -3403,7 +3403,7 @@ single-product mean map).</p>
 <span class="normal">234</span>
 <span class="normal">235</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">preview_observations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">station_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Quick time-series plot of raw GPCC observations. Requires</span>
-<span class="sd">    ``.get_observations()`` to have run — no product data needed.&quot;&quot;&quot;</span>
+<span class="sd">    ``.get_observations()`` to have run, no product data needed.&quot;&quot;&quot;</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">viz</span>
 
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -3429,7 +3429,7 @@ single-product mean map).</p>
     <div class="doc doc-contents ">
 
         <p>Interactive map of per-station bias against REAL GPCC
-observations for one product — the actual "does this agree with
+observations for one product, the actual "does this agree with
 ground truth, and where" spatial check. Requires <code>.merge()</code>
 (or <code>.validate()</code>, which calls it) to have run.</p>
 
@@ -3448,7 +3448,7 @@ ground truth, and where" spatial check. Requires <code>.merge()</code>
 <span class="normal">352</span>
 <span class="normal">353</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">preview_station_bias</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">product</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zoom</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Interactive map of per-station bias against REAL GPCC</span>
-<span class="sd">    observations for one product — the actual &quot;does this agree with</span>
+<span class="sd">    observations for one product, the actual &quot;does this agree with</span>
 <span class="sd">    ground truth, and where&quot; spatial check. Requires ``.merge()``</span>
 <span class="sd">    (or ``.validate()``, which calls it) to have run.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -3475,7 +3475,7 @@ ground truth, and where" spatial check. Requires <code>.merge()</code>
     <div class="doc doc-contents ">
 
         <p>Interactive map of station locations. Works as soon as
-stations are set (before <code>.get_observations()</code> even) — the
+stations are set (before <code>.get_observations()</code> even), the
 first sanity check: are these actually where you think they are?</p>
 
 
@@ -3496,7 +3496,7 @@ first sanity check: are these actually where you think they are?</p>
 <span class="normal">223</span>
 <span class="normal">224</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">preview_stations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zoom</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Interactive map of station locations. Works as soon as</span>
-<span class="sd">    stations are set (before ``.get_observations()`` even) — the</span>
+<span class="sd">    stations are set (before ``.get_observations()`` even), the</span>
 <span class="sd">    first sanity check: are these actually where you think they are?</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">stations</span> <span class="k">as</span> <span class="n">_stations</span>
@@ -3580,19 +3580,19 @@ first sanity check: are these actually where you think they are?</p>
     <div class="doc doc-contents ">
 
         <p>Validate one or more precipitation products against GPCC gauge
-observations at one or more stations, over a chosen year range —
+observations at one or more stations, over a chosen year range,
 the one-call version of the whole assessment, matching the original
 paper's exact logic (16 WA stations, 6 products, 2001-2020) as the
 default, everything else overridable by simple parameters.</p>
 <p>This is the function to reach for first. It does exactly what the
-original per-station CSV workflow did — extract each requested
+original per-station CSV workflow did, extract each requested
 product at each requested station, save/reuse a per-product CSV
 (<code>cache_dir/precip_extraction_&lt;PRODUCT&gt;.csv</code>, same as before),
 merge against GPCC observations
 (<code>cache_dir/gpcc_obs_&lt;start&gt;_&lt;end&gt;.csv</code>), and write the same
 result CSVs the original scripts did (<code>validation_by_zone.csv</code>,
 <code>validation_overall.csv</code>, <code>product_ranking.csv</code>,
-<code>threshold_sensitivity.csv</code>) — just wrapped in one call instead of
+<code>threshold_sensitivity.csv</code>), just wrapped in one call instead of
 six separate scripts.</p>
 
 
@@ -3619,7 +3619,7 @@ six separate scripts.</p>
 - <code>None</code> (default): the 16 WA GPCC stations from the paper.
 - a <code>stations_df</code>, a path to a <code>.geojson</code>/<code>.csv</code> file
   of station points, a list of <code>(lon, lat)</code> tuples, or a
-  single <code>(lon, lat)</code> tuple — see
+  single <code>(lon, lat)</code> tuple, see
   :func:<code>savana.rainfall.stations.load_stations_any</code> for
   the full list of accepted shapes. Works the same whether
   you give it 1 station or 100.</p>
@@ -3655,7 +3655,7 @@ in :data:<code>config.DEFAULT_PRODUCTS</code>. Any subset works.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>inclusive year range (plain ints — the
+                <p>inclusive year range (plain ints, the
 paper used 2001-2020; pick whatever you need).</p>
               </div>
             </td>
@@ -3672,10 +3672,10 @@ paper used 2001-2020; pick whatever you need).</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>where GPCC observations come from —
+                <p>where GPCC observations come from,
 <code>"ee_asset"</code> (fast, only covers the 16 WA stations),
 <code>"download"</code> (slower, works for any station anywhere),
-<code>"csv"</code> (use <code>obs_csv=</code> — you already have one), or
+<code>"csv"</code> (use <code>obs_csv=</code>, you already have one), or
 <code>"demo"</code> (synthetic, testing only). Defaults to
 <code>"ee_asset"</code> when <code>stations</code> is the WA default (fastest
 path for the paper's own network) and <code>"download"</code>
@@ -3764,10 +3764,10 @@ metrics. Defaults to the WMO standard (1.0 mm/day).</p>
               <div class="doc-md-description">
                 <p>Google Cloud project registered for Earth Engine use
 (only needed for <code>obs_source="ee_asset"</code> or the default
-Earth Engine ingestion — not needed at all if you only use
+Earth Engine ingestion, not needed at all if you only use
 <code>obs_source="csv"</code>/<code>"demo"</code>). If omitted, uses whatever
 is already configured for the environment (see
-<code>savana.ee_init.initialize</code>) — set this explicitly if
+<code>savana.ee_init.initialize</code>), set this explicitly if
 you have more than one Google Cloud project and the wrong
 one keeps getting picked up.</p>
               </div>
@@ -3794,7 +3794,7 @@ one keeps getting picked up.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>A fully populated :class:<code>RainfallAssessment</code> — inspect</p>
+                <p>A fully populated :class:<code>RainfallAssessment</code>, inspect</p>
               </div>
             </td>
           </tr>
@@ -4048,20 +4048,20 @@ print(result.validation_overall_df)
     <span class="n">ee_project</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate one or more precipitation products against GPCC gauge</span>
-<span class="sd">    observations at one or more stations, over a chosen year range —</span>
+<span class="sd">    observations at one or more stations, over a chosen year range,</span>
 <span class="sd">    the one-call version of the whole assessment, matching the original</span>
 <span class="sd">    paper&#39;s exact logic (16 WA stations, 6 products, 2001-2020) as the</span>
 <span class="sd">    default, everything else overridable by simple parameters.</span>
 
 <span class="sd">    This is the function to reach for first. It does exactly what the</span>
-<span class="sd">    original per-station CSV workflow did — extract each requested</span>
+<span class="sd">    original per-station CSV workflow did, extract each requested</span>
 <span class="sd">    product at each requested station, save/reuse a per-product CSV</span>
 <span class="sd">    (``cache_dir/precip_extraction_&lt;PRODUCT&gt;.csv``, same as before),</span>
 <span class="sd">    merge against GPCC observations</span>
 <span class="sd">    (``cache_dir/gpcc_obs_&lt;start&gt;_&lt;end&gt;.csv``), and write the same</span>
 <span class="sd">    result CSVs the original scripts did (``validation_by_zone.csv``,</span>
 <span class="sd">    ``validation_overall.csv``, ``product_ranking.csv``,</span>
-<span class="sd">    ``threshold_sensitivity.csv``) — just wrapped in one call instead of</span>
+<span class="sd">    ``threshold_sensitivity.csv``), just wrapped in one call instead of</span>
 <span class="sd">    six separate scripts.</span>
 
 <span class="sd">    Args:</span>
@@ -4069,19 +4069,19 @@ print(result.validation_overall_df)
 <span class="sd">            - ``None`` (default): the 16 WA GPCC stations from the paper.</span>
 <span class="sd">            - a ``stations_df``, a path to a ``.geojson``/``.csv`` file</span>
 <span class="sd">              of station points, a list of ``(lon, lat)`` tuples, or a</span>
-<span class="sd">              single ``(lon, lat)`` tuple — see</span>
+<span class="sd">              single ``(lon, lat)`` tuple, see</span>
 <span class="sd">              :func:`savana.rainfall.stations.load_stations_any` for</span>
 <span class="sd">              the full list of accepted shapes. Works the same whether</span>
 <span class="sd">              you give it 1 station or 100.</span>
 <span class="sd">        products: which products to check, by name (e.g.</span>
 <span class="sd">            ``[&quot;CHIRPS&quot;, &quot;GPM_IMERG&quot;]``). ``None`` (default) uses all 6</span>
 <span class="sd">            in :data:`config.DEFAULT_PRODUCTS`. Any subset works.</span>
-<span class="sd">        start_year, end_year: inclusive year range (plain ints — the</span>
+<span class="sd">        start_year, end_year: inclusive year range (plain ints, the</span>
 <span class="sd">            paper used 2001-2020; pick whatever you need).</span>
-<span class="sd">        obs_source: where GPCC observations come from —</span>
+<span class="sd">        obs_source: where GPCC observations come from,</span>
 <span class="sd">            ``&quot;ee_asset&quot;`` (fast, only covers the 16 WA stations),</span>
 <span class="sd">            ``&quot;download&quot;`` (slower, works for any station anywhere),</span>
-<span class="sd">            ``&quot;csv&quot;`` (use ``obs_csv=`` — you already have one), or</span>
+<span class="sd">            ``&quot;csv&quot;`` (use ``obs_csv=``, you already have one), or</span>
 <span class="sd">            ``&quot;demo&quot;`` (synthetic, testing only). Defaults to</span>
 <span class="sd">            ``&quot;ee_asset&quot;`` when ``stations`` is the WA default (fastest</span>
 <span class="sd">            path for the paper&#39;s own network) and ``&quot;download&quot;``</span>
@@ -4098,15 +4098,15 @@ print(result.validation_overall_df)
 <span class="sd">            metrics. Defaults to the WMO standard (1.0 mm/day).</span>
 <span class="sd">        ee_project: Google Cloud project registered for Earth Engine use</span>
 <span class="sd">            (only needed for ``obs_source=&quot;ee_asset&quot;`` or the default</span>
-<span class="sd">            Earth Engine ingestion — not needed at all if you only use</span>
+<span class="sd">            Earth Engine ingestion, not needed at all if you only use</span>
 <span class="sd">            ``obs_source=&quot;csv&quot;``/``&quot;demo&quot;``). If omitted, uses whatever</span>
 <span class="sd">            is already configured for the environment (see</span>
-<span class="sd">            ``savana.ee_init.initialize``) — set this explicitly if</span>
+<span class="sd">            ``savana.ee_init.initialize``), set this explicitly if</span>
 <span class="sd">            you have more than one Google Cloud project and the wrong</span>
 <span class="sd">            one keeps getting picked up.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        A fully populated :class:`RainfallAssessment` — inspect</span>
+<span class="sd">        A fully populated :class:`RainfallAssessment`, inspect</span>
 <span class="sd">        ``.validation_by_zone_df`` / ``.validation_overall_df``</span>
 <span class="sd">        directly, or call ``.summarize()``, ``.answer(&quot;...&quot;)``,</span>
 <span class="sd">        ``.show()``, ``.export_workbook(...)`` on it, same as building</span>
@@ -4171,7 +4171,7 @@ print(result.validation_overall_df)
             <span class="n">obs_kwargs</span><span class="p">[</span><span class="s2">&quot;data_dir&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cache_path</span>
     <span class="k">elif</span> <span class="n">obs_source</span> <span class="o">==</span> <span class="s2">&quot;demo&quot;</span><span class="p">:</span>
         <span class="n">obs_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;start_year&quot;</span><span class="p">:</span> <span class="n">start_year</span><span class="p">,</span> <span class="s2">&quot;end_year&quot;</span><span class="p">:</span> <span class="n">end_year</span><span class="p">}</span>
-    <span class="c1"># &quot;ee_asset&quot; takes no year kwargs — filtered to the requested range below instead</span>
+    <span class="c1"># &quot;ee_asset&quot; takes no year kwargs, filtered to the requested range below instead</span>
 
     <span class="n">ra</span><span class="o">.</span><span class="n">get_observations</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="n">obs_source</span><span class="p">,</span> <span class="o">**</span><span class="n">obs_kwargs</span><span class="p">)</span>
     <span class="n">ra</span><span class="o">.</span><span class="n">obs_df</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">obs_df</span><span class="p">[</span>
@@ -4244,7 +4244,7 @@ print(result.validation_overall_df)
         <p>Sentinel-2, seasonal, percentile, and AlphaEarth embedding composites.</p>
 <p>Ported from <code>kogyae.js</code> Phase 2 (Sentinel-2 reference imagery) and
 Phase 3 (AlphaEarth embeddings), and from the year-loop composite logic
-in Phase 8 — the standalone <code>composites.js</code> module you use in
+in Phase 8, the standalone <code>composites.js</code> module you use in
 <code>mainrun.js</code> was empty, so this reconstructs it from the working
 monolithic script with the exact same signatures <code>mainrun.js</code> expects
 (<code>getSentinel2Annual</code>, <code>getSeasonalComposite</code>, <code>getPercentileComposites</code>,
@@ -4338,7 +4338,7 @@ sparse Cloud Score+ coverage.</p>
 
         <p>Per-band percentile composites (default p10/p90) for a calendar year.</p>
 <p>Used to build the seasonal-amplitude / stability indices.
-Equivalent to <code>C.getPercentileComposites</code> — returns a dict keyed
+Equivalent to <code>C.getPercentileComposites</code>, returns a dict keyed
 <code>"p{percentile}"</code> (e.g. <code>{"p10": image, "p90": image}</code>).</p>
 
 
@@ -4389,7 +4389,7 @@ Equivalent to <code>C.getPercentileComposites</code> — returns a dict keyed
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Per-band percentile composites (default p10/p90) for a calendar year.</span>
 
 <span class="sd">    Used to build the seasonal-amplitude / stability indices.</span>
-<span class="sd">    Equivalent to ``C.getPercentileComposites`` — returns a dict keyed</span>
+<span class="sd">    Equivalent to ``C.getPercentileComposites``, returns a dict keyed</span>
 <span class="sd">    ``&quot;p{percentile}&quot;`` (e.g. ``{&quot;p10&quot;: image, &quot;p90&quot;: image}``).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">ee</span>
@@ -4737,7 +4737,7 @@ failing on sparse early-record years). Equivalent to
             <span class="n">idx</span><span class="p">[</span><span class="s2">&quot;ndvi_p90&quot;</span><span class="p">],</span>  <span class="c1"># 11</span>
             <span class="n">idx</span><span class="p">[</span><span class="s2">&quot;ndmi_p90&quot;</span><span class="p">],</span>  <span class="c1"># 12</span>
             <span class="n">idx</span><span class="p">[</span><span class="s2">&quot;ndvi_p_amp&quot;</span><span class="p">],</span>  <span class="c1"># 13</span>
-            <span class="n">rue_img</span><span class="p">,</span>  <span class="c1"># 14 — RUE</span>
+            <span class="n">rue_img</span><span class="p">,</span>  <span class="c1"># 14, RUE</span>
         <span class="p">]</span>
     <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -4758,7 +4758,7 @@ failing on sparse early-record years). Equivalent to
     <div class="doc doc-contents ">
 
         <p>Compute all spectral indices from seasonal/percentile composites.</p>
-<p>Returns a dict — access as <code>idx["ndvi"]</code>, <code>idx["ndvi_dry"]</code>, etc.</p>
+<p>Returns a dict, access as <code>idx["ndvi"]</code>, <code>idx["ndvi_dry"]</code>, etc.</p>
 
 
             <details class="mkdocstrings-source">
@@ -4803,7 +4803,7 @@ failing on sparse early-record years). Equivalent to
 <span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="n">s2_annual</span><span class="p">,</span> <span class="n">s2_dry</span><span class="p">,</span> <span class="n">s2_wet</span><span class="p">,</span> <span class="n">p10</span><span class="p">,</span> <span class="n">p90</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute all spectral indices from seasonal/percentile composites.</span>
 
-<span class="sd">    Returns a dict — access as ``idx[&quot;ndvi&quot;]``, ``idx[&quot;ndvi_dry&quot;]``, etc.</span>
+<span class="sd">    Returns a dict, access as ``idx[&quot;ndvi&quot;]``, ``idx[&quot;ndvi_dry&quot;]``, etc.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ndvi</span> <span class="o">=</span> <span class="n">s2_annual</span><span class="o">.</span><span class="n">normalizedDifference</span><span class="p">([</span><span class="s2">&quot;B8&quot;</span><span class="p">,</span> <span class="s2">&quot;B4&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">&quot;NDVI&quot;</span><span class="p">)</span>
     <span class="n">ndmi</span> <span class="o">=</span> <span class="n">s2_annual</span><span class="o">.</span><span class="n">normalizedDifference</span><span class="p">([</span><span class="s2">&quot;B8&quot;</span><span class="p">,</span> <span class="s2">&quot;B11&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">&quot;NDMI&quot;</span><span class="p">)</span>
@@ -5154,7 +5154,7 @@ Direct port of <code>rue.js</code>.</p>
     <div class="doc doc-contents first">
 
         <p>Adaptive percentile-based threshold derivation.</p>
-<p>All thresholds are derived from <em>this AOI's own</em> index distribution —
+<p>All thresholds are derived from <em>this AOI's own</em> index distribution,
 nothing is hardcoded, so the same code transfers to any savanna
 landscape automatically. Direct port of <code>thresholds.js</code>.</p>
 
@@ -5190,7 +5190,7 @@ landscape automatically. Direct port of <code>thresholds.js</code>.</p>
     <div class="doc doc-contents ">
 
         <p>Compute all classification thresholds from index percentiles.</p>
-<p>Returns a dict of <code>ee.Number</code> — access as <code>T["CORE_NDVI_DRY"]</code> etc.</p>
+<p>Returns a dict of <code>ee.Number</code>, access as <code>T["CORE_NDVI_DRY"]</code> etc.</p>
 
 
             <details class="mkdocstrings-source">
@@ -5274,7 +5274,7 @@ landscape automatically. Direct port of <code>thresholds.js</code>.</p>
 <span class="normal">87</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="n">idx</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">region</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute all classification thresholds from index percentiles.</span>
 
-<span class="sd">    Returns a dict of ``ee.Number`` — access as ``T[&quot;CORE_NDVI_DRY&quot;]`` etc.</span>
+<span class="sd">    Returns a dict of ``ee.Number``, access as ``T[&quot;CORE_NDVI_DRY&quot;]`` etc.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">ee</span>
 
@@ -5302,10 +5302,10 @@ landscape automatically. Direct port of <code>thresholds.js</code>.</p>
         <span class="k">return</span> <span class="n">ee</span><span class="o">.</span><span class="n">Number</span><span class="p">(</span><span class="n">pct_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">_p</span><span class="si">{</span><span class="n">pct</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="p">{</span>
-        <span class="c1"># Anthropogenic — high NDBI or very sparse vegetation</span>
+        <span class="c1"># Anthropogenic, high NDBI or very sparse vegetation</span>
         <span class="s2">&quot;ANTHRO_NDBI&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDBI&quot;</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span>
         <span class="s2">&quot;ANTHRO_NDVI_MAX&quot;</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Number</span><span class="p">(</span><span class="mf">0.20</span><span class="p">),</span>
-        <span class="c1"># Riparian — evergreen gallery forest, high NDMI both seasons</span>
+        <span class="c1"># Riparian, evergreen gallery forest, high NDMI both seasons</span>
         <span class="s2">&quot;RIPARIAN_NDMI&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDMI&quot;</span><span class="p">,</span> <span class="mi">95</span><span class="p">),</span>
         <span class="s2">&quot;RIPARIAN_NDMI_DRY&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDMI_dry&quot;</span><span class="p">,</span> <span class="mi">75</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
             <span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDMI_dry&quot;</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDMI_dry&quot;</span><span class="p">,</span> <span class="mi">75</span><span class="p">))</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
@@ -5313,12 +5313,12 @@ landscape automatically. Direct port of <code>thresholds.js</code>.</p>
         <span class="s2">&quot;RIPARIAN_NDVI_DRY&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDVI_dry&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
             <span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDVI_dry&quot;</span><span class="p">,</span> <span class="mi">75</span><span class="p">)</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDVI_dry&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
         <span class="p">),</span>
-        <span class="c1"># Core Woodland — dense closed canopy, top 25% dry-season NDVI</span>
+        <span class="c1"># Core Woodland, dense closed canopy, top 25% dry-season NDVI</span>
         <span class="s2">&quot;CORE_NDVI_DRY&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDVI_dry&quot;</span><span class="p">,</span> <span class="mi">75</span><span class="p">),</span>
         <span class="s2">&quot;CORE_NDMI&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDMI&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
             <span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDMI&quot;</span><span class="p">,</span> <span class="mi">75</span><span class="p">)</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDMI&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
         <span class="p">),</span>
-        <span class="c1"># Grassland — loses canopy in dry season, high amplitude</span>
+        <span class="c1"># Grassland, loses canopy in dry season, high amplitude</span>
         <span class="s2">&quot;GRASS_NDVI_DRY_MAX&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDVI_dry&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span>
         <span class="s2">&quot;GRASS_AMP_MIN&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDVI_amp&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
             <span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDVI_amp&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDVI_amp&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span>
@@ -5326,7 +5326,7 @@ landscape automatically. Direct port of <code>thresholds.js</code>.</p>
         <span class="s2">&quot;GRASS_NDMI_DRY_MAX&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDMI_dry&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
             <span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDMI_dry&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDMI_dry&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">))</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span>
         <span class="p">),</span>
-        <span class="c1"># Shrub-Transition — intermediate dry NDVI, low dry moisture</span>
+        <span class="c1"># Shrub-Transition, intermediate dry NDVI, low dry moisture</span>
         <span class="s2">&quot;SHRUB_NDVI_DRY_MIN&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDVI_dry&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
         <span class="s2">&quot;SHRUB_NDVI_DRY_MAX&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDVI_dry&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
         <span class="s2">&quot;SHRUB_NDMI_DRY_MIN&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDMI_dry&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span>
@@ -5337,7 +5337,7 @@ landscape automatically. Direct port of <code>thresholds.js</code>.</p>
             <span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDVI_amp&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDVI_amp&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="mf">0.30</span><span class="p">)</span>
         <span class="p">),</span>
         <span class="s2">&quot;SHRUB_AMP_MAX&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDVI_amp&quot;</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span>
-        <span class="c1"># Open Woodland — intermediate canopy, sub-populations split</span>
+        <span class="c1"># Open Woodland, intermediate canopy, sub-populations split</span>
         <span class="s2">&quot;OPEN_NDVI_DRY_MIN&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDVI_dry&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span>
         <span class="s2">&quot;OPEN_NDVI_DRY_MAX&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDVI_dry&quot;</span><span class="p">,</span> <span class="mi">75</span><span class="p">),</span>
         <span class="s2">&quot;OPEN_NDMI_MIN&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">(</span><span class="s2">&quot;NDMI&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span>
@@ -6405,7 +6405,7 @@ with embedding bands attached, ready for classifier training.</p>
 
         <p>Four-model ablation training and multi-epoch classification.</p>
 <p>Ported from <code>kogyae.js</code> Phase 5 (training), Phase 7 (accuracy split),
-and Phase 8 (multi-epoch classification) — the standalone
+and Phase 8 (multi-epoch classification), the standalone
 <code>classifers.js</code> module referenced by <code>mainrun.js</code> was empty, so this
 reconstructs it with the exact signatures <code>mainrun.js</code> expects
 (<code>trainAllModels</code>, <code>classifyAllEpochs</code>).</p>
@@ -6415,10 +6415,10 @@ reconstructs it with the exact signatures <code>mainrun.js</code> expects
   <summary>Models</summary>
   <p>A: KNN (k=3)              | AlphaEarth embeddings only [baseline]
 B: Random Forest          | AlphaEarth embeddings only
-C: Random Forest          | Phenology indices only [CIRCULAR — ablation only,
+C: Random Forest          | Phenology indices only [CIRCULAR, ablation only,
                              not used operationally, since labels were
                              derived from the same indices]
-D: Random Forest          | Embeddings + Phenology [PRIMARY — used for mapping]</p>
+D: Random Forest          | Embeddings + Phenology [PRIMARY, used for mapping]</p>
 </details>
 
 
@@ -6453,13 +6453,13 @@ D: Random Forest          | Embeddings + Phenology [PRIMARY — used for mapping
 
         <p>Classify every epoch year with the appropriate master classifier.</p>
 <p>Years &gt;= <code>phenology_min_year</code> use Model D (embeddings + phenology,
-recomputed for that specific year). Earlier years — where seasonal
-Sentinel-2 coverage is typically too sparse for reliable phenology
-— fall back to Model B (embeddings only). This generalises the
-hardcoded "if year === 2017" special case in the original script.</p>
+ recomputed for that specific year). Earlier years, where seasonal
+ Sentinel-2 coverage is typically too sparse for reliable phenology
+, fall back to Model B (embeddings only). This generalises the
+ hardcoded "if year === 2017" special case in the original script.</p>
 <p><code>embedding_current_year</code>/<code>embedding_current_image</code>: if one of
-the epochs is the same year the embedding used for training was
-already computed for, pass it in to avoid recomputing it.</p>
+ the epochs is the same year the embedding used for training was
+ already computed for, pass it in to avoid recomputing it.</p>
 <p>Returns <code>{year: classified_image}</code>.</p>
 
 
@@ -6568,17 +6568,17 @@ already computed for, pass it in to avoid recomputing it.</p>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Classify every epoch year with the appropriate master classifier.</span>
 
-<span class="sd">    Years &gt;= ``phenology_min_year`` use Model D (embeddings + phenology,</span>
-<span class="sd">    recomputed for that specific year). Earlier years — where seasonal</span>
-<span class="sd">    Sentinel-2 coverage is typically too sparse for reliable phenology</span>
-<span class="sd">    — fall back to Model B (embeddings only). This generalises the</span>
-<span class="sd">    hardcoded &quot;if year === 2017&quot; special case in the original script.</span>
+<span class="sd">     Years &gt;= ``phenology_min_year`` use Model D (embeddings + phenology,</span>
+<span class="sd">     recomputed for that specific year). Earlier years, where seasonal</span>
+<span class="sd">     Sentinel-2 coverage is typically too sparse for reliable phenology</span>
+<span class="sd">    , fall back to Model B (embeddings only). This generalises the</span>
+<span class="sd">     hardcoded &quot;if year === 2017&quot; special case in the original script.</span>
 
-<span class="sd">    ``embedding_current_year``/``embedding_current_image``: if one of</span>
-<span class="sd">    the epochs is the same year the embedding used for training was</span>
-<span class="sd">    already computed for, pass it in to avoid recomputing it.</span>
+<span class="sd">     ``embedding_current_year``/``embedding_current_image``: if one of</span>
+<span class="sd">     the epochs is the same year the embedding used for training was</span>
+<span class="sd">     already computed for, pass it in to avoid recomputing it.</span>
 
-<span class="sd">    Returns ``{year: classified_image}``.</span>
+<span class="sd">     Returns ``{year: classified_image}``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">ee</span>
 
@@ -6886,7 +6886,7 @@ classification always matches training feature order).</p>
     <span class="n">train_pheno</span> <span class="o">=</span> <span class="n">train_full</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">pheno_bands</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">class_prop_list</span><span class="p">))</span>
     <span class="n">valid_pheno</span> <span class="o">=</span> <span class="n">valid_full</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">pheno_bands</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">class_prop_list</span><span class="p">))</span>
 
-    <span class="c1"># Model A — KNN (k=3) | Embeddings only [baseline]</span>
+    <span class="c1"># Model A, KNN (k=3) | Embeddings only [baseline]</span>
     <span class="n">model_a</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Classifier</span><span class="o">.</span><span class="n">smileKNN</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">train</span><span class="p">(</span>
         <span class="n">features</span><span class="o">=</span><span class="n">train_emb</span><span class="p">,</span> <span class="n">classProperty</span><span class="o">=</span><span class="n">class_property</span><span class="p">,</span> <span class="n">inputProperties</span><span class="o">=</span><span class="n">emb_bands</span>
     <span class="p">)</span>
@@ -6894,7 +6894,7 @@ classification always matches training feature order).</p>
         <span class="n">actual</span><span class="o">=</span><span class="n">class_property</span><span class="p">,</span> <span class="n">predicted</span><span class="o">=</span><span class="s2">&quot;classification&quot;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">class_order</span>
     <span class="p">)</span>
 
-    <span class="c1"># Model B — RF (150 trees) | Embeddings only</span>
+    <span class="c1"># Model B, RF (150 trees) | Embeddings only</span>
     <span class="n">model_b</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Classifier</span><span class="o">.</span><span class="n">smileRandomForest</span><span class="p">(</span>
         <span class="n">numberOfTrees</span><span class="o">=</span><span class="n">n_trees</span><span class="p">,</span>
         <span class="n">variablesPerSplit</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
@@ -6906,7 +6906,7 @@ classification always matches training feature order).</p>
         <span class="n">actual</span><span class="o">=</span><span class="n">class_property</span><span class="p">,</span> <span class="n">predicted</span><span class="o">=</span><span class="s2">&quot;classification&quot;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">class_order</span>
     <span class="p">)</span>
 
-    <span class="c1"># Model C — RF (150 trees) | Phenology only [CIRCULAR — ablation diagnostic only]</span>
+    <span class="c1"># Model C, RF (150 trees) | Phenology only [CIRCULAR, ablation diagnostic only]</span>
     <span class="n">model_c</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Classifier</span><span class="o">.</span><span class="n">smileRandomForest</span><span class="p">(</span>
         <span class="n">numberOfTrees</span><span class="o">=</span><span class="n">n_trees</span><span class="p">,</span>
         <span class="n">variablesPerSplit</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
@@ -6920,7 +6920,7 @@ classification always matches training feature order).</p>
         <span class="n">actual</span><span class="o">=</span><span class="n">class_property</span><span class="p">,</span> <span class="n">predicted</span><span class="o">=</span><span class="s2">&quot;classification&quot;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">class_order</span>
     <span class="p">)</span>
 
-    <span class="c1"># Model D — RF (150 trees) | Embeddings + Phenology [PRIMARY]</span>
+    <span class="c1"># Model D, RF (150 trees) | Embeddings + Phenology [PRIMARY]</span>
     <span class="n">model_d</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Classifier</span><span class="o">.</span><span class="n">smileRandomForest</span><span class="p">(</span>
         <span class="n">numberOfTrees</span><span class="o">=</span><span class="n">n_trees</span><span class="p">,</span>
         <span class="n">variablesPerSplit</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span>
@@ -7346,7 +7346,7 @@ images (keyed <code>rue_{year}</code>).</p>
         <p>Confusion matrix and accuracy summary reporting.</p>
 <p>Ports the CSV structure from <code>accuracy.js</code> (24-row full confusion
 matrix across 4 models x 6 classes, plus a 4-row per-model summary),
-but returns <code>pandas.DataFrame</code> directly for notebook use — Drive/CSV
+but returns <code>pandas.DataFrame</code> directly for notebook use, Drive/CSV
 export is available separately via :mod:<code>savana.exports</code>.</p>
 
 
@@ -7505,7 +7505,7 @@ export is available separately via :mod:<code>savana.exports</code>.</p>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">matrices</span><span class="p">:</span>
             <span class="k">continue</span>
         <span class="n">cm</span> <span class="o">=</span> <span class="n">matrices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-        <span class="n">note</span> <span class="o">=</span> <span class="s2">&quot; [CIRCULAR — inflated, diagnostic only]&quot;</span> <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;c&quot;</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">note</span> <span class="o">=</span> <span class="s2">&quot; [CIRCULAR, inflated, diagnostic only]&quot;</span> <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;c&quot;</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
         <span class="n">oa</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">accuracy</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
         <span class="n">kappa</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">kappa</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Model </span><span class="si">{</span><span class="n">key</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2"> | OA: </span><span class="si">{</span><span class="n">oa</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> | Kappa: </span><span class="si">{</span><span class="n">kappa</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}{</span><span class="n">note</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -7514,7 +7514,7 @@ export is available separately via :mod:<code>savana.exports</code>.</p>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  B &gt; A  -&gt; RF outperforms KNN on the same embeddings&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  D &gt; B  -&gt; phenology adds value beyond embeddings alone&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  D &gt; C  -&gt; embeddings add value beyond indices alone&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  C is circular (labels derived from the same indices) — diagnostic only&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  C is circular (labels derived from the same indices), diagnostic only&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Model D (primary) is used for all epoch mapping.&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -8049,11 +8049,11 @@ or nothing will be exported. Returns the list of started EE tasks.</p>
 
         <p>Side-by-side swipe comparison between two layers.</p>
 <p>Each of <code>left</code>/<code>right</code> can be either:
-    - an <code>ee.Image</code> (e.g. a classified year, or <code>clf.maps[2019]</code>) —
+    - an <code>ee.Image</code> (e.g. a classified year, or <code>clf.maps[2019]</code>),
       rendered with the land-system palette/legend
     - a basemap name string (e.g. <code>"SATELLITE"</code>, <code>"HYBRID"</code>,
-      <code>"ROADMAP"</code>, <code>"Esri.WorldImagery"</code>) — passed straight to geemap</p>
-<p>Drag the handle in the middle of the map to swipe between them —
+      <code>"ROADMAP"</code>, <code>"Esri.WorldImagery"</code>), passed straight to geemap</p>
+<p>Drag the handle in the middle of the map to swipe between them,
 this also works for "classified year vs. underlying satellite
 imagery" by passing a basemap name string as one side.</p>
 
@@ -8119,12 +8119,12 @@ imagery" by passing a basemap name string as one side.</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Side-by-side swipe comparison between two layers.</span>
 
 <span class="sd">    Each of ``left``/``right`` can be either:</span>
-<span class="sd">        - an ``ee.Image`` (e.g. a classified year, or ``clf.maps[2019]``) —</span>
+<span class="sd">        - an ``ee.Image`` (e.g. a classified year, or ``clf.maps[2019]``),</span>
 <span class="sd">          rendered with the land-system palette/legend</span>
 <span class="sd">        - a basemap name string (e.g. ``&quot;SATELLITE&quot;``, ``&quot;HYBRID&quot;``,</span>
-<span class="sd">          ``&quot;ROADMAP&quot;``, ``&quot;Esri.WorldImagery&quot;``) — passed straight to geemap</span>
+<span class="sd">          ``&quot;ROADMAP&quot;``, ``&quot;Esri.WorldImagery&quot;``), passed straight to geemap</span>
 
-<span class="sd">    Drag the handle in the middle of the map to swipe between them —</span>
+<span class="sd">    Drag the handle in the middle of the map to swipe between them,</span>
 <span class="sd">    this also works for &quot;classified year vs. underlying satellite</span>
 <span class="sd">    imagery&quot; by passing a basemap name string as one side.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -8135,7 +8135,7 @@ imagery" by passing a basemap name string as one side.</p>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_to_layer</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">side</span>  <span class="c1"># basemap name — geemap resolves this itself</span>
+            <span class="k">return</span> <span class="n">side</span>  <span class="c1"># basemap name, geemap resolves this itself</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">geemap</span><span class="o">.</span><span class="n">ee_tile_layer</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">class_vis_params</span><span class="p">(</span><span class="n">info</span><span class="p">),</span> <span class="n">label</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
@@ -8319,9 +8319,9 @@ imagery" by passing a basemap name string as one side.</p>
     <div class="doc doc-contents ">
 
         <p>Display ground control points on a map, colored by assigned class.</p>
-<p>Lets you visually sanity-check the sampling/labelling step — where
+<p>Lets you visually sanity-check the sampling/labelling step, where
 the training points actually landed, and whether their classes look
-spatially sensible — before trusting the classifier trained on them.</p>
+spatially sensible, before trusting the classifier trained on them.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -8409,7 +8409,7 @@ point (defaults to savana's standard <code>"landSystem"</code>).</p>
             <td>
               <div class="doc-md-description">
                 <p>Optional ee.Image to show underneath the points
-(e.g. a classified year, or a Sentinel-2 composite) — makes
+(e.g. a classified year, or a Sentinel-2 composite), makes
 it easier to judge whether points look correctly placed.</p>
               </div>
             </td>
@@ -8514,9 +8514,9 @@ it easier to judge whether points look correctly placed.</p>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Display ground control points on a map, colored by assigned class.</span>
 
-<span class="sd">    Lets you visually sanity-check the sampling/labelling step — where</span>
+<span class="sd">    Lets you visually sanity-check the sampling/labelling step, where</span>
 <span class="sd">    the training points actually landed, and whether their classes look</span>
-<span class="sd">    spatially sensible — before trusting the classifier trained on them.</span>
+<span class="sd">    spatially sensible, before trusting the classifier trained on them.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        gcps: The ``ee.FeatureCollection`` of ground control points</span>
@@ -8527,7 +8527,7 @@ it easier to judge whether points look correctly placed.</p>
 <span class="sd">        class_property: Property name holding the class code on each</span>
 <span class="sd">            point (defaults to savana&#39;s standard ``&quot;landSystem&quot;``).</span>
 <span class="sd">        background: Optional ee.Image to show underneath the points</span>
-<span class="sd">            (e.g. a classified year, or a Sentinel-2 composite) — makes</span>
+<span class="sd">            (e.g. a classified year, or a Sentinel-2 composite), makes</span>
 <span class="sd">            it easier to judge whether points look correctly placed.</span>
 <span class="sd">        m: Existing geemap.Map to add to, or a new one is created.</span>
 <span class="sd">        point_size: Marker size in pixels.</span>
@@ -8569,7 +8569,7 @@ it easier to judge whether points look correctly placed.</p>
     <div class="doc doc-contents ">
 
         <p>Add every requested epoch as its own toggleable layer on one map.</p>
-<p>Uses geemap's built-in layer panel — each year gets its own checkbox,
+<p>Uses geemap's built-in layer panel, each year gets its own checkbox,
 so you can flip between them (or view several at once with opacity
 sliders) without re-running anything.</p>
 
@@ -8613,7 +8613,7 @@ sliders) without re-running anything.</p>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Add every requested epoch as its own toggleable layer on one map.</span>
 
-<span class="sd">    Uses geemap&#39;s built-in layer panel — each year gets its own checkbox,</span>
+<span class="sd">    Uses geemap&#39;s built-in layer panel, each year gets its own checkbox,</span>
 <span class="sd">    so you can flip between them (or view several at once with opacity</span>
 <span class="sd">    sliders) without re-running anything.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -9064,7 +9064,7 @@ pass an <code>ee.Geometry</code> instead.</p>
     <div class="doc doc-contents first">
 
         <p>Default configuration for savanna landscape classification.</p>
-<p>Everything here is a <em>default</em> — every public function in the package
+<p>Everything here is a <em>default</em>, every public function in the package
 accepts overrides, so a user classifying a different savanna system
 with a different class scheme is not locked into these values.</p>
 

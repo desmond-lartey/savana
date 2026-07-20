@@ -614,25 +614,25 @@
 <h1 id="method-overview">Method Overview<a class="headerlink" href="#method-overview" title="Permanent link">&para;</a></h1>
 <h2 id="land-system-classification">Land-system classification<a class="headerlink" href="#land-system-classification" title="Permanent link">&para;</a></h2>
 <p>Every classification threshold is derived from <strong>percentiles of that AOI's own
-spectral index distribution</strong> at run time — nothing is hardcoded to one
+spectral index distribution</strong> at run time, nothing is hardcoded to one
 landscape's spectral range. Point <code>savana</code> at a different savanna system and
 it recalibrates automatically.</p>
 <ol>
-<li><strong>Composites</strong> (<code>savana.composites</code>) — cloud-masked Sentinel-2
+<li><strong>Composites</strong> (<code>savana.composites</code>), cloud-masked Sentinel-2
    annual/seasonal/percentile composites + AlphaEarth annual embeddings (64-dim).</li>
-<li><strong>Indices</strong> (<code>savana.indices</code>) — NDVI/NDMI/NDBI/MNDWI across annual,
+<li><strong>Indices</strong> (<code>savana.indices</code>), NDVI/NDMI/NDBI/MNDWI across annual,
    dry-season, wet-season, and percentile composites; a 14-band phenological
    feature stack.</li>
-<li><strong>RUE</strong> (<code>savana.rue</code>) — Rain Use Efficiency: integrated NDVI normalised by
+<li><strong>RUE</strong> (<code>savana.rue</code>), Rain Use Efficiency: integrated NDVI normalised by
    rainfall, with valid-month normalisation to remove Sentinel-2 tile-boundary
    bias.</li>
-<li><strong>Thresholds</strong> (<code>savana.thresholds</code>) — fully adaptive, percentile-derived
+<li><strong>Thresholds</strong> (<code>savana.thresholds</code>), fully adaptive, percentile-derived
    cutoffs.</li>
-<li><strong>Masks</strong> (<code>savana.masks</code>) — six mutually exclusive land-system masks.</li>
-<li><strong>Sampling</strong> (<code>savana.sampling</code>) — unsupervised k-means stratified
+<li><strong>Masks</strong> (<code>savana.masks</code>), six mutually exclusive land-system masks.</li>
+<li><strong>Sampling</strong> (<code>savana.sampling</code>), unsupervised k-means stratified
    candidate sampling → rule-based provisional labels → confidence-margin
    filter → class balancing.</li>
-<li><strong>Classifiers</strong> (<code>savana.classifiers</code>) — four-model ablation:</li>
+<li><strong>Classifiers</strong> (<code>savana.classifiers</code>), four-model ablation:</li>
 </ol>
 <table>
 <thead>
@@ -656,86 +656,86 @@ it recalibrates automatically.</p>
 <tr>
 <td>C</td>
 <td>Random Forest, phenology indices</td>
-<td>Diagnostic only — circular (labels derived from the same indices)</td>
+<td>Diagnostic only, circular (labels derived from the same indices)</td>
 </tr>
 <tr>
 <td>D</td>
 <td>Random Forest, embeddings + phenology</td>
-<td><strong>Primary</strong> — used for all epoch mapping</td>
+<td><strong>Primary</strong>, used for all epoch mapping</td>
 </tr>
 </tbody>
 </table>
 <p>Years without reliable seasonal Sentinel-2 coverage automatically fall back
    to Model B (embeddings-only).
-8. <strong>Change</strong> (<code>savana.change</code>) — conservative change detection
+8. <strong>Change</strong> (<code>savana.change</code>), conservative change detection
    cross-validated against RUE inter-annual variability, separating genuine
    structural change from rainfall-driven apparent change.
-9. <strong>Accuracy / Exports</strong> (<code>savana.accuracy</code>, <code>savana.exports</code>) — confusion
+9. <strong>Accuracy / Exports</strong> (<code>savana.accuracy</code>, <code>savana.exports</code>), confusion
    matrices, accuracy summaries, and Drive/Asset/CSV export helpers.</p>
 <p>See the <a href="../api/">API Reference</a> for the full function/class listing.</p>
 <hr />
 <h2 id="precipitation-product-assessment">Precipitation product assessment<a class="headerlink" href="#precipitation-product-assessment" title="Permanent link">&para;</a></h2>
 <p>Zone-stratified, dual-class validation of global precipitation products
 against real GPCC gauge observations, following a published West Africa
-study's methodology as the default configuration — every default
+study's methodology as the default configuration, every default
 (products, stations, zones, application weights) is data, not hardcoded
 logic, so a different region, gauge network, or set of products uses the
 exact same pipeline.</p>
 <ol>
-<li><strong>Config</strong> (<code>savana.rainfall.config</code>) — the default 6-product catalogue
+<li><strong>Config</strong> (<code>savana.rainfall.config</code>), the default 6-product catalogue
    (CHIRPS, ERA5-Land, GPM IMERG, MERRA-2, PERSIANN-CDR, TerraClimate) with
    per-product unit-harmonisation rules, the default 16 GPCC gauge stations,
    the default 5-zone West Africa ecological scheme, and the 7
-   application-weight profiles used for decision scoring — all overridable.</li>
-<li><strong>Stations</strong> (<code>savana.rainfall.stations</code>) — flexible station input
+   application-weight profiles used for decision scoring, all overridable.</li>
+<li><strong>Stations</strong> (<code>savana.rainfall.stations</code>), flexible station input
    (DataFrame, <code>.geojson</code>/<code>.csv</code> file, coordinate list, single coordinate)
    normalised through one entry point; GPCC observations loaded from the
    public daily archive (any station, anywhere), a pre-extracted Earth Engine
    table asset (fast, limited to that asset's stations), a CSV you already
    have, or synthetic demo data for testing.</li>
-<li><strong>Zones</strong> (<code>savana.rainfall.zones</code>) — ecological/climatic zones built from
+<li><strong>Zones</strong> (<code>savana.rainfall.zones</code>), ecological/climatic zones built from
    your own named base regions split by latitude bands (a generalised port of
    the original GEE zone-delineation tool), loaded from your own zone file,
    wrapped from a single custom AOI with no stratification, or a documented
    latitude-band fallback when no zone geometry is available at all.</li>
-<li><strong>Ingestion</strong> (<code>savana.rainfall.ingestion</code>) — every product harmonised to
+<li><strong>Ingestion</strong> (<code>savana.rainfall.ingestion</code>), every product harmonised to
    a common monthly mean mm/day grid via its own conversion rule (direct
    scale, ERA5-Land's per-month day-count division, TerraClimate's monthly
    accumulation division, or MERRA-2's hourly→daily pre-aggregation to stay
    within Earth Engine's per-request compute limits).</li>
-<li><strong>Extraction</strong> (<code>savana.rainfall.extraction</code>) — point-sampling each
+<li><strong>Extraction</strong> (<code>savana.rainfall.extraction</code>), point-sampling each
    product's grid at every station, with optional per-product CSV caching so
    a re-run reuses what's already been pulled instead of re-hitting Earth
    Engine.</li>
-<li><strong>Validation</strong> (<code>savana.rainfall.validation</code>) — two metric classes,
+<li><strong>Validation</strong> (<code>savana.rainfall.validation</code>), two metric classes,
    computed at any aggregation level (per-station, per-zone, per-season, or
    pooled) via one shared grouping function:</li>
 <li><em>Continuous</em>: Bias, PBIAS, MAE, RMSE, r, r², NSE, KGE (the primary
      ranking metric).</li>
 <li><em>Categorical</em>: POD, FAR, CSI, ETS, frequency bias, from a 2×2 wet/dry
      contingency table at the WMO standard 1.0 mm/day threshold by default.</li>
-<li><strong>Thresholds</strong> (<code>savana.rainfall.thresholds</code>) — categorical metric
+<li><strong>Thresholds</strong> (<code>savana.rainfall.thresholds</code>), categorical metric
    sensitivity swept across multiple rain-detection thresholds, since
    categorical detection is structurally unstable in near-zero-rainfall
    dryland environments regardless of which product is used.</li>
-<li><strong>Spatial</strong> (<code>savana.rainfall.spatial</code>) — interactive <code>geemap</code>-based
+<li><strong>Spatial</strong> (<code>savana.rainfall.spatial</code>), interactive <code>geemap</code>-based
    preview maps: a product's climatology, inter-product bias (never a GPCC
-   comparison — GPCC has no gridded form in this package), real GPCC point
+   comparison, GPCC has no gridded form in this package), real GPCC point
    values overlaid on a product's raster on the same color scale, and
    per-station bias against true GPCC ground truth.</li>
-<li><strong>Decision</strong> (<code>savana.rainfall.decision</code>) — application-weighted composite
+<li><strong>Decision</strong> (<code>savana.rainfall.decision</code>), application-weighted composite
    scoring (default: fixed-bound normalisation, matching the published
    results; a per-zone relative normalisation is available as an alternate),
    and an interactive Excel workbook with dropdown-driven live lookups
    (<code>SELECTOR</code>/<code>SCORECARD</code> sheets) alongside the flat result tables.</li>
-<li><strong>Insights</strong> (<code>savana.rainfall.insights</code>) — grounded facts, a
+<li><strong>Insights</strong> (<code>savana.rainfall.insights</code>), grounded facts, a
     plain-English summary, and keyword-matched Q&amp;A, following the exact
     facts/summarize/answer pattern used by the classification module's
     <code>savana.insights</code>.</li>
-<li><strong>Viz</strong> (<code>savana.rainfall.viz</code>) — static comparison figures: metric
+<li><strong>Viz</strong> (<code>savana.rainfall.viz</code>), static comparison figures: metric
     heatmaps, zonal boxplots, a Taylor diagram, application-ranking bar
     charts, and the app×zone recommendation heatmap.</li>
-<li><strong>Pipeline</strong> (<code>savana.rainfall.pipeline</code>) — the <code>RainfallAssessment</code>
+<li><strong>Pipeline</strong> (<code>savana.rainfall.pipeline</code>), the <code>RainfallAssessment</code>
     chainable orchestrator tying every stage together, plus the one-call
     <code>validate_against_gpcc()</code> convenience function for reproducing the whole
     assessment from a handful of plain parameters.</li>

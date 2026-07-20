@@ -791,7 +791,7 @@
 
 <h1 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h1>
 <p><code>savana</code> ships two independently-usable modules today. Pick the section for
-the one you need — nothing here requires the other.</p>
+the one you need, nothing here requires the other.</p>
 <h2 id="land-system-classification">Land-system classification<a class="headerlink" href="#land-system-classification" title="Permanent link">&para;</a></h2>
 <h3 id="one-call-classification">One-call classification<a class="headerlink" href="#one-call-classification" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">savana</span>
@@ -803,8 +803,8 @@ the one you need — nothing here requires the other.</p>
 <span class="p">)</span>
 
 <span class="n">clf</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>                  <span class="c1"># interactive map in Jupyter (geemap)</span>
-<span class="n">clf</span><span class="o">.</span><span class="n">accuracy_summary</span><span class="p">()</span>      <span class="c1"># pandas.DataFrame — one row per model (A/B/C/D)</span>
-<span class="n">clf</span><span class="o">.</span><span class="n">class_areas</span><span class="p">()</span>           <span class="c1"># pandas.DataFrame — area (km2) per class per epoch</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">accuracy_summary</span><span class="p">()</span>      <span class="c1"># pandas.DataFrame, one row per model (A/B/C/D)</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">class_areas</span><span class="p">()</span>           <span class="c1"># pandas.DataFrame, area (km2) per class per epoch</span>
 <span class="n">clf</span><span class="o">.</span><span class="n">show_change</span><span class="p">()</span>           <span class="c1"># conservative + RUE-validated change map</span>
 
 <span class="n">clf</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">drive_folder</span><span class="o">=</span><span class="s2">&quot;MyProject&quot;</span><span class="p">)</span>   <span class="c1"># push results to Google Drive</span>
@@ -850,7 +850,7 @@ of running the full pipeline in one call:</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">summarize</span><span class="p">())</span>
 <span class="n">result</span><span class="o">.</span><span class="n">export_workbook</span><span class="p">(</span><span class="s2">&quot;decision_tool.xlsx&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p>Your own stations, your own products, your own years — same call:</p>
+<p>Your own stations, your own products, your own years, same call:</p>
 <div class="highlight"><pre><span></span><code><span class="n">result</span> <span class="o">=</span> <span class="n">validate_against_gpcc</span><span class="p">(</span>
     <span class="n">stations</span><span class="o">=</span><span class="p">[(</span><span class="o">-</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">12.4</span><span class="p">),</span> <span class="p">(</span><span class="mf">2.1</span><span class="p">,</span> <span class="mf">6.5</span><span class="p">)],</span>   <span class="c1"># a single (lon, lat), a list of them,</span>
                                              <span class="c1"># a DataFrame, or a .geojson/.csv path</span>
@@ -863,7 +863,7 @@ of running the full pipeline in one call:</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="s2">&quot;which product is best for drought early warning?&quot;</span><span class="p">))</span>
 </code></pre></div>
 <h3 id="step-by-step-control-with-previews-before-you-commit">Step-by-step control, with previews before you commit<a class="headerlink" href="#step-by-step-control-with-previews-before-you-commit" title="Permanent link">&para;</a></h3>
-<p>Every stage can be inspected before moving to the next — useful before
+<p>Every stage can be inspected before moving to the next, useful before
 running a full multi-year, multi-product assessment.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">savana.rainfall</span><span class="w"> </span><span class="kn">import</span> <span class="n">RainfallAssessment</span>
 
@@ -884,7 +884,7 @@ running a full multi-year, multi-product assessment.</p>
 <span class="n">ra</span><span class="o">.</span><span class="n">preview_comparison</span><span class="p">()</span>                       <span class="c1"># obs-vs-sim scatter, before any formal metric</span>
 <span class="n">ra</span><span class="o">.</span><span class="n">preview_station_bias</span><span class="p">(</span><span class="s2">&quot;CHIRPS&quot;</span><span class="p">)</span>             <span class="c1"># per-station bias against real GPCC, on the map</span>
 
-<span class="n">ra</span><span class="o">.</span><span class="n">assign_zones</span><span class="p">()</span>                             <span class="c1"># optional — pooled validation if skipped</span>
+<span class="n">ra</span><span class="o">.</span><span class="n">assign_zones</span><span class="p">()</span>                             <span class="c1"># optional, pooled validation if skipped</span>
 <span class="n">ra</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span><span class="o">.</span><span class="n">analyze_thresholds</span><span class="p">()</span><span class="o">.</span><span class="n">score</span><span class="p">()</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">summarize</span><span class="p">())</span>

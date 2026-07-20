@@ -635,12 +635,12 @@
 
 <h1 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h1>
 <p>Contributions are welcome! <code>savana</code> is designed as an umbrella for
-independently-usable geospatial modules — new sensors, feature stacks,
+independently-usable geospatial modules, new sensors, feature stacks,
 classification schemes, validation workflows, and utilities should be
 addable as their own module without breaking any existing module's API.
 <code>savana.rainfall</code> (precipitation product assessment) is the second such
 module, added alongside the original land-system classification pipeline
-following exactly this pattern — a useful reference if you're adding a
+following exactly this pattern, a useful reference if you're adding a
 third.</p>
 <h2 id="reporting-bugs">Reporting bugs<a class="headerlink" href="#reporting-bugs" title="Permanent link">&para;</a></h2>
 <p>Please open an issue at
@@ -650,7 +650,7 @@ with:</p>
 <li>Your OS and Python version</li>
 <li>The <code>savana</code> version (<code>savana.__version__</code>)</li>
 <li>Which module (classification or rainfall)</li>
-<li>Steps to reproduce — for classification, the AOI type you used; for
+<li>Steps to reproduce, for classification, the AOI type you used; for
   rainfall, the station input and product(s) involved</li>
 </ul>
 <h2 id="development-setup">Development setup<a class="headerlink" href="#development-setup" title="Permanent link">&para;</a></h2>
@@ -661,7 +661,7 @@ pytest<span class="w"> </span>tests/
 </code></pre></div>
 <h2 id="pull-requests">Pull requests<a class="headerlink" href="#pull-requests" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Keep new functionality in its own module where possible — mirroring the
+<li>Keep new functionality in its own module where possible, mirroring the
   existing <code>composites</code> / <code>indices</code> / <code>masks</code> / <code>classifiers</code> split for
   classification-side work, or the <code>stations</code> / <code>zones</code> / <code>ingestion</code> /
   <code>extraction</code> / <code>validation</code> split for rainfall-side work</li>
@@ -671,7 +671,7 @@ pytest<span class="w"> </span>tests/
   PEP 562 lazy-loading pattern, its own <code>config.py</code> of overridable defaults,
   its own optional-dependency extra in <code>pyproject.toml</code>)</li>
 <li>Add or update tests in <code>tests/</code></li>
-<li>Update the docs (<code>docs/</code>) if you add public API surface — everything in
+<li>Update the docs (<code>docs/</code>) if you add public API surface, everything in
   <code>savana.__init__._LAZY_SYMBOL_MAP</code> (classification) or
   <code>savana.rainfall.__init__._LAZY_SYMBOL_MAP</code> (rainfall) should have a
   corresponding docstring picked up in the relevant

@@ -2480,7 +2480,7 @@
         <p><code>RainfallAssessment</code>: the chainable orchestrator tying every
 <code>savana.rainfall</code> stage together, mirroring
 :class:<code>savana.pipeline.SavanaClassifier</code>'s builder pattern.</p>
-<p>Every constructor argument is a default that can be overridden — a
+<p>Every constructor argument is a default that can be overridden, a
 different product catalogue, a different gauge network, a different
 zone scheme, or different application weights all work the same way
 they do calling the individual stage functions directly. This class is
@@ -2521,7 +2521,7 @@ a convenience, not a new capability.</p>
 
 
         <p>Chainable orchestrator for a precipitation product assessment.</p>
-<p>Example (defaults — reproduces the WA study)::</p>
+<p>Example (defaults, reproduces the WA study)::</p>
 <div class="highlight"><pre><span></span><code>ra = (
     RainfallAssessment()
     .get_observations(source=&quot;ee_asset&quot;)
@@ -3004,7 +3004,7 @@ ra.export_workbook(&quot;decision_tool.xlsx&quot;)
 <span class="normal">458</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">RainfallAssessment</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Chainable orchestrator for a precipitation product assessment.</span>
 
-<span class="sd">    Example (defaults — reproduces the WA study)::</span>
+<span class="sd">    Example (defaults, reproduces the WA study)::</span>
 
 <span class="sd">        ra = (</span>
 <span class="sd">            RainfallAssessment()</span>
@@ -3089,7 +3089,7 @@ ra.export_workbook(&quot;decision_tool.xlsx&quot;)
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_ensure_ee</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Earth Engine with this instance&#39;s ``ee_project``,</span>
-<span class="sd">        called lazily right before any EE-touching operation — not at</span>
+<span class="sd">        called lazily right before any EE-touching operation, not at</span>
 <span class="sd">        construction time, so a purely offline run (demo/csv</span>
 <span class="sd">        observations, no ``.ingest()``/``.preview_*`` calls) never</span>
 <span class="sd">        prompts for EE auth at all. Safe to call repeatedly; a no-op</span>
@@ -3192,12 +3192,12 @@ ra.export_workbook(&quot;decision_tool.xlsx&quot;)
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="c1"># ────────────────────────────────────────────────────</span>
-    <span class="c1"># Preview — look before you validate</span>
+    <span class="c1"># Preview, look before you validate</span>
     <span class="c1"># ────────────────────────────────────────────────────</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">preview_stations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zoom</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Interactive map of station locations. Works as soon as</span>
-<span class="sd">        stations are set (before ``.get_observations()`` even) — the</span>
+<span class="sd">        stations are set (before ``.get_observations()`` even), the</span>
 <span class="sd">        first sanity check: are these actually where you think they are?</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">stations</span> <span class="k">as</span> <span class="n">_stations</span>
@@ -3212,7 +3212,7 @@ ra.export_workbook(&quot;decision_tool.xlsx&quot;)
 
     <span class="k">def</span><span class="w"> </span><span class="nf">preview_observations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">station_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Quick time-series plot of raw GPCC observations. Requires</span>
-<span class="sd">        ``.get_observations()`` to have run — no product data needed.&quot;&quot;&quot;</span>
+<span class="sd">        ``.get_observations()`` to have run, no product data needed.&quot;&quot;&quot;</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">viz</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -3246,11 +3246,11 @@ ra.export_workbook(&quot;decision_tool.xlsx&quot;)
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Interactive map of one product&#39;s mean rainfall (``kind=</span>
 <span class="sd">        &quot;daily&quot;`` or ``&quot;annual&quot;``), or its bias against ANOTHER PRODUCT</span>
-<span class="sd">        if ``reference`` is given — a gridded-vs-gridded comparison,</span>
+<span class="sd">        if ``reference`` is given, a gridded-vs-gridded comparison,</span>
 <span class="sd">        never a GPCC comparison (GPCC has no gridded form here).</span>
 
 <span class="sd">        Set ``show_gpcc=True`` to overlay real GPCC station values (not</span>
-<span class="sd">        a rasterized surface — the true point observations, colored on</span>
+<span class="sd">        a rasterized surface, the true point observations, colored on</span>
 <span class="sd">        the same scale as the raster) on top of the mean map. Requires</span>
 <span class="sd">        ``.get_observations()`` to have already run. Ignored when</span>
 <span class="sd">        ``reference`` is also given (the overlay only applies to the</span>
@@ -3306,7 +3306,7 @@ ra.export_workbook(&quot;decision_tool.xlsx&quot;)
 
     <span class="k">def</span><span class="w"> </span><span class="nf">preview_station_bias</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">product</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zoom</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Interactive map of per-station bias against REAL GPCC</span>
-<span class="sd">        observations for one product — the actual &quot;does this agree with</span>
+<span class="sd">        observations for one product, the actual &quot;does this agree with</span>
 <span class="sd">        ground truth, and where&quot; spatial check. Requires ``.merge()``</span>
 <span class="sd">        (or ``.validate()``, which calls it) to have run.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -3521,10 +3521,10 @@ it) to have run.</p>
 
         <p>Interactive map of one product's mean rainfall (<code>kind=
 "daily"</code> or <code>"annual"</code>), or its bias against ANOTHER PRODUCT
-if <code>reference</code> is given — a gridded-vs-gridded comparison,
+if <code>reference</code> is given, a gridded-vs-gridded comparison,
 never a GPCC comparison (GPCC has no gridded form here).</p>
 <p>Set <code>show_gpcc=True</code> to overlay real GPCC station values (not
-a rasterized surface — the true point observations, colored on
+a rasterized surface, the true point observations, colored on
 the same scale as the raster) on top of the mean map. Requires
 <code>.get_observations()</code> to have already run. Ignored when
 <code>reference</code> is also given (the overlay only applies to the
@@ -3612,11 +3612,11 @@ single-product mean map).</p>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Interactive map of one product&#39;s mean rainfall (``kind=</span>
 <span class="sd">    &quot;daily&quot;`` or ``&quot;annual&quot;``), or its bias against ANOTHER PRODUCT</span>
-<span class="sd">    if ``reference`` is given — a gridded-vs-gridded comparison,</span>
+<span class="sd">    if ``reference`` is given, a gridded-vs-gridded comparison,</span>
 <span class="sd">    never a GPCC comparison (GPCC has no gridded form here).</span>
 
 <span class="sd">    Set ``show_gpcc=True`` to overlay real GPCC station values (not</span>
-<span class="sd">    a rasterized surface — the true point observations, colored on</span>
+<span class="sd">    a rasterized surface, the true point observations, colored on</span>
 <span class="sd">    the same scale as the raster) on top of the mean map. Requires</span>
 <span class="sd">    ``.get_observations()`` to have already run. Ignored when</span>
 <span class="sd">    ``reference`` is also given (the overlay only applies to the</span>
@@ -3687,7 +3687,7 @@ single-product mean map).</p>
     <div class="doc doc-contents ">
 
         <p>Quick time-series plot of raw GPCC observations. Requires
-<code>.get_observations()</code> to have run — no product data needed.</p>
+<code>.get_observations()</code> to have run, no product data needed.</p>
 
 
             <details class="mkdocstrings-source">
@@ -3703,7 +3703,7 @@ single-product mean map).</p>
 <span class="normal">234</span>
 <span class="normal">235</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">preview_observations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">station_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Quick time-series plot of raw GPCC observations. Requires</span>
-<span class="sd">    ``.get_observations()`` to have run — no product data needed.&quot;&quot;&quot;</span>
+<span class="sd">    ``.get_observations()`` to have run, no product data needed.&quot;&quot;&quot;</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">viz</span>
 
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -3729,7 +3729,7 @@ single-product mean map).</p>
     <div class="doc doc-contents ">
 
         <p>Interactive map of per-station bias against REAL GPCC
-observations for one product — the actual "does this agree with
+observations for one product, the actual "does this agree with
 ground truth, and where" spatial check. Requires <code>.merge()</code>
 (or <code>.validate()</code>, which calls it) to have run.</p>
 
@@ -3748,7 +3748,7 @@ ground truth, and where" spatial check. Requires <code>.merge()</code>
 <span class="normal">329</span>
 <span class="normal">330</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">preview_station_bias</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">product</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zoom</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Interactive map of per-station bias against REAL GPCC</span>
-<span class="sd">    observations for one product — the actual &quot;does this agree with</span>
+<span class="sd">    observations for one product, the actual &quot;does this agree with</span>
 <span class="sd">    ground truth, and where&quot; spatial check. Requires ``.merge()``</span>
 <span class="sd">    (or ``.validate()``, which calls it) to have run.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -3775,7 +3775,7 @@ ground truth, and where" spatial check. Requires <code>.merge()</code>
     <div class="doc doc-contents ">
 
         <p>Interactive map of station locations. Works as soon as
-stations are set (before <code>.get_observations()</code> even) — the
+stations are set (before <code>.get_observations()</code> even), the
 first sanity check: are these actually where you think they are?</p>
 
 
@@ -3796,7 +3796,7 @@ first sanity check: are these actually where you think they are?</p>
 <span class="normal">223</span>
 <span class="normal">224</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">preview_stations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zoom</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Interactive map of station locations. Works as soon as</span>
-<span class="sd">    stations are set (before ``.get_observations()`` even) — the</span>
+<span class="sd">    stations are set (before ``.get_observations()`` even), the</span>
 <span class="sd">    first sanity check: are these actually where you think they are?</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">stations</span> <span class="k">as</span> <span class="n">_stations</span>
@@ -3880,19 +3880,19 @@ first sanity check: are these actually where you think they are?</p>
     <div class="doc doc-contents ">
 
         <p>Validate one or more precipitation products against GPCC gauge
-observations at one or more stations, over a chosen year range —
+observations at one or more stations, over a chosen year range,
 the one-call version of the whole assessment, matching the original
 paper's exact logic (16 WA stations, 6 products, 2001-2020) as the
 default, everything else overridable by simple parameters.</p>
 <p>This is the function to reach for first. It does exactly what the
-original per-station CSV workflow did — extract each requested
+original per-station CSV workflow did, extract each requested
 product at each requested station, save/reuse a per-product CSV
 (<code>cache_dir/precip_extraction_&lt;PRODUCT&gt;.csv</code>, same as before),
 merge against GPCC observations
 (<code>cache_dir/gpcc_obs_&lt;start&gt;_&lt;end&gt;.csv</code>), and write the same
 result CSVs the original scripts did (<code>validation_by_zone.csv</code>,
 <code>validation_overall.csv</code>, <code>product_ranking.csv</code>,
-<code>threshold_sensitivity.csv</code>) — just wrapped in one call instead of
+<code>threshold_sensitivity.csv</code>), just wrapped in one call instead of
 six separate scripts.</p>
 
 
@@ -3919,7 +3919,7 @@ six separate scripts.</p>
 - <code>None</code> (default): the 16 WA GPCC stations from the paper.
 - a <code>stations_df</code>, a path to a <code>.geojson</code>/<code>.csv</code> file
   of station points, a list of <code>(lon, lat)</code> tuples, or a
-  single <code>(lon, lat)</code> tuple — see
+  single <code>(lon, lat)</code> tuple, see
   :func:<code>savana.rainfall.stations.load_stations_any</code> for
   the full list of accepted shapes. Works the same whether
   you give it 1 station or 100.</p>
@@ -3955,7 +3955,7 @@ in :data:<code>config.DEFAULT_PRODUCTS</code>. Any subset works.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>inclusive year range (plain ints — the
+                <p>inclusive year range (plain ints, the
 paper used 2001-2020; pick whatever you need).</p>
               </div>
             </td>
@@ -3972,10 +3972,10 @@ paper used 2001-2020; pick whatever you need).</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>where GPCC observations come from —
+                <p>where GPCC observations come from,
 <code>"ee_asset"</code> (fast, only covers the 16 WA stations),
 <code>"download"</code> (slower, works for any station anywhere),
-<code>"csv"</code> (use <code>obs_csv=</code> — you already have one), or
+<code>"csv"</code> (use <code>obs_csv=</code>, you already have one), or
 <code>"demo"</code> (synthetic, testing only). Defaults to
 <code>"ee_asset"</code> when <code>stations</code> is the WA default (fastest
 path for the paper's own network) and <code>"download"</code>
@@ -4064,10 +4064,10 @@ metrics. Defaults to the WMO standard (1.0 mm/day).</p>
               <div class="doc-md-description">
                 <p>Google Cloud project registered for Earth Engine use
 (only needed for <code>obs_source="ee_asset"</code> or the default
-Earth Engine ingestion — not needed at all if you only use
+Earth Engine ingestion, not needed at all if you only use
 <code>obs_source="csv"</code>/<code>"demo"</code>). If omitted, uses whatever
 is already configured for the environment (see
-<code>savana.ee_init.initialize</code>) — set this explicitly if
+<code>savana.ee_init.initialize</code>), set this explicitly if
 you have more than one Google Cloud project and the wrong
 one keeps getting picked up.</p>
               </div>
@@ -4094,7 +4094,7 @@ one keeps getting picked up.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>A fully populated :class:<code>RainfallAssessment</code> — inspect</p>
+                <p>A fully populated :class:<code>RainfallAssessment</code>, inspect</p>
               </div>
             </td>
           </tr>
@@ -4348,20 +4348,20 @@ print(result.validation_overall_df)
     <span class="n">ee_project</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate one or more precipitation products against GPCC gauge</span>
-<span class="sd">    observations at one or more stations, over a chosen year range —</span>
+<span class="sd">    observations at one or more stations, over a chosen year range,</span>
 <span class="sd">    the one-call version of the whole assessment, matching the original</span>
 <span class="sd">    paper&#39;s exact logic (16 WA stations, 6 products, 2001-2020) as the</span>
 <span class="sd">    default, everything else overridable by simple parameters.</span>
 
 <span class="sd">    This is the function to reach for first. It does exactly what the</span>
-<span class="sd">    original per-station CSV workflow did — extract each requested</span>
+<span class="sd">    original per-station CSV workflow did, extract each requested</span>
 <span class="sd">    product at each requested station, save/reuse a per-product CSV</span>
 <span class="sd">    (``cache_dir/precip_extraction_&lt;PRODUCT&gt;.csv``, same as before),</span>
 <span class="sd">    merge against GPCC observations</span>
 <span class="sd">    (``cache_dir/gpcc_obs_&lt;start&gt;_&lt;end&gt;.csv``), and write the same</span>
 <span class="sd">    result CSVs the original scripts did (``validation_by_zone.csv``,</span>
 <span class="sd">    ``validation_overall.csv``, ``product_ranking.csv``,</span>
-<span class="sd">    ``threshold_sensitivity.csv``) — just wrapped in one call instead of</span>
+<span class="sd">    ``threshold_sensitivity.csv``), just wrapped in one call instead of</span>
 <span class="sd">    six separate scripts.</span>
 
 <span class="sd">    Args:</span>
@@ -4369,19 +4369,19 @@ print(result.validation_overall_df)
 <span class="sd">            - ``None`` (default): the 16 WA GPCC stations from the paper.</span>
 <span class="sd">            - a ``stations_df``, a path to a ``.geojson``/``.csv`` file</span>
 <span class="sd">              of station points, a list of ``(lon, lat)`` tuples, or a</span>
-<span class="sd">              single ``(lon, lat)`` tuple — see</span>
+<span class="sd">              single ``(lon, lat)`` tuple, see</span>
 <span class="sd">              :func:`savana.rainfall.stations.load_stations_any` for</span>
 <span class="sd">              the full list of accepted shapes. Works the same whether</span>
 <span class="sd">              you give it 1 station or 100.</span>
 <span class="sd">        products: which products to check, by name (e.g.</span>
 <span class="sd">            ``[&quot;CHIRPS&quot;, &quot;GPM_IMERG&quot;]``). ``None`` (default) uses all 6</span>
 <span class="sd">            in :data:`config.DEFAULT_PRODUCTS`. Any subset works.</span>
-<span class="sd">        start_year, end_year: inclusive year range (plain ints — the</span>
+<span class="sd">        start_year, end_year: inclusive year range (plain ints, the</span>
 <span class="sd">            paper used 2001-2020; pick whatever you need).</span>
-<span class="sd">        obs_source: where GPCC observations come from —</span>
+<span class="sd">        obs_source: where GPCC observations come from,</span>
 <span class="sd">            ``&quot;ee_asset&quot;`` (fast, only covers the 16 WA stations),</span>
 <span class="sd">            ``&quot;download&quot;`` (slower, works for any station anywhere),</span>
-<span class="sd">            ``&quot;csv&quot;`` (use ``obs_csv=`` — you already have one), or</span>
+<span class="sd">            ``&quot;csv&quot;`` (use ``obs_csv=``, you already have one), or</span>
 <span class="sd">            ``&quot;demo&quot;`` (synthetic, testing only). Defaults to</span>
 <span class="sd">            ``&quot;ee_asset&quot;`` when ``stations`` is the WA default (fastest</span>
 <span class="sd">            path for the paper&#39;s own network) and ``&quot;download&quot;``</span>
@@ -4398,15 +4398,15 @@ print(result.validation_overall_df)
 <span class="sd">            metrics. Defaults to the WMO standard (1.0 mm/day).</span>
 <span class="sd">        ee_project: Google Cloud project registered for Earth Engine use</span>
 <span class="sd">            (only needed for ``obs_source=&quot;ee_asset&quot;`` or the default</span>
-<span class="sd">            Earth Engine ingestion — not needed at all if you only use</span>
+<span class="sd">            Earth Engine ingestion, not needed at all if you only use</span>
 <span class="sd">            ``obs_source=&quot;csv&quot;``/``&quot;demo&quot;``). If omitted, uses whatever</span>
 <span class="sd">            is already configured for the environment (see</span>
-<span class="sd">            ``savana.ee_init.initialize``) — set this explicitly if</span>
+<span class="sd">            ``savana.ee_init.initialize``), set this explicitly if</span>
 <span class="sd">            you have more than one Google Cloud project and the wrong</span>
 <span class="sd">            one keeps getting picked up.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        A fully populated :class:`RainfallAssessment` — inspect</span>
+<span class="sd">        A fully populated :class:`RainfallAssessment`, inspect</span>
 <span class="sd">        ``.validation_by_zone_df`` / ``.validation_overall_df``</span>
 <span class="sd">        directly, or call ``.summarize()``, ``.answer(&quot;...&quot;)``,</span>
 <span class="sd">        ``.show()``, ``.export_workbook(...)`` on it, same as building</span>
@@ -4471,7 +4471,7 @@ print(result.validation_overall_df)
             <span class="n">obs_kwargs</span><span class="p">[</span><span class="s2">&quot;data_dir&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cache_path</span>
     <span class="k">elif</span> <span class="n">obs_source</span> <span class="o">==</span> <span class="s2">&quot;demo&quot;</span><span class="p">:</span>
         <span class="n">obs_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;start_year&quot;</span><span class="p">:</span> <span class="n">start_year</span><span class="p">,</span> <span class="s2">&quot;end_year&quot;</span><span class="p">:</span> <span class="n">end_year</span><span class="p">}</span>
-    <span class="c1"># &quot;ee_asset&quot; takes no year kwargs — filtered to the requested range below instead</span>
+    <span class="c1"># &quot;ee_asset&quot; takes no year kwargs, filtered to the requested range below instead</span>
 
     <span class="n">ra</span><span class="o">.</span><span class="n">get_observations</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="n">obs_source</span><span class="p">,</span> <span class="o">**</span><span class="n">obs_kwargs</span><span class="p">)</span>
     <span class="n">ra</span><span class="o">.</span><span class="n">obs_df</span> <span class="o">=</span> <span class="n">ra</span><span class="o">.</span><span class="n">obs_df</span><span class="p">[</span>
@@ -4542,7 +4542,7 @@ print(result.validation_overall_df)
     <div class="doc doc-contents first">
 
         <p>Default configuration for global precipitation product assessment.</p>
-<p>Everything here is a <em>default</em> — every public function in
+<p>Everything here is a <em>default</em>, every public function in
 <code>savana.rainfall</code> accepts overrides, so a user assessing a different
 region, a different subset of products, their own gauge network, or
 their own application weights is not locked into the West Africa study
@@ -4551,7 +4551,7 @@ zones, 6 global precipitation products, 7 conservation/water-management
 applications) ships as the default so <code>savana.rainfall</code> is useful out
 of the box and reproduces the original manuscript, but nothing here is
 required to use the package on a different AOI.</p>
-<p>Nothing in this module touches Earth Engine or hits the network — it is
+<p>Nothing in this module touches Earth Engine or hits the network, it is
 pure data, safe to import eagerly. EE objects (<code>ee.FeatureCollection</code>,
 <code>ee.Geometry</code>) are built lazily, inside functions in :mod:<code>.stations</code>
 and :mod:<code>.ingestion</code>, exactly where the JS/EE equivalents built them.</p>
@@ -4589,7 +4589,7 @@ and :mod:<code>.ingestion</code>, exactly where the JS/EE equivalents built them
 
         <p>The 16 West Africa GPCC gauge stations, as a pandas.DataFrame.</p>
 <p>This is the manuscript's real validation network, not a synthetic
-placeholder — the default <code>stations_df</code> used throughout
+placeholder, the default <code>stations_df</code> used throughout
 <code>savana.rainfall</code> when no <code>stations_df</code> is supplied. Any function
 accepting <code>stations_df=</code> accepts a DataFrame with this same shape
 (station_id, station_name, lon, lat, elevation_m, source) for a
@@ -4614,7 +4614,7 @@ different gauge network.</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The 16 West Africa GPCC gauge stations, as a pandas.DataFrame.</span>
 
 <span class="sd">    This is the manuscript&#39;s real validation network, not a synthetic</span>
-<span class="sd">    placeholder — the default ``stations_df`` used throughout</span>
+<span class="sd">    placeholder, the default ``stations_df`` used throughout</span>
 <span class="sd">    ``savana.rainfall`` when no ``stations_df`` is supplied. Any function</span>
 <span class="sd">    accepting ``stations_df=`` accepts a DataFrame with this same shape</span>
 <span class="sd">    (station_id, station_name, lon, lat, elevation_m, source) for a</span>
@@ -4650,7 +4650,7 @@ different gauge network.</p>
     <div class="doc doc-contents first">
 
         <p>Gauge station metadata and precipitation observation loading.</p>
-<p>Every function here works on an arbitrary <code>stations_df</code> — a
+<p>Every function here works on an arbitrary <code>stations_df</code>, a
 <code>pandas.DataFrame</code> with at minimum <code>station_id, lon, lat</code> columns
 (<code>station_name</code>, <code>elevation_m</code>, <code>source</code> are recommended but not
 required). <code>savana.rainfall.config.default_stations_wa()</code> supplies the
@@ -4661,18 +4661,18 @@ DataFrame in that shape and passing it as <code>stations_df=</code> throughout.<
 <p>Four ways to get observations, in increasing order of "how much can
 this handle a station set that isn't the WA 16":</p>
 <ol>
-<li>:func:<code>load_stations_from_csv</code> — you already have your own
+<li>:func:<code>load_stations_from_csv</code>, you already have your own
    station metadata + observation CSVs. Fully general.</li>
-<li>:func:<code>download_gpcc</code> — downloads the public GPCC Full Data Daily
+<li>:func:<code>download_gpcc</code>, downloads the public GPCC Full Data Daily
    v2022 archive and extracts at whatever station coordinates you
    give it. Fully general, works for any station anywhere GPCC has
    coverage, but downloads ~440 MB and is slow the first time.</li>
-<li>:func:<code>load_gpcc_obs_from_asset</code> — fast, but only returns rows for
+<li>:func:<code>load_gpcc_obs_from_asset</code>, fast, but only returns rows for
    station_ids that exist in the given EE table asset. The packaged
    default asset (:data:<code>config.DEFAULT_GPCC_ASSET_WA</code>) covers only the
    16 WA stations; point <code>asset_id</code> at your own pre-extracted table
    for a different network, or use option 1/2 instead.</li>
-<li>:func:<code>generate_demo_observations</code> — synthetic placeholder data for
+<li>:func:<code>generate_demo_observations</code>, synthetic placeholder data for
    quick testing/tutorials only. Never used silently; you have to ask
    for it explicitly via <code>source="demo"</code> in :func:<code>get_observations</code>.</li>
 </ol>
@@ -4710,7 +4710,7 @@ this handle a station set that isn't the WA 16":</p>
 
         <p>Download the public GPCC archive and extract at any station set.</p>
 <p>Works for any <code>stations_df</code> (defaults to the WA 16), anywhere the
-GPCC 1.0-degree grid has coverage — this is the fully general path,
+GPCC 1.0-degree grid has coverage, this is the fully general path,
 unlike :func:<code>load_gpcc_obs_from_asset</code> which only covers whatever
 stations happen to already be in an EE asset.</p>
 <p>Downloads are cached: files already present in <code>data_dir</code> are
@@ -4911,7 +4911,7 @@ files after extraction to save disk space (~20 MB/year).</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Download the public GPCC archive and extract at any station set.</span>
 
 <span class="sd">    Works for any ``stations_df`` (defaults to the WA 16), anywhere the</span>
-<span class="sd">    GPCC 1.0-degree grid has coverage — this is the fully general path,</span>
+<span class="sd">    GPCC 1.0-degree grid has coverage, this is the fully general path,</span>
 <span class="sd">    unlike :func:`load_gpcc_obs_from_asset` which only covers whatever</span>
 <span class="sd">    stations happen to already be in an EE asset.</span>
 
@@ -4999,7 +4999,7 @@ files after extraction to save disk space (~20 MB/year).</p>
     <div class="doc doc-contents ">
 
         <p>Synthetic monthly precipitation observations for quick testing only.</p>
-<p>NOT real data — a plausible seasonal-cycle-plus-noise placeholder so
+<p>NOT real data, a plausible seasonal-cycle-plus-noise placeholder so
 the rest of the pipeline can be exercised without waiting on a real
 GPCC download or an EE asset. Only used when explicitly requested
 (<code>source="demo"</code> in :func:<code>get_observations</code>); never a silent
@@ -5064,7 +5064,7 @@ fallback elsewhere in this package.</p>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Synthetic monthly precipitation observations for quick testing only.</span>
 
-<span class="sd">    NOT real data — a plausible seasonal-cycle-plus-noise placeholder so</span>
+<span class="sd">    NOT real data, a plausible seasonal-cycle-plus-noise placeholder so</span>
 <span class="sd">    the rest of the pipeline can be exercised without waiting on a real</span>
 <span class="sd">    GPCC download or an EE asset. Only used when explicitly requested</span>
 <span class="sd">    (``source=&quot;demo&quot;`` in :func:`get_observations`); never a silent</span>
@@ -5101,7 +5101,7 @@ fallback elsewhere in this package.</p>
                 <span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;  </span><span class="se">\u26a0</span><span class="s2">  SYNTHETIC demo observations generated &quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">stations_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> stations, </span><span class="si">{</span><span class="n">start_year</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">end_year</span><span class="si">}</span><span class="s2">) — &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">stations_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> stations, </span><span class="si">{</span><span class="n">start_year</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">end_year</span><span class="si">}</span><span class="s2">), &quot;</span>
         <span class="sa">f</span><span class="s2">&quot;not real data, testing/tutorial use only.&quot;</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
@@ -5161,13 +5161,13 @@ fallback elsewhere in this package.</p>
             <td>
               <div class="doc-md-description">
                 <p>one of
-- <code>"download"</code> (default): :func:<code>download_gpcc</code> — fully
+- <code>"download"</code> (default): :func:<code>download_gpcc</code>, fully
   general, works for any station, slow on first run.
-- <code>"ee_asset"</code>: :func:<code>load_gpcc_obs_from_asset</code> — fast,
+- <code>"ee_asset"</code>: :func:<code>load_gpcc_obs_from_asset</code>, fast,
   limited to whatever stations are already in the asset.
-- <code>"csv"</code>: :func:<code>load_stations_from_csv</code>'s obs half —
+- <code>"csv"</code>: :func:<code>load_stations_from_csv</code>'s obs half,
   requires <code>obs_csv=</code> in <code>kwargs</code>.
-- <code>"demo"</code>: :func:<code>generate_demo_observations</code> — synthetic,
+- <code>"demo"</code>: :func:<code>generate_demo_observations</code>, synthetic,
   testing only.</p>
               </div>
             </td>
@@ -5268,13 +5268,13 @@ fallback elsewhere in this package.</p>
 <span class="sd">    Args:</span>
 <span class="sd">        stations_df: defaults to :func:`config.default_stations_wa`.</span>
 <span class="sd">        source: one of</span>
-<span class="sd">            - ``&quot;download&quot;`` (default): :func:`download_gpcc` — fully</span>
+<span class="sd">            - ``&quot;download&quot;`` (default): :func:`download_gpcc`, fully</span>
 <span class="sd">              general, works for any station, slow on first run.</span>
-<span class="sd">            - ``&quot;ee_asset&quot;``: :func:`load_gpcc_obs_from_asset` — fast,</span>
+<span class="sd">            - ``&quot;ee_asset&quot;``: :func:`load_gpcc_obs_from_asset`, fast,</span>
 <span class="sd">              limited to whatever stations are already in the asset.</span>
-<span class="sd">            - ``&quot;csv&quot;``: :func:`load_stations_from_csv`&#39;s obs half —</span>
+<span class="sd">            - ``&quot;csv&quot;``: :func:`load_stations_from_csv`&#39;s obs half,</span>
 <span class="sd">              requires ``obs_csv=`` in ``kwargs``.</span>
-<span class="sd">            - ``&quot;demo&quot;``: :func:`generate_demo_observations` — synthetic,</span>
+<span class="sd">            - ``&quot;demo&quot;``: :func:`generate_demo_observations`, synthetic,</span>
 <span class="sd">              testing only.</span>
 <span class="sd">        **kwargs: forwarded to the selected loader.</span>
 
@@ -5328,7 +5328,7 @@ fallback elsewhere in this package.</p>
 <p>Fast (no download, no NetCDF processing) but only returns rows for
 <code>station_id</code> values that already exist in the asset. Any station in
 <code>stations_df</code> not found in the asset is reported via a printed
-warning, not silently dropped without explanation — use
+warning, not silently dropped without explanation, use
 :func:<code>download_gpcc</code> for those instead, or build your own asset with
 <code>station_id, year, month, obs_mm_day</code> columns and pass its ID here.</p>
 
@@ -5370,7 +5370,7 @@ warning, not silently dropped without explanation — use
               <div class="doc-md-description">
                 <p>EE table asset ID. Defaults to
 :data:<code>config.DEFAULT_GPCC_ASSET_WA</code>, which only covers the
-16 default WA stations — pass your own asset_id for any
+16 default WA stations, pass your own asset_id for any
 other station set.</p>
               </div>
             </td>
@@ -5476,7 +5476,7 @@ other station set.</p>
 <span class="sd">    Fast (no download, no NetCDF processing) but only returns rows for</span>
 <span class="sd">    ``station_id`` values that already exist in the asset. Any station in</span>
 <span class="sd">    ``stations_df`` not found in the asset is reported via a printed</span>
-<span class="sd">    warning, not silently dropped without explanation — use</span>
+<span class="sd">    warning, not silently dropped without explanation, use</span>
 <span class="sd">    :func:`download_gpcc` for those instead, or build your own asset with</span>
 <span class="sd">    ``station_id, year, month, obs_mm_day`` columns and pass its ID here.</span>
 
@@ -5484,7 +5484,7 @@ other station set.</p>
 <span class="sd">        stations_df: defaults to :func:`config.default_stations_wa`.</span>
 <span class="sd">        asset_id: EE table asset ID. Defaults to</span>
 <span class="sd">            :data:`config.DEFAULT_GPCC_ASSET_WA`, which only covers the</span>
-<span class="sd">            16 default WA stations — pass your own asset_id for any</span>
+<span class="sd">            16 default WA stations, pass your own asset_id for any</span>
 <span class="sd">            other station set.</span>
 
 <span class="sd">    Returns:</span>
@@ -5553,7 +5553,7 @@ other station set.</p>
     <div class="doc doc-contents ">
 
         <p>Turn almost anything describing station locations into a proper
-<code>stations_df</code> — the single entry point every high-level function
+<code>stations_df</code>, the single entry point every high-level function
 (:func:<code>savana.rainfall.pipeline.validate_against_gpcc</code>) uses so a
 user never has to hand-build a DataFrame just to try one station.</p>
 
@@ -5572,7 +5572,7 @@ user never has to hand-build a DataFrame just to try one station.</p>
   :func:<code>load_stations_from_csv</code>'s station-table shape.</li>
 <li>a list of <code>(lon, lat)</code> or <code>(station_id, lon, lat)</code> tuples,
   or a list of dicts with at least <code>lon</code>/<code>lat</code> keys.</li>
-<li>a single station as <code>(lon, lat)</code> or <code>[lon, lat]</code> — both a
+<li>a single station as <code>(lon, lat)</code> or <code>[lon, lat]</code>, both a
   tuple and a plain 2-element list work.</li>
 </ul>
 </details>
@@ -5682,7 +5682,7 @@ user never has to hand-build a DataFrame just to try one station.</p>
 <span class="normal">119</span>
 <span class="normal">120</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">load_stations_any</span><span class="p">(</span><span class="n">stations</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Turn almost anything describing station locations into a proper</span>
-<span class="sd">    ``stations_df`` — the single entry point every high-level function</span>
+<span class="sd">    ``stations_df``, the single entry point every high-level function</span>
 <span class="sd">    (:func:`savana.rainfall.pipeline.validate_against_gpcc`) uses so a</span>
 <span class="sd">    user never has to hand-build a DataFrame just to try one station.</span>
 
@@ -5698,7 +5698,7 @@ user never has to hand-build a DataFrame just to try one station.</p>
 <span class="sd">          :func:`load_stations_from_csv`&#39;s station-table shape.</span>
 <span class="sd">        - a list of ``(lon, lat)`` or ``(station_id, lon, lat)`` tuples,</span>
 <span class="sd">          or a list of dicts with at least ``lon``/``lat`` keys.</span>
-<span class="sd">        - a single station as ``(lon, lat)`` or ``[lon, lat]`` — both a</span>
+<span class="sd">        - a single station as ``(lon, lat)`` or ``[lon, lat]``, both a</span>
 <span class="sd">          tuple and a plain 2-element list work.</span>
 
 <span class="sd">    Returns:</span>
@@ -5784,7 +5784,7 @@ user never has to hand-build a DataFrame just to try one station.</p>
 <code>obs_csv</code>, if given, must have columns
 <code>station_id, year, month, obs_mm_day</code>.</p>
 <p>This is the fully general entry point for a station network that
-isn't West Africa's 16 GPCC stations at all — bring your own gauge
+isn't West Africa's 16 GPCC stations at all, bring your own gauge
 metadata and (optionally) your own already-extracted observations.</p>
 
 
@@ -5834,7 +5834,7 @@ metadata and (optionally) your own already-extracted observations.</p>
 <span class="sd">    ``station_id, year, month, obs_mm_day``.</span>
 
 <span class="sd">    This is the fully general entry point for a station network that</span>
-<span class="sd">    isn&#39;t West Africa&#39;s 16 GPCC stations at all — bring your own gauge</span>
+<span class="sd">    isn&#39;t West Africa&#39;s 16 GPCC stations at all, bring your own gauge</span>
 <span class="sd">    metadata and (optionally) your own already-extracted observations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -5876,7 +5876,7 @@ metadata and (optionally) your own already-extracted observations.</p>
 
     <div class="doc doc-contents ">
 
-        <p>A quick interactive map of station locations — the first thing to
+        <p>A quick interactive map of station locations, the first thing to
 check before extracting or validating anything: "are these actually
 where I think they are?"</p>
 
@@ -6025,7 +6025,7 @@ where I think they are?"</p>
 <span class="normal">214</span>
 <span class="normal">215</span>
 <span class="normal">216</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">preview_map</span><span class="p">(</span><span class="n">stations_df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zoom</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A quick interactive map of station locations — the first thing to</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A quick interactive map of station locations, the first thing to</span>
 <span class="sd">    check before extracting or validating anything: &quot;are these actually</span>
 <span class="sd">    where I think they are?&quot;</span>
 
@@ -6075,8 +6075,8 @@ where I think they are?"</p>
 
         <p>Convert any stations DataFrame to an <code>ee.FeatureCollection</code> of points.</p>
 <p>Works for any <code>stations_df</code> meeting :data:<code>REQUIRED_STATION_COLUMNS</code>
-— not specific to the WA network. Extra columns are copied through
-as feature properties.</p>
+, not specific to the WA network. Extra columns are copied through
+ as feature properties.</p>
 
 
             <details class="mkdocstrings-source">
@@ -6102,9 +6102,9 @@ as feature properties.</p>
 <span class="normal">237</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">stations_to_ee_fc</span><span class="p">(</span><span class="n">stations_df</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert any stations DataFrame to an ``ee.FeatureCollection`` of points.</span>
 
-<span class="sd">    Works for any ``stations_df`` meeting :data:`REQUIRED_STATION_COLUMNS`</span>
-<span class="sd">    — not specific to the WA network. Extra columns are copied through</span>
-<span class="sd">    as feature properties.</span>
+<span class="sd">     Works for any ``stations_df`` meeting :data:`REQUIRED_STATION_COLUMNS`</span>
+<span class="sd">    , not specific to the WA network. Extra columns are copied through</span>
+<span class="sd">     as feature properties.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">ee</span>
 
@@ -6145,25 +6145,25 @@ as feature properties.</p>
     <div class="doc doc-contents first">
 
         <p>Ecological/climatic zone construction and station assignment.</p>
-<p>No packaged shapefile — zones are <em>built</em>, from whatever base regions
+<p>No packaged shapefile, zones are <em>built</em>, from whatever base regions
 and split logic you give :func:<code>build_zones_from_bands</code>. This is a
 direct, generalised port of the author's GEE zone-delineation script:
 3 named base climatic regions, each optionally split by a latitude band
 into one or more final ecological zones. The West Africa 5-zone scheme
 (:data:<code>config.DEFAULT_ZONE_DEFS_WA</code> + :data:<code>config.DEFAULT_ZONE_BASE_ASSETS_WA</code>)
 is just one <em>configuration</em> of this generic builder, not special-cased
-logic — a different region, a different number of base regions, or no
+logic, a different region, a different number of base regions, or no
 latitude splitting at all, all use the same function.</p>
 <p>Three ways to get zone geometry, in order of generality:</p>
 <ol>
-<li>:func:<code>build_zones_from_bands</code> — build zones yourself from any named
+<li>:func:<code>build_zones_from_bands</code>, build zones yourself from any named
    base regions (EE assets, or <code>ee.FeatureCollection</code>/<code>ee.Geometry</code>
-   objects you already have) plus your own split rules. Fully general —
+   objects you already have) plus your own split rules. Fully general,
    works for any region, any number of zones, any split logic (or none).</li>
-<li>:func:<code>load_zones_from_file</code> — you already have a zone boundary file
+<li>:func:<code>load_zones_from_file</code>, you already have a zone boundary file
    (shapefile, GeoJSON, GeoPackage, ...) from QGIS or elsewhere. Fully
    general, no Earth Engine involved at all.</li>
-<li>:func:<code>single_region_zone</code> — you don't want zone stratification at
+<li>:func:<code>single_region_zone</code>, you don't want zone stratification at
    all, just one study-area boundary. Wraps any boundary (a file path,
    a geojson dict, an <code>ee.Geometry</code>, or a bounding box) into a
    one-zone table so the rest of the package (which only ever asks "is
@@ -6243,7 +6243,7 @@ heuristic if no zone geometry is available at all.</p>
               <div class="doc-md-description">
                 <p>a local <code>geopandas.GeoDataFrame</code> (from
 :func:<code>load_zones_from_file</code>, :func:<code>single_region_zone</code>, or
-:func:<code>zones_fc_to_gdf</code>) — joined locally via geopandas.</p>
+:func:<code>zones_fc_to_gdf</code>), joined locally via geopandas.</p>
               </div>
             </td>
             <td>
@@ -6260,7 +6260,7 @@ heuristic if no zone geometry is available at all.</p>
               <div class="doc-md-description">
                 <p>a live <code>ee.FeatureCollection</code> (from
 :func:<code>build_zones_from_bands</code> or :func:<code>default_wa_zones</code>)
-— joined via Earth Engine (<code>filterBounds</code> per station), no
+, joined via Earth Engine (<code>filterBounds</code> per station), no
 geopandas required.</p>
               </div>
             </td>
@@ -6295,10 +6295,10 @@ geopandas required.</p>
             <td>
               <div class="doc-md-description">
                 <p>if True and neither <code>zones_gdf</code> nor
-<code>zones_fc</code> is given, attempts :func:<code>default_wa_zones</code> —
+<code>zones_fc</code> is given, attempts :func:<code>default_wa_zones</code>,
 only useful if you're the author (or have access to the
 same EE assets). False by default, since that default is
-not portable to other users/regions — pass your own
+not portable to other users/regions, pass your own
 <code>zones_gdf</code>/<code>zones_fc</code> instead, or accept the coarse
 latitude fallback.</p>
               </div>
@@ -6343,7 +6343,7 @@ latitude fallback.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>latitude-band heuristic, with a printed warning — this always</p>
+                <p>latitude-band heuristic, with a printed warning, this always</p>
               </div>
             </td>
           </tr>
@@ -6484,25 +6484,25 @@ latitude fallback.</p>
 <span class="sd">        stations_df: any DataFrame with ``station_id, lon, lat``.</span>
 <span class="sd">        zones_gdf: a local ``geopandas.GeoDataFrame`` (from</span>
 <span class="sd">            :func:`load_zones_from_file`, :func:`single_region_zone`, or</span>
-<span class="sd">            :func:`zones_fc_to_gdf`) — joined locally via geopandas.</span>
+<span class="sd">            :func:`zones_fc_to_gdf`), joined locally via geopandas.</span>
 <span class="sd">        zones_fc: a live ``ee.FeatureCollection`` (from</span>
 <span class="sd">            :func:`build_zones_from_bands` or :func:`default_wa_zones`)</span>
-<span class="sd">            — joined via Earth Engine (``filterBounds`` per station), no</span>
+<span class="sd">           , joined via Earth Engine (``filterBounds`` per station), no</span>
 <span class="sd">            geopandas required.</span>
 <span class="sd">        name_field: property/column holding the zone name. Defaults to</span>
 <span class="sd">            :data:`config.DEFAULT_ZONE_NAME_FIELD` (``&quot;zone_name&quot;``).</span>
 <span class="sd">        use_default_if_none: if True and neither ``zones_gdf`` nor</span>
-<span class="sd">            ``zones_fc`` is given, attempts :func:`default_wa_zones` —</span>
+<span class="sd">            ``zones_fc`` is given, attempts :func:`default_wa_zones`,</span>
 <span class="sd">            only useful if you&#39;re the author (or have access to the</span>
 <span class="sd">            same EE assets). False by default, since that default is</span>
-<span class="sd">            not portable to other users/regions — pass your own</span>
+<span class="sd">            not portable to other users/regions, pass your own</span>
 <span class="sd">            ``zones_gdf``/``zones_fc`` instead, or accept the coarse</span>
 <span class="sd">            latitude fallback.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Copy of ``stations_df`` with a new ``zone`` column. Any station</span>
 <span class="sd">        that can&#39;t be matched to a real zone polygon falls back to the</span>
-<span class="sd">        latitude-band heuristic, with a printed warning — this always</span>
+<span class="sd">        latitude-band heuristic, with a printed warning, this always</span>
 <span class="sd">        returns a usable ``zone`` column, never leaves it null.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">stations_df</span> <span class="o">=</span> <span class="n">stations_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -6561,7 +6561,7 @@ latitude fallback.</p>
             <span class="n">stations_df</span><span class="p">[</span><span class="s2">&quot;zone&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">joined</span><span class="p">[</span><span class="n">name_field</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span>
-                <span class="s2">&quot;  </span><span class="se">\u26a0</span><span class="s2">  geopandas/shapely not installed — using latitude-band &quot;</span>
+                <span class="s2">&quot;  </span><span class="se">\u26a0</span><span class="s2">  geopandas/shapely not installed, using latitude-band &quot;</span>
                 <span class="s1">&#39;fallback. Install with `pip install &quot;savana[rainfall]&quot;`.&#39;</span>
             <span class="p">)</span>
             <span class="n">stations_df</span><span class="p">[</span><span class="s2">&quot;zone&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -6601,7 +6601,7 @@ latitude fallback.</p>
         <p>Build a final zones <code>ee.FeatureCollection</code> from named base
 regions, each optionally split by a latitude band.</p>
 <p>This is the generic version of the GEE script's whole zone-building
-pipeline (its Sections 1, 3, 4) — nothing here is specific to West
+pipeline (its Sections 1, 3, 4), nothing here is specific to West
 Africa or to exactly 3 base regions / 5 output zones.</p>
 
 
@@ -6628,7 +6628,7 @@ Africa or to exactly 3 base regions / 5 output zones.</p>
                 <p><code>{name: source}</code> where each <code>source</code> is an EE
 asset ID (str), an already-loaded <code>ee.FeatureCollection</code>,
 or an <code>ee.Geometry</code>. These are your raw regions before any
-splitting — e.g. <code>{"Sahelian": "projects/x/assets/y", ...}</code>
+splitting, e.g. <code>{"Sahelian": "projects/x/assets/y", ...}</code>
 for the WA case, or e.g. <code>{"my_watershed": my_geometry}</code>
 for a single custom region.</p>
               </div>
@@ -6654,7 +6654,7 @@ for a single custom region.</p>
   output zone is derived from.
 - <code>lat_min</code>, <code>lat_max</code> (optional): latitude band to
   clip to. Omit both (or span the full region) to pass the
-  source region through unmodified — the pattern for "one
+  source region through unmodified, the pattern for "one
   base region = one output zone, no further splitting".
 - any other keys (<code>zone_id</code>, <code>color_hex</code>,
   <code>rainfall_mm_yr</code>, notes, ...) are copied through as
@@ -6676,7 +6676,7 @@ for a single custom region.</p>
               <div class="doc-md-description">
                 <p><code>(min_lon, min_lat, max_lon, max_lat)</code> used only to
 clip latitude bands to a sensible extent. Defaults to a
-generous global-ish box if not given — set this to your own
+generous global-ish box if not given, set this to your own
 study area's bounds for anything other than West Africa.</p>
               </div>
             </td>
@@ -6821,14 +6821,14 @@ study area's bounds for anything other than West Africa.</p>
 <span class="sd">    regions, each optionally split by a latitude band.</span>
 
 <span class="sd">    This is the generic version of the GEE script&#39;s whole zone-building</span>
-<span class="sd">    pipeline (its Sections 1, 3, 4) — nothing here is specific to West</span>
+<span class="sd">    pipeline (its Sections 1, 3, 4), nothing here is specific to West</span>
 <span class="sd">    Africa or to exactly 3 base regions / 5 output zones.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        base_zones: ``{name: source}`` where each ``source`` is an EE</span>
 <span class="sd">            asset ID (str), an already-loaded ``ee.FeatureCollection``,</span>
 <span class="sd">            or an ``ee.Geometry``. These are your raw regions before any</span>
-<span class="sd">            splitting — e.g. ``{&quot;Sahelian&quot;: &quot;projects/x/assets/y&quot;, ...}``</span>
+<span class="sd">            splitting, e.g. ``{&quot;Sahelian&quot;: &quot;projects/x/assets/y&quot;, ...}``</span>
 <span class="sd">            for the WA case, or e.g. ``{&quot;my_watershed&quot;: my_geometry}``</span>
 <span class="sd">            for a single custom region.</span>
 <span class="sd">        zone_defs: list of dicts, each describing one output zone:</span>
@@ -6839,14 +6839,14 @@ study area's bounds for anything other than West Africa.</p>
 <span class="sd">              output zone is derived from.</span>
 <span class="sd">            - ``lat_min``, ``lat_max`` (optional): latitude band to</span>
 <span class="sd">              clip to. Omit both (or span the full region) to pass the</span>
-<span class="sd">              source region through unmodified — the pattern for &quot;one</span>
+<span class="sd">              source region through unmodified, the pattern for &quot;one</span>
 <span class="sd">              base region = one output zone, no further splitting&quot;.</span>
 <span class="sd">            - any other keys (``zone_id``, ``color_hex``,</span>
 <span class="sd">              ``rainfall_mm_yr``, notes, ...) are copied through as</span>
 <span class="sd">              feature properties, same as the GEE script&#39;s ZONE_DEFS.</span>
 <span class="sd">        bounds: ``(min_lon, min_lat, max_lon, max_lat)`` used only to</span>
 <span class="sd">            clip latitude bands to a sensible extent. Defaults to a</span>
-<span class="sd">            generous global-ish box if not given — set this to your own</span>
+<span class="sd">            generous global-ish box if not given, set this to your own</span>
 <span class="sd">            study area&#39;s bounds for anything other than West Africa.</span>
 
 <span class="sd">    Returns:</span>
@@ -6916,10 +6916,10 @@ study area's bounds for anything other than West Africa.</p>
 EE assets (:data:<code>config.DEFAULT_ZONE_BASE_ASSETS_WA</code>) using
 :data:<code>config.DEFAULT_ZONE_DEFS_WA</code>.</p>
 <p>This is just the WA study's <em>configuration</em> of
-:func:<code>build_zones_from_bands</code> — call that function directly with
+:func:<code>build_zones_from_bands</code>, call that function directly with
 your own <code>base_zones</code>/<code>zone_defs</code> for a different region.</p>
 <p>Requires the 3 base assets to actually exist and be readable by the
-caller's EE account — they're the author's own uploaded shapefiles,
+caller's EE account, they're the author's own uploaded shapefiles,
 not a public dataset. If you're not the author, either ask for read
 access, upload your own copies and pass your own
 <code>base_zones</code> dict, or use a completely different region's data.</p>
@@ -6952,11 +6952,11 @@ access, upload your own copies and pass your own
 <span class="sd">    :data:`config.DEFAULT_ZONE_DEFS_WA`.</span>
 
 <span class="sd">    This is just the WA study&#39;s *configuration* of</span>
-<span class="sd">    :func:`build_zones_from_bands` — call that function directly with</span>
+<span class="sd">    :func:`build_zones_from_bands`, call that function directly with</span>
 <span class="sd">    your own ``base_zones``/``zone_defs`` for a different region.</span>
 
 <span class="sd">    Requires the 3 base assets to actually exist and be readable by the</span>
-<span class="sd">    caller&#39;s EE account — they&#39;re the author&#39;s own uploaded shapefiles,</span>
+<span class="sd">    caller&#39;s EE account, they&#39;re the author&#39;s own uploaded shapefiles,</span>
 <span class="sd">    not a public dataset. If you&#39;re not the author, either ask for read</span>
 <span class="sd">    access, upload your own copies and pass your own</span>
 <span class="sd">    ``base_zones`` dict, or use a completely different region&#39;s data.</span>
@@ -6983,7 +6983,7 @@ access, upload your own copies and pass your own
 
     <div class="doc doc-contents ">
 
-        <p>Export a built zones FeatureCollection — port of the GEE script's
+        <p>Export a built zones FeatureCollection, port of the GEE script's
 three export buttons (asset / GeoJSON / Shapefile), as background
 <code>ee.batch</code> tasks rather than a UI panel.</p>
 
@@ -7070,7 +7070,7 @@ from base regions every time.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>list of submitted <code>ee.batch.Task</code> objects (already started —</p>
+                <p>list of submitted <code>ee.batch.Task</code> objects (already started,</p>
               </div>
             </td>
           </tr>
@@ -7157,7 +7157,7 @@ from base regions every time.</p>
     <span class="n">drive_description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ecological_zones&quot;</span><span class="p">,</span>
     <span class="n">file_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;GeoJSON&quot;</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Export a built zones FeatureCollection — port of the GEE script&#39;s</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Export a built zones FeatureCollection, port of the GEE script&#39;s</span>
 <span class="sd">    three export buttons (asset / GeoJSON / Shapefile), as background</span>
 <span class="sd">    ``ee.batch`` tasks rather than a UI panel.</span>
 
@@ -7174,7 +7174,7 @@ from base regions every time.</p>
 <span class="sd">            ``&quot;GeoJSON&quot;``, ``&quot;SHP&quot;``, ``&quot;CSV&quot;``, ...).</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        list of submitted ``ee.batch.Task`` objects (already started —</span>
+<span class="sd">        list of submitted ``ee.batch.Task`` objects (already started,</span>
 <span class="sd">        check ``task.status()`` for progress, same as any other GEE</span>
 <span class="sd">        batch export).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -7201,7 +7201,7 @@ from base regions every time.</p>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Submitted Drive export (</span><span class="si">{</span><span class="n">file_format</span><span class="si">}</span><span class="s2">) to folder </span><span class="si">{</span><span class="n">drive_folder</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">tasks</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Nothing submitted — pass asset_id and/or drive_folder.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Nothing submitted, pass asset_id and/or drive_folder.&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">tasks</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -7221,7 +7221,7 @@ from base regions every time.</p>
     <div class="doc doc-contents ">
 
         <p>Load your own zone boundaries from any vector file geopandas can
-read (shapefile, GeoJSON, GeoPackage, ...). Fully general — for a
+read (shapefile, GeoJSON, GeoPackage, ...). Fully general, for a
 user who already has zone geometry from QGIS or elsewhere and
 doesn't need :func:<code>build_zones_from_bands</code> at all.</p>
 
@@ -7238,7 +7238,7 @@ doesn't need :func:<code>build_zones_from_bands</code> at all.</p>
 <span class="normal">307</span>
 <span class="normal">308</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">load_zones_from_file</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Load your own zone boundaries from any vector file geopandas can</span>
-<span class="sd">    read (shapefile, GeoJSON, GeoPackage, ...). Fully general — for a</span>
+<span class="sd">    read (shapefile, GeoJSON, GeoPackage, ...). Fully general, for a</span>
 <span class="sd">    user who already has zone geometry from QGIS or elsewhere and</span>
 <span class="sd">    doesn&#39;t need :func:`build_zones_from_bands` at all.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -7262,7 +7262,7 @@ doesn't need :func:<code>build_zones_from_bands</code> at all.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Wrap one boundary as a one-row zones table — for a user who
+        <p>Wrap one boundary as a one-row zones table, for a user who
 wants a specific area of interest but no zone stratification.</p>
 
 
@@ -7285,7 +7285,7 @@ wants a specific area of interest but no zone stratification.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>any of — a local vector file path (shapefile,
+                <p>any of, a local vector file path (shapefile,
 GeoJSON, ...), a GeoJSON-like dict, an <code>ee.Geometry</code>, or
 a <code>(min_lon, min_lat, max_lon, max_lat)</code> bounding box.</p>
               </div>
@@ -7415,11 +7415,11 @@ will be assigned.</p>
 <span class="normal">295</span>
 <span class="normal">296</span>
 <span class="normal">297</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">single_region_zone</span><span class="p">(</span><span class="n">boundary</span><span class="p">,</span> <span class="n">zone_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Study Area&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrap one boundary as a one-row zones table — for a user who</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrap one boundary as a one-row zones table, for a user who</span>
 <span class="sd">    wants a specific area of interest but no zone stratification.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        boundary: any of — a local vector file path (shapefile,</span>
+<span class="sd">        boundary: any of, a local vector file path (shapefile,</span>
 <span class="sd">            GeoJSON, ...), a GeoJSON-like dict, an ``ee.Geometry``, or</span>
 <span class="sd">            a ``(min_lon, min_lat, max_lon, max_lat)`` bounding box.</span>
 <span class="sd">        zone_name: the single zone label everything in ``boundary``</span>
@@ -7480,7 +7480,7 @@ will be assigned.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Add an <code>area_km2</code> property to every feature — port of the GEE
+        <p>Add an <code>area_km2</code> property to every feature, port of the GEE
 script's area-reporting section. Returns the FeatureCollection with
 the extra property; call <code>.getInfo()</code> or use
 :func:<code>zones_fc_to_gdf</code> to inspect it locally.</p>
@@ -7508,7 +7508,7 @@ the extra property; call <code>.getInfo()</code> or use
 <span class="normal">162</span>
 <span class="normal">163</span>
 <span class="normal">164</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">zone_areas_km2</span><span class="p">(</span><span class="n">zones_fc</span><span class="p">,</span> <span class="n">name_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add an ``area_km2`` property to every feature — port of the GEE</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add an ``area_km2`` property to every feature, port of the GEE</span>
 <span class="sd">    script&#39;s area-reporting section. Returns the FeatureCollection with</span>
 <span class="sd">    the extra property; call ``.getInfo()`` or use</span>
 <span class="sd">    :func:`zones_fc_to_gdf` to inspect it locally.</span>
@@ -7544,7 +7544,7 @@ the extra property; call <code>.getInfo()</code> or use
 
     <div class="doc doc-contents ">
 
-        <p>Pull a (typically small — a handful of zone polygons) EE
+        <p>Pull a (typically small, a handful of zone polygons) EE
 FeatureCollection down to a local <code>geopandas.GeoDataFrame</code>, for
 use with :func:<code>assign_zones</code>'s local-join path, or for saving to a
 file yourself.</p>
@@ -7565,7 +7565,7 @@ file yourself.</p>
 <span class="normal">321</span>
 <span class="normal">322</span>
 <span class="normal">323</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">zones_fc_to_gdf</span><span class="p">(</span><span class="n">zones_fc</span><span class="p">,</span> <span class="n">name_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pull a (typically small — a handful of zone polygons) EE</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pull a (typically small, a handful of zone polygons) EE</span>
 <span class="sd">    FeatureCollection down to a local ``geopandas.GeoDataFrame``, for</span>
 <span class="sd">    use with :func:`assign_zones`&#39;s local-join path, or for saving to a</span>
 <span class="sd">    file yourself.</span>
@@ -7603,13 +7603,13 @@ file yourself.</p>
 
     <div class="doc doc-contents first">
 
-        <p>Precipitation product ingestion — harmonise any product catalogue to
+        <p>Precipitation product ingestion, harmonise any product catalogue to
 a common monthly mean mm/day ImageCollection.</p>
 <p>Every function accepts a <code>products</code> dict (see
 :data:<code>savana.rainfall.config.DEFAULT_PRODUCTS</code> for the required shape)
 and a <code>roi</code>, so this works for a different product catalogue or a
 different region, not just the WA six-product/study-area default.</p>
-<p>Nothing here calls <code>ee.Initialize()</code> — that's the caller's
+<p>Nothing here calls <code>ee.Initialize()</code>, that's the caller's
 responsibility (see :mod:<code>savana.ee_init</code>, reused as-is), consistent
 with the rest of <code>savana</code> never initialising EE as a side effect of
 import.</p>
@@ -7669,7 +7669,7 @@ import.</p>
               <div class="doc-md-description">
                 <p>if given (and <code>bounds</code> is None), the ROI is the
 bounding box of the stations plus <code>buffer_deg</code> on each
-side — works for any station set, anywhere.</p>
+side, works for any station set, anywhere.</p>
               </div>
             </td>
             <td>
@@ -7748,7 +7748,7 @@ used in the manuscript (5-25N, 20W-15E).</p>
 <span class="sd">    Args:</span>
 <span class="sd">        stations_df: if given (and ``bounds`` is None), the ROI is the</span>
 <span class="sd">            bounding box of the stations plus ``buffer_deg`` on each</span>
-<span class="sd">            side — works for any station set, anywhere.</span>
+<span class="sd">            side, works for any station set, anywhere.</span>
 <span class="sd">        bounds: explicit ``(min_lon, min_lat, max_lon, max_lat)``, takes</span>
 <span class="sd">            priority over ``stations_df`` if given.</span>
 <span class="sd">        buffer_deg: degrees of padding added around the station bbox.</span>
@@ -7790,7 +7790,7 @@ used in the manuscript (5-25N, 20W-15E).</p>
 <code>asset_folder</code>, as a background EE batch task per year.</p>
 <p>Splitting the export by year keeps each task well under GEE's
 per-request compute/timeout limits. Returns the list of submitted
-<code>ee.batch.Task</code> objects — check <code>task.status()</code> for progress;
+<code>ee.batch.Task</code> objects, check <code>task.status()</code> for progress;
 this can take hours for a full 20-year run and is meant to be
 fire-and-forget, not awaited synchronously.</p>
 
@@ -7858,7 +7858,7 @@ fire-and-forget, not awaited synchronously.</p>
 
 <span class="sd">    Splitting the export by year keeps each task well under GEE&#39;s</span>
 <span class="sd">    per-request compute/timeout limits. Returns the list of submitted</span>
-<span class="sd">    ``ee.batch.Task`` objects — check ``task.status()`` for progress;</span>
+<span class="sd">    ``ee.batch.Task`` objects, check ``task.status()`` for progress;</span>
 <span class="sd">    this can take hours for a full 20-year run and is meant to be</span>
 <span class="sd">    fire-and-forget, not awaited synchronously.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -8142,7 +8142,7 @@ availability window (see
             <td>
               <div class="doc-md-description">
                 <p>catalogue dict. Bring your own for a different
-product set — must have the shape of
+product set, must have the shape of
 :data:<code>config.DEFAULT_PRODUCTS</code>.</p>
               </div>
             </td>
@@ -8196,7 +8196,7 @@ product set — must have the shape of
 <span class="sd">            :data:`config.DEFAULT_PRODUCT_DATE_RANGES`).</span>
 <span class="sd">        roi: ``ee.Geometry`` (see :func:`build_roi`).</span>
 <span class="sd">        products: catalogue dict. Bring your own for a different</span>
-<span class="sd">            product set — must have the shape of</span>
+<span class="sd">            product set, must have the shape of</span>
 <span class="sd">            :data:`config.DEFAULT_PRODUCTS`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">products</span> <span class="o">=</span> <span class="n">products</span> <span class="k">if</span> <span class="n">products</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">config</span><span class="o">.</span><span class="n">DEFAULT_PRODUCTS</span>
@@ -8241,7 +8241,7 @@ product set — must have the shape of
 
         <p>Point-sample precipitation products at gauge stations, and merge with
 observations into the long-format table :mod:<code>.validation</code> consumes.</p>
-<p>Works for any <code>stations_df</code>, not just the WA 16 — extraction is
+<p>Works for any <code>stations_df</code>, not just the WA 16, extraction is
 purely a function of whatever station coordinates you give it.</p>
 
 
@@ -8332,7 +8332,7 @@ station, and stack into one long-format DataFrame.</p>
               <div class="doc-md-description">
                 <p>if given, each product's extraction is cached to
 <code>cache_dir/precip_extraction_&lt;NAME&gt;.csv</code> (matching the
-original per-product CSV workflow) — a re-run with the same
+original per-product CSV workflow), a re-run with the same
 <code>cache_dir</code> reuses whatever's already there instead of
 re-extracting from Earth Engine, and any product missing
 from the cache is extracted and added to it. Delete the
@@ -8429,7 +8429,7 @@ relevant CSV (or the whole folder) to force a fresh pull.</p>
 <span class="sd">        stations_df: any stations DataFrame.</span>
 <span class="sd">        cache_dir: if given, each product&#39;s extraction is cached to</span>
 <span class="sd">            ``cache_dir/precip_extraction_&lt;NAME&gt;.csv`` (matching the</span>
-<span class="sd">            original per-product CSV workflow) — a re-run with the same</span>
+<span class="sd">            original per-product CSV workflow), a re-run with the same</span>
 <span class="sd">            ``cache_dir`` reuses whatever&#39;s already there instead of</span>
 <span class="sd">            re-extracting from Earth Engine, and any product missing</span>
 <span class="sd">            from the cache is extracted and added to it. Delete the</span>
@@ -8619,7 +8619,7 @@ attaching station metadata (including <code>zone</code> if already assigned).</p
             </td>
             <td>
               <div class="doc-md-description">
-                <p>from :func:<code>extract_all_products</code> — columns
+                <p>from :func:<code>extract_all_products</code>, columns
 <code>station_id, year, month, product, sim_mm_day</code>.</p>
               </div>
             </td>
@@ -8635,7 +8635,7 @@ attaching station metadata (including <code>zone</code> if already assigned).</p
             </td>
             <td>
               <div class="doc-md-description">
-                <p>from :mod:<code>.stations</code> — columns
+                <p>from :mod:<code>.stations</code>, columns
 <code>station_id, year, month, obs_mm_day</code>.</p>
               </div>
             </td>
@@ -8745,9 +8745,9 @@ station attribute, joined on <code>station_id</code>.</p>
 <span class="sd">    attaching station metadata (including ``zone`` if already assigned).</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        sim_long_df: from :func:`extract_all_products` — columns</span>
+<span class="sd">        sim_long_df: from :func:`extract_all_products`, columns</span>
 <span class="sd">            ``station_id, year, month, product, sim_mm_day``.</span>
-<span class="sd">        obs_df: from :mod:`.stations` — columns</span>
+<span class="sd">        obs_df: from :mod:`.stations`, columns</span>
 <span class="sd">            ``station_id, year, month, obs_mm_day``.</span>
 <span class="sd">        stations_df: optional, to bring along ``zone`` (from</span>
 <span class="sd">            :func:`savana.rainfall.zones.assign_zones`) or any other</span>
@@ -8771,7 +8771,7 @@ station attribute, joined on <code>station_id</code>.</p>
     <span class="k">if</span> <span class="n">n_after</span> <span class="o">&lt;</span> <span class="n">n_before</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;  Merge: </span><span class="si">{</span><span class="n">n_after</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">n_before</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> simulated station-months matched &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;an observation (</span><span class="si">{</span><span class="n">n_before</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">n_after</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> unmatched — check obs &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;an observation (</span><span class="si">{</span><span class="n">n_before</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">n_after</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> unmatched, check obs &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;coverage for those station-months).&quot;</span>
         <span class="p">)</span>
     <span class="k">return</span> <span class="n">merged</span>
@@ -8805,15 +8805,15 @@ station attribute, joined on <code>station_id</code>.</p>
 <p>Two metric classes, matching the manuscript's dual-class framework:</p>
 <ul>
 <li><strong>Continuous</strong> (:func:<code>compute_continuous</code>): bias, pbias, mae, rmse,
-  r, r2, nse, kge — how well magnitude and pattern agree.</li>
+  r, r2, nse, kge, how well magnitude and pattern agree.</li>
 <li><strong>Categorical</strong> (:func:<code>compute_categorical</code>): pod, far, csi, ets,
-  freq_bias — how well wet/dry events are detected above a threshold.</li>
+  freq_bias, how well wet/dry events are detected above a threshold.</li>
 </ul>
 <p>Both take plain <code>obs</code>/<code>sim</code> array-likes, so they work regardless of
 which stations, products, or zones produced them. The four levels of
 spatial/temporal aggregation used in the manuscript (per-station,
 per-zone, per-season, pooled) are all just different <code>group_cols</code> to
-the single :func:<code>validate_grouped</code> function — there's no separate
+the single :func:<code>validate_grouped</code> function, there's no separate
 per-station/per-zone/per-season implementation to keep in sync.</p>
 
 
@@ -9213,9 +9213,9 @@ Returns <code>{"n": 0, ...all-NaN}</code> if fewer than 2 valid pairs remain
     <div class="doc doc-contents ">
 
         <p>Rank products within each group by a single metric (default KGE,
-the manuscript's primary ranking metric — see methods 2.4.1).</p>
+the manuscript's primary ranking metric, see methods 2.4.1).</p>
 <p><code>group_cols</code> defaults to every column in <code>validation_df</code> except
-<code>"product"</code> and the metric columns — i.e. whatever grouping level
+<code>"product"</code> and the metric columns, i.e. whatever grouping level
 the input DataFrame already represents (zone, station, season...).
 An empty result (e.g. pooled/overall validation with no zone column)
 ranks across the whole table as a single group, rather than failing.</p>
@@ -9262,10 +9262,10 @@ ranks across the whole table as a single group, rather than failing.</p>
     <span class="n">validation_df</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;kge&quot;</span><span class="p">,</span> <span class="n">group_cols</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Rank products within each group by a single metric (default KGE,</span>
-<span class="sd">    the manuscript&#39;s primary ranking metric — see methods 2.4.1).</span>
+<span class="sd">    the manuscript&#39;s primary ranking metric, see methods 2.4.1).</span>
 
 <span class="sd">    ``group_cols`` defaults to every column in ``validation_df`` except</span>
-<span class="sd">    ``&quot;product&quot;`` and the metric columns — i.e. whatever grouping level</span>
+<span class="sd">    ``&quot;product&quot;`` and the metric columns, i.e. whatever grouping level</span>
 <span class="sd">    the input DataFrame already represents (zone, station, season...).</span>
 <span class="sd">    An empty result (e.g. pooled/overall validation with no zone column)</span>
 <span class="sd">    ranks across the whole table as a single group, rather than failing.</span>
@@ -9346,7 +9346,7 @@ ranks across the whole table as a single group, rather than failing.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Metrics per (station_id, product) — manuscript's finest level.</p>
+        <p>Metrics per (station_id, product), manuscript's finest level.</p>
 
 
             <details class="mkdocstrings-source">
@@ -9354,7 +9354,7 @@ ranks across the whole table as a single group, rather than failing.</p>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">231</span>
 <span class="normal">232</span>
 <span class="normal">233</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">validate_by_station</span><span class="p">(</span><span class="n">merged_df</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Metrics per (station_id, product) — manuscript&#39;s finest level.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Metrics per (station_id, product), manuscript&#39;s finest level.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">validate_grouped</span><span class="p">(</span><span class="n">merged_df</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;station_id&quot;</span><span class="p">,</span> <span class="s2">&quot;product&quot;</span><span class="p">],</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -9373,7 +9373,7 @@ ranks across the whole table as a single group, rather than failing.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Metrics per (zone, product) — the manuscript's primary analytical lens.</p>
+        <p>Metrics per (zone, product), the manuscript's primary analytical lens.</p>
 <p><code>merged_df</code> must already have a <code>zone</code> column
 (see :func:<code>savana.rainfall.zones.assign_zones</code>).</p>
 
@@ -9392,14 +9392,14 @@ ranks across the whole table as a single group, rather than failing.</p>
 <span class="normal">245</span>
 <span class="normal">246</span>
 <span class="normal">247</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">validate_by_zone</span><span class="p">(</span><span class="n">merged_df</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Metrics per (zone, product) — the manuscript&#39;s primary analytical lens.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Metrics per (zone, product), the manuscript&#39;s primary analytical lens.</span>
 
 <span class="sd">    ``merged_df`` must already have a ``zone`` column</span>
 <span class="sd">    (see :func:`savana.rainfall.zones.assign_zones`).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="s2">&quot;zone&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">merged_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;merged_df has no &#39;zone&#39; column — run zones.assign_zones() on your &quot;</span>
+            <span class="s2">&quot;merged_df has no &#39;zone&#39; column, run zones.assign_zones() on your &quot;</span>
             <span class="s2">&quot;stations_df and merge it in before calling validate_by_zone().&quot;</span>
         <span class="p">)</span>
     <span class="k">return</span> <span class="n">validate_grouped</span><span class="p">(</span><span class="n">merged_df</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;zone&quot;</span><span class="p">,</span> <span class="s2">&quot;product&quot;</span><span class="p">],</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
@@ -9425,7 +9425,7 @@ ranks across the whole table as a single group, rather than failing.</p>
 (station, year, month, product) and columns <code>obs_col</code>/<code>sim_col</code>
 (see :func:<code>savana.rainfall.extraction.merge_with_observations</code>).</p>
 <p>This single function implements all four aggregation levels used in
-the manuscript — pass the <code>group_cols</code> that define the level:</p>
+the manuscript, pass the <code>group_cols</code> that define the level:</p>
 <ul>
 <li>per-station:  <code>["station_id", "product"]</code></li>
 <li>per-zone:     <code>["zone", "product"]</code></li>
@@ -9481,7 +9481,7 @@ the manuscript — pass the <code>group_cols</code> that define the level:</p>
 <span class="sd">    (see :func:`savana.rainfall.extraction.merge_with_observations`).</span>
 
 <span class="sd">    This single function implements all four aggregation levels used in</span>
-<span class="sd">    the manuscript — pass the ``group_cols`` that define the level:</span>
+<span class="sd">    the manuscript, pass the ``group_cols`` that define the level:</span>
 
 <span class="sd">    - per-station:  ``[&quot;station_id&quot;, &quot;product&quot;]``</span>
 <span class="sd">    - per-zone:     ``[&quot;zone&quot;, &quot;product&quot;]``</span>
@@ -9553,7 +9553,7 @@ the manuscript — pass the <code>group_cols</code> that define the level:</p>
 
         <p>Rain-detection threshold sensitivity analysis.</p>
 <p>Categorical metrics (POD, FAR, CSI, ETS) depend on the wet/dry
-threshold used to classify a record — this matters most in dryland
+threshold used to classify a record, this matters most in dryland
 zones where near-zero rainfall makes categorical detection structurally
 unstable (see manuscript sections 2.5 and the Saharian zone note in
 :data:<code>savana.rainfall.config.DEFAULT_ZONE_NOTES</code>). This module sweeps
@@ -9593,7 +9593,7 @@ thresholds rather than duplicating its logic.</p>
 
         <p>Rank product/group robustness across the threshold sweep.</p>
 <p>Returns one row per group with the metric's mean, std, and
-coefficient of variation across all swept thresholds — a low CV
+coefficient of variation across all swept thresholds, a low CV
 means the product's performance on that metric is stable regardless
 of exactly where the wet/dry line is drawn; a high CV flags
 threshold-sensitive rankings (per manuscript 2.5's structural
@@ -9625,7 +9625,7 @@ instability finding in near-zero-rainfall zones).</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Rank product/group robustness across the threshold sweep.</span>
 
 <span class="sd">    Returns one row per group with the metric&#39;s mean, std, and</span>
-<span class="sd">    coefficient of variation across all swept thresholds — a low CV</span>
+<span class="sd">    coefficient of variation across all swept thresholds, a low CV</span>
 <span class="sd">    means the product&#39;s performance on that metric is stable regardless</span>
 <span class="sd">    of exactly where the wet/dry line is drawn; a high CV flags</span>
 <span class="sd">    threshold-sensitive rankings (per manuscript 2.5&#39;s structural</span>
@@ -9852,12 +9852,12 @@ instability finding in near-zero-rainfall zones).</p>
 
     <div class="doc doc-contents first">
 
-        <p>Pixel-wise spatial diagnostics — the scripted counterpart to the
+        <p>Pixel-wise spatial diagnostics, the scripted counterpart to the
 interactive GEE app's on-demand map layers (bias/correlation/trend/
 agreement), so those ~20 exploratory analyses produce real exportable
 outputs instead of only living as live map interaction.</p>
 <p>Every function takes an explicit <code>reference</code> ImageCollection rather
-than assuming GPCC gridded data is available — the manuscript's GPCC
+than assuming GPCC gridded data is available, the manuscript's GPCC
 reference is point-station only (see :mod:<code>.stations</code>), so by default
 these functions compare products <em>against each other</em> (inter-product
 agreement) or use whichever gridded product you designate as the
@@ -10047,18 +10047,18 @@ time-matched image pair stack.</p>
     <div class="doc doc-contents ">
 
         <p>A quick INTER-PRODUCT bias map (product minus another gridded
-product) — before running formal validation, "roughly where do
+product), before running formal validation, "roughly where do
 these two products disagree spatially?" Direct port of the GEE
 app's Bias Map button.</p>
 <p>IMPORTANT: this is product vs. product, never product vs. GPCC.
 GPCC exists in this package only as point gauge observations (see
-:mod:<code>.stations</code>) — there's no gridded GPCC raster to difference a
+:mod:<code>.stations</code>), there's no gridded GPCC raster to difference a
 product against pixel-by-pixel. For the actual "does this product
 agree with real GPCC ground truth" spatial check, use
 :func:<code>preview_station_bias_map</code> instead, which plots true bias at
 each gauge location. This function is for a different, valid
-question — "how much do CHIRPS and GPM-IMERG disagree with each
-other spatially" — not a validation check.</p>
+question, "how much do CHIRPS and GPM-IMERG disagree with each
+other spatially", not a validation check.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -10081,7 +10081,7 @@ other spatially" — not a validation check.</p>
             <td>
               <div class="doc-md-description">
                 <p>monthly mm/day ImageCollections (both
-gridded products — neither is GPCC).</p>
+gridded products, neither is GPCC).</p>
               </div>
             </td>
             <td>
@@ -10216,23 +10216,23 @@ gridded products — neither is GPCC).</p>
     <span class="n">product_ic</span><span class="p">,</span> <span class="n">reference_ic</span><span class="p">,</span> <span class="n">product_name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">reference_name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A quick INTER-PRODUCT bias map (product minus another gridded</span>
-<span class="sd">    product) — before running formal validation, &quot;roughly where do</span>
+<span class="sd">    product), before running formal validation, &quot;roughly where do</span>
 <span class="sd">    these two products disagree spatially?&quot; Direct port of the GEE</span>
 <span class="sd">    app&#39;s Bias Map button.</span>
 
 <span class="sd">    IMPORTANT: this is product vs. product, never product vs. GPCC.</span>
 <span class="sd">    GPCC exists in this package only as point gauge observations (see</span>
-<span class="sd">    :mod:`.stations`) — there&#39;s no gridded GPCC raster to difference a</span>
+<span class="sd">    :mod:`.stations`), there&#39;s no gridded GPCC raster to difference a</span>
 <span class="sd">    product against pixel-by-pixel. For the actual &quot;does this product</span>
 <span class="sd">    agree with real GPCC ground truth&quot; spatial check, use</span>
 <span class="sd">    :func:`preview_station_bias_map` instead, which plots true bias at</span>
 <span class="sd">    each gauge location. This function is for a different, valid</span>
-<span class="sd">    question — &quot;how much do CHIRPS and GPM-IMERG disagree with each</span>
-<span class="sd">    other spatially&quot; — not a validation check.</span>
+<span class="sd">    question, &quot;how much do CHIRPS and GPM-IMERG disagree with each</span>
+<span class="sd">    other spatially&quot;, not a validation check.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        product_ic, reference_ic: monthly mm/day ImageCollections (both</span>
-<span class="sd">            gridded products — neither is GPCC).</span>
+<span class="sd">            gridded products, neither is GPCC).</span>
 <span class="sd">        product_name, reference_name: labels for the map layers.</span>
 <span class="sd">        region: clip to this ``ee.Geometry`` if given.</span>
 <span class="sd">        m: an existing ``geemap.Map`` to add to, or a new one is created.</span>
@@ -10261,8 +10261,8 @@ gridded products — neither is GPCC).</p>
             <span class="n">m</span><span class="o">.</span><span class="n">centerObject</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
 
     <span class="n">suffix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">product_name</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="n">reference_name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">product_name</span> <span class="k">else</span> <span class="s2">&quot;Bias&quot;</span>
-    <span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">bias</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">DEFAULT_VIS_PARAMS</span><span class="p">[</span><span class="s2">&quot;bias&quot;</span><span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;Bias (mm/d) — </span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">pbias</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">DEFAULT_VIS_PARAMS</span><span class="p">[</span><span class="s2">&quot;pbias&quot;</span><span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;% Bias — </span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">bias</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">DEFAULT_VIS_PARAMS</span><span class="p">[</span><span class="s2">&quot;bias&quot;</span><span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;Bias (mm/d), </span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">pbias</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">DEFAULT_VIS_PARAMS</span><span class="p">[</span><span class="s2">&quot;pbias&quot;</span><span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;% Bias, </span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">m</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -10282,7 +10282,7 @@ gridded products — neither is GPCC).</p>
     <div class="doc doc-contents ">
 
         <p>A quick look at one product's long-term mean rainfall on an
-interactive map — before running any validation, just "does this
+interactive map, before running any validation, just "does this
 product's spatial pattern look sane over my area?"</p>
 <p>Direct port of the GEE app's Annual Total / Mean Daily Rate map
 buttons.</p>
@@ -10356,7 +10356,7 @@ buttons.</p>
             <td>
               <div class="doc-md-description">
                 <p><code>"daily"</code> (mm/day, default) or <code>"annual"</code> (mm/yr,
-mean daily rate x 365.25) — selects which
+mean daily rate x 365.25), selects which
 :data:<code>config.DEFAULT_VIS_PARAMS</code> entry is used.</p>
               </div>
             </td>
@@ -10388,7 +10388,7 @@ mean daily rate x 365.25) — selects which
             <td>
               <div class="doc-md-description">
                 <p>if BOTH given, overlays real GPCC station
-values as colored markers on top of the raster — NOT a
+values as colored markers on top of the raster, NOT a
 rasterized/interpolated GPCC surface (GPCC stays point data
 throughout this package), just each gauge's true mean
 observed value, plotted at its real location, colored on the
@@ -10513,7 +10513,7 @@ the raster's pixel value at that same point side by side.</p>
     <span class="n">stations_df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A quick look at one product&#39;s long-term mean rainfall on an</span>
-<span class="sd">    interactive map — before running any validation, just &quot;does this</span>
+<span class="sd">    interactive map, before running any validation, just &quot;does this</span>
 <span class="sd">    product&#39;s spatial pattern look sane over my area?&quot;</span>
 
 <span class="sd">    Direct port of the GEE app&#39;s Annual Total / Mean Daily Rate map</span>
@@ -10525,11 +10525,11 @@ the raster's pixel value at that same point side by side.</p>
 <span class="sd">        product_name: label for the map layer.</span>
 <span class="sd">        region: clip to this ``ee.Geometry`` if given.</span>
 <span class="sd">        kind: ``&quot;daily&quot;`` (mm/day, default) or ``&quot;annual&quot;`` (mm/yr,</span>
-<span class="sd">            mean daily rate x 365.25) — selects which</span>
+<span class="sd">            mean daily rate x 365.25), selects which</span>
 <span class="sd">            :data:`config.DEFAULT_VIS_PARAMS` entry is used.</span>
 <span class="sd">        m: an existing ``geemap.Map`` to add to, or a new one is created.</span>
 <span class="sd">        obs_df, stations_df: if BOTH given, overlays real GPCC station</span>
-<span class="sd">            values as colored markers on top of the raster — NOT a</span>
+<span class="sd">            values as colored markers on top of the raster, NOT a</span>
 <span class="sd">            rasterized/interpolated GPCC surface (GPCC stays point data</span>
 <span class="sd">            throughout this package), just each gauge&#39;s true mean</span>
 <span class="sd">            observed value, plotted at its real location, colored on the</span>
@@ -10560,7 +10560,7 @@ the raster's pixel value at that same point side by side.</p>
             <span class="n">m</span><span class="o">.</span><span class="n">centerObject</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
 
     <span class="n">vis</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">DEFAULT_VIS_PARAMS</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span>
-    <span class="n">label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Annual Total&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">kind</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;annual&#39;</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;Mean Daily&#39;</span><span class="si">}</span><span class="s2"> — </span><span class="si">{</span><span class="n">product_name</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Annual Total&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">kind</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;annual&#39;</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;Mean Daily&#39;</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">product_name</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">mean_img</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">obs_df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stations_df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -10585,7 +10585,7 @@ the raster's pixel value at that same point side by side.</p>
     <div class="doc doc-contents ">
 
         <p>Per-station mean bias against REAL GPCC observations, plotted as
-colored markers — the spatial check that's actually anchored to
+colored markers, the spatial check that's actually anchored to
 ground truth, unlike :func:<code>preview_bias_map</code> (which can only ever
 compare two gridded products against each other, since GPCC has no
 gridded form in this package).</p>
@@ -10611,7 +10611,7 @@ gridded form in this package).</p>
             <td>
               <div class="doc-md-description">
                 <p>long-format obs/sim table with station coordinates
-already joined in — i.e. from
+already joined in, i.e. from
 :func:<code>savana.rainfall.extraction.merge_with_observations</code>
 called with <code>stations_df=</code> (which
 :meth:<code>savana.rainfall.pipeline.RainfallAssessment.merge</code>
@@ -10671,7 +10671,7 @@ always does), so <code>lon</code>/<code>lat</code> columns are present.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>A <code>geemap.Map</code> with one marker per station — blue if that</p>
+                <p>A <code>geemap.Map</code> with one marker per station, blue if that</p>
               </div>
             </td>
           </tr>
@@ -10769,14 +10769,14 @@ always does), so <code>lon</code>/<code>lat</code> columns are present.</p>
 <span class="normal">256</span>
 <span class="normal">257</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">preview_station_bias_map</span><span class="p">(</span><span class="n">merged_df</span><span class="p">,</span> <span class="n">product</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zoom</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Per-station mean bias against REAL GPCC observations, plotted as</span>
-<span class="sd">    colored markers — the spatial check that&#39;s actually anchored to</span>
+<span class="sd">    colored markers, the spatial check that&#39;s actually anchored to</span>
 <span class="sd">    ground truth, unlike :func:`preview_bias_map` (which can only ever</span>
 <span class="sd">    compare two gridded products against each other, since GPCC has no</span>
 <span class="sd">    gridded form in this package).</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        merged_df: long-format obs/sim table with station coordinates</span>
-<span class="sd">            already joined in — i.e. from</span>
+<span class="sd">            already joined in, i.e. from</span>
 <span class="sd">            :func:`savana.rainfall.extraction.merge_with_observations`</span>
 <span class="sd">            called with ``stations_df=`` (which</span>
 <span class="sd">            :meth:`savana.rainfall.pipeline.RainfallAssessment.merge`</span>
@@ -10785,7 +10785,7 @@ always does), so <code>lon</code>/<code>lat</code> columns are present.</p>
 <span class="sd">        m: an existing ``geemap.Map`` to add to, or a new one is created.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        A ``geemap.Map`` with one marker per station — blue if that</span>
+<span class="sd">        A ``geemap.Map`` with one marker per station, blue if that</span>
 <span class="sd">        product overestimates GPCC there, red if it underestimates.</span>
 <span class="sd">        Click a marker to see the exact bias value.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -10798,7 +10798,7 @@ always does), so <code>lon</code>/<code>lat</code> columns are present.</p>
     <span class="n">missing</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;lon&quot;</span><span class="p">,</span> <span class="s2">&quot;lat&quot;</span><span class="p">}</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">sub</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;merged_df is missing </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span><span class="si">}</span><span class="s2"> — station coordinates &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;merged_df is missing </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span><span class="si">}</span><span class="s2">, station coordinates &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;weren&#39;t joined in. Call merge_with_observations(..., &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;stations_df=your_stations_df), or just use &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;RainfallAssessment.merge(), which does this automatically.&quot;</span>
@@ -10853,7 +10853,7 @@ always does), so <code>lon</code>/<code>lat</code> columns are present.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Pixel-wise CSI at each of several thresholds — spatial counterpart
+        <p>Pixel-wise CSI at each of several thresholds, spatial counterpart
 to :func:<code>savana.rainfall.thresholds.threshold_sensitivity</code>.</p>
 <p>Returns <code>{threshold: ee.Image}</code> of pixel-wise CSI.</p>
 
@@ -10903,7 +10903,7 @@ to :func:<code>savana.rainfall.thresholds.threshold_sensitivity</code>.</p>
 <span class="normal">410</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">threshold_sensitivity_map</span><span class="p">(</span>
     <span class="n">product_ic</span><span class="p">,</span> <span class="n">reference_ic</span><span class="p">,</span> <span class="n">thresholds</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pixel-wise CSI at each of several thresholds — spatial counterpart</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pixel-wise CSI at each of several thresholds, spatial counterpart</span>
 <span class="sd">    to :func:`savana.rainfall.thresholds.threshold_sensitivity`.</span>
 
 <span class="sd">    Returns ``{threshold: ee.Image}`` of pixel-wise CSI.</span>
@@ -11012,7 +11012,7 @@ to :func:<code>savana.rainfall.thresholds.threshold_sensitivity</code>.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Zone-mean bias/trend per product, as a flat table — the scripted
+        <p>Zone-mean bias/trend per product, as a flat table, the scripted
 counterpart to the GEE app's zonal-ranking map layer.</p>
 <p>Requires <code>zones_gdf</code> (see
 :func:<code>savana.rainfall.zones.default_zones_wa</code>). If <code>reference_ic</code>
@@ -11065,7 +11065,7 @@ is given, also includes zone-mean bias against it.</p>
 <span class="normal">367</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">zonal_rank_table</span><span class="p">(</span>
     <span class="n">products_ic</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">zones_gdf</span><span class="p">,</span> <span class="n">reference_ic</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Zone-mean bias/trend per product, as a flat table — the scripted</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Zone-mean bias/trend per product, as a flat table, the scripted</span>
 <span class="sd">    counterpart to the GEE app&#39;s zonal-ranking map layer.</span>
 
 <span class="sd">    Requires ``zones_gdf`` (see</span>
@@ -11136,20 +11136,20 @@ support workbook.</p>
 <ul>
 <li><code>"fixed"</code> (default): each metric normalised against a fixed
   plausible range (KGE against -1..1, NSE against -5..1, |PBIAS|
-  against 0..60, etc — see
+  against 0..60, etc, see
   :data:<code>savana.rainfall.config.DEFAULT_NORMALIZATION_BOUNDS</code>). This is
   what the shipped decision workbook and reported figures actually use
-  — verified by reproducing <code>WA_Precipitation_Decision_Tool_v2.xlsx</code>'s
+ , verified by reproducing <code>WA_Precipitation_Decision_Tool_v2.xlsx</code>'s
   SELECTOR-sheet scores exactly (Fire-risk x Saharian x CHIRPS = 0.7551).</li>
 <li><code>"zone_relative"</code>: per-zone min-max across whatever products are
   being compared, matching the manuscript's written formula (section
-  2.6). Scale-invariant — recommended if you add/remove products from
+  2.6). Scale-invariant, recommended if you add/remove products from
   the default six, since fixed bounds were tuned for the original
   product set's plausible range.</li>
 </ul>
 <p>:func:<code>build_workbook</code> writes a live spreadsheet tool (data-validation
 dropdowns + INDEX/MATCH formulas that recompute instantly), not a
-static report — the same design as the current
+static report, the same design as the current
 <code>WA_Precipitation_Decision_Tool_v2.xlsx</code>, generalised to any
 products/zones/apps rather than hardcoded to the WA six.</p>
 
@@ -11231,7 +11231,7 @@ zone). Returns <code>(product, score)</code> or <code>(None, None)</code> if no 
         <p>Write the interactive decision-support workbook.</p>
 <p>Sheet layout matches the current (v2) design: flat <code>DATA_*</code> sheets
 holding the real numbers, <code>APP_WEIGHTS</code> as a visible reference
-table, <code>SCORES</code> (flat app/zone/product/score — restores
+table, <code>SCORES</code> (flat app/zone/product/score, restores
 compatibility with <code>fig_application_rankings_v4.py</code>, which reads
 this exact sheet name/shape), and two live sheets driven by
 data-validation dropdowns + <code>INDEX</code>/<code>MATCH</code> formulas:
@@ -11291,7 +11291,7 @@ and <code>SCORECARD</code> (pick a zone + product, see its raw metrics).</p>
               <div class="doc-md-description">
                 <p>optional
 companion tables (validate_overall, rank_products,
-threshold_sensitivity outputs) — written as-is if given.</p>
+threshold_sensitivity outputs), written as-is if given.</p>
               </div>
             </td>
             <td>
@@ -11551,7 +11551,7 @@ given.</p>
 
 <span class="sd">    Sheet layout matches the current (v2) design: flat ``DATA_*`` sheets</span>
 <span class="sd">    holding the real numbers, ``APP_WEIGHTS`` as a visible reference</span>
-<span class="sd">    table, ``SCORES`` (flat app/zone/product/score — restores</span>
+<span class="sd">    table, ``SCORES`` (flat app/zone/product/score, restores</span>
 <span class="sd">    compatibility with ``fig_application_rankings_v4.py``, which reads</span>
 <span class="sd">    this exact sheet name/shape), and two live sheets driven by</span>
 <span class="sd">    data-validation dropdowns + ``INDEX``/``MATCH`` formulas:</span>
@@ -11564,7 +11564,7 @@ given.</p>
 <span class="sd">            :func:`savana.rainfall.validation.validate_by_zone`.</span>
 <span class="sd">        validation_overall_df, ranking_df, threshold_df: optional</span>
 <span class="sd">            companion tables (validate_overall, rank_products,</span>
-<span class="sd">            threshold_sensitivity outputs) — written as-is if given.</span>
+<span class="sd">            threshold_sensitivity outputs), written as-is if given.</span>
 <span class="sd">        scores_df: from :func:`score_products`. Computed automatically</span>
 <span class="sd">            from ``validation_by_zone_df`` + ``app_weights`` if not</span>
 <span class="sd">            given.</span>
@@ -11667,7 +11667,7 @@ given.</p>
         <span class="n">ws_sel</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">header_row</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">fill</span> <span class="o">=</span> <span class="n">header_fill</span>
 
     <span class="c1"># Helper lookup table (hidden columns J:M): app, zone, product, score,</span>
-    <span class="c1"># plus a concatenated key — same shape as the SCORES sheet, written</span>
+    <span class="c1"># plus a concatenated key, same shape as the SCORES sheet, written</span>
     <span class="c1"># again here so SELECTOR&#39;s formulas don&#39;t depend on sheet order.</span>
     <span class="n">key_col</span><span class="p">,</span> <span class="n">app_col</span><span class="p">,</span> <span class="n">zone_col</span><span class="p">,</span> <span class="n">prod_col</span><span class="p">,</span> <span class="n">score_col</span> <span class="o">=</span> <span class="s2">&quot;J&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span>
     <span class="n">ws_sel</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">app_col</span><span class="si">}</span><span class="s2">1&quot;</span><span class="p">],</span> <span class="n">ws_sel</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">zone_col</span><span class="si">}</span><span class="s2">1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;app&quot;</span><span class="p">,</span> <span class="s2">&quot;zone&quot;</span>
@@ -11800,7 +11800,7 @@ by default).</p>
                 <p><code>{application_name: {metric: weight, ...}}</code>, weights
 summing to 1.0 per application. Defaults to
 :data:<code>config.DEFAULT_APP_WEIGHTS</code> (the 7 conservation/
-water-management applications) — pass your own for
+water-management applications), pass your own for
 different applications or priorities.</p>
               </div>
             </td>
@@ -11819,7 +11819,7 @@ different applications or priorities.</p>
               <div class="doc-md-description">
                 <p><code>"fixed"</code> (default, matches shipped results) or
 <code>"zone_relative"</code> (matches the manuscript's written
-formula — see module docstring).</p>
+formula, see module docstring).</p>
               </div>
             </td>
             <td>
@@ -11853,7 +11853,7 @@ formula — see module docstring).</p>
             <td>
               <div class="doc-md-description">
                 <p>columns identifying each row's context (default:
-<code>["zone"]</code> if present, else none — i.e. pooled).</p>
+<code>["zone"]</code> if present, else none, i.e. pooled).</p>
               </div>
             </td>
             <td>
@@ -11999,15 +11999,15 @@ formula — see module docstring).</p>
 <span class="sd">        weights: ``{application_name: {metric: weight, ...}}``, weights</span>
 <span class="sd">            summing to 1.0 per application. Defaults to</span>
 <span class="sd">            :data:`config.DEFAULT_APP_WEIGHTS` (the 7 conservation/</span>
-<span class="sd">            water-management applications) — pass your own for</span>
+<span class="sd">            water-management applications), pass your own for</span>
 <span class="sd">            different applications or priorities.</span>
 <span class="sd">        normalization: ``&quot;fixed&quot;`` (default, matches shipped results) or</span>
 <span class="sd">            ``&quot;zone_relative&quot;`` (matches the manuscript&#39;s written</span>
-<span class="sd">            formula — see module docstring).</span>
+<span class="sd">            formula, see module docstring).</span>
 <span class="sd">        bounds: only used when ``normalization=&quot;fixed&quot;``. Defaults to</span>
 <span class="sd">            :data:`config.DEFAULT_NORMALIZATION_BOUNDS`.</span>
 <span class="sd">        group_cols: columns identifying each row&#39;s context (default:</span>
-<span class="sd">            ``[&quot;zone&quot;]`` if present, else none — i.e. pooled).</span>
+<span class="sd">            ``[&quot;zone&quot;]`` if present, else none, i.e. pooled).</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Long-format DataFrame: ``group_cols + [&quot;app&quot;, &quot;product&quot;, &quot;score&quot;]``.</span>
@@ -12106,7 +12106,7 @@ one failure (e.g. no threshold data was run) doesn't take down the
 rest; :func:<code>summarize</code> turns facts into readable prose;
 :func:<code>answer</code> does grounded keyword-based retrieval against the facts
 dict. Every number in the output traces back to something actually
-computed, never fabricated — the same rule as savana.insights.</p>
+computed, never fabricated, the same rule as savana.insights.</p>
 
 
 
@@ -12775,7 +12775,7 @@ grouped validation output with a <code>product</code> column).</p>
 
         <p>Static matplotlib figures for a rainfall assessment.</p>
 <p>Reads directly from the DataFrames produced by :mod:<code>.validation</code> and
-:mod:<code>.decision</code> — no Excel round-trip required, though
+:mod:<code>.decision</code>, no Excel round-trip required, though
 :func:<code>recommendation_heatmap</code> also happily reads a <code>SCORES</code> sheet
 exported by :func:<code>savana.rainfall.decision.build_workbook</code> if that's
 more convenient (same shape either way: app, zone, product, score).</p>
@@ -12868,7 +12868,7 @@ group per zone.</p>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">width</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">products</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">zones</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Application-weighted score&quot;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Product ranking — </span><span class="si">{</span><span class="n">app</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Product ranking, </span><span class="si">{</span><span class="n">app</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">fig</span>
@@ -12951,7 +12951,7 @@ group per zone.</p>
     <div class="doc doc-contents ">
 
         <p>A quick "does this look right?" comparison of observed vs
-simulated values — before computing formal validation metrics.
+simulated values, before computing formal validation metrics.
 Scatter with a 1:1 reference line, one color per product (or
 filtered to one product/station if given). Mirrors the GEE app's
 per-station validation scatter chart.</p>
@@ -12998,7 +12998,7 @@ per-station validation scatter chart.</p>
     <span class="n">merged_df</span><span class="p">,</span> <span class="n">station_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">product</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A quick &quot;does this look right?&quot; comparison of observed vs</span>
-<span class="sd">    simulated values — before computing formal validation metrics.</span>
+<span class="sd">    simulated values, before computing formal validation metrics.</span>
 <span class="sd">    Scatter with a 1:1 reference line, one color per product (or</span>
 <span class="sd">    filtered to one product/station if given). Mirrors the GEE app&#39;s</span>
 <span class="sd">    per-station validation scatter chart.</span>
@@ -13023,9 +13023,9 @@ per-station validation scatter chart.</p>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Simulated (mm/day)&quot;</span><span class="p">)</span>
     <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Obs vs Sim&quot;</span>
     <span class="k">if</span> <span class="n">station_id</span><span class="p">:</span>
-        <span class="n">title</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; — </span><span class="si">{</span><span class="n">station_id</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">title</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, </span><span class="si">{</span><span class="n">station_id</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="k">if</span> <span class="n">product</span><span class="p">:</span>
-        <span class="n">title</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; — </span><span class="si">{</span><span class="n">product</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">title</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, </span><span class="si">{</span><span class="n">product</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
     <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
@@ -13047,7 +13047,7 @@ per-station validation scatter chart.</p>
 
     <div class="doc doc-contents ">
 
-        <p>A quick time-series look at raw GPCC observations — before
+        <p>A quick time-series look at raw GPCC observations, before
 extracting or validating any product, "does the reference data
 itself look sane?" One line per station, or a single station if
 <code>station_id</code> is given.</p>
@@ -13082,7 +13082,7 @@ itself look sane?" One line per station, or a single station if
 <span class="normal">44</span>
 <span class="normal">45</span>
 <span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">preview_observations</span><span class="p">(</span><span class="n">obs_df</span><span class="p">,</span> <span class="n">station_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A quick time-series look at raw GPCC observations — before</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A quick time-series look at raw GPCC observations, before</span>
 <span class="sd">    extracting or validating any product, &quot;does the reference data</span>
 <span class="sd">    itself look sane?&quot; One line per station, or a single station if</span>
 <span class="sd">    ``station_id`` is given.</span>
@@ -13102,7 +13102,7 @@ itself look sane?" One line per station, or a single station if
         <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">sub</span><span class="p">[</span><span class="s2">&quot;obs_mm_day&quot;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">sid</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Observed (mm/day)&quot;</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
-        <span class="s2">&quot;GPCC observations&quot;</span> <span class="o">+</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot; — </span><span class="si">{</span><span class="n">station_id</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">station_id</span> <span class="k">else</span> <span class="s2">&quot; — all stations&quot;</span><span class="p">)</span>
+        <span class="s2">&quot;GPCC observations&quot;</span> <span class="o">+</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;, </span><span class="si">{</span><span class="n">station_id</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">station_id</span> <span class="k">else</span> <span class="s2">&quot;, all stations&quot;</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;station_id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
@@ -13126,7 +13126,7 @@ itself look sane?" One line per station, or a single station if
     <div class="doc doc-contents ">
 
         <p>App x zone grid, each cell showing the single best product +
-its score — the "decision matrix" view, folding in
+its score, the "decision matrix" view, folding in
 fig_application_rankings_v4.py's recommendation-heatmap figure.</p>
 
 
@@ -13172,7 +13172,7 @@ fig_application_rankings_v4.py's recommendation-heatmap figure.</p>
 <span class="normal">223</span>
 <span class="normal">224</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">recommendation_heatmap</span><span class="p">(</span><span class="n">scores_df</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;App x zone grid, each cell showing the single best product +</span>
-<span class="sd">    its score — the &quot;decision matrix&quot; view, folding in</span>
+<span class="sd">    its score, the &quot;decision matrix&quot; view, folding in</span>
 <span class="sd">    fig_application_rankings_v4.py&#39;s recommendation-heatmap figure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">decision</span>
@@ -13285,7 +13285,7 @@ for every product, optionally filtered to one zone.</p>
         <span class="n">radius</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;std_ratio&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;product&quot;</span><span class="p">],</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Taylor diagram</span><span class="si">{</span><span class="sa">f</span><span class="s1">&#39; — </span><span class="si">{</span><span class="n">zone</span><span class="si">}</span><span class="s1">&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">zone</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Taylor diagram</span><span class="si">{</span><span class="sa">f</span><span class="s1">&#39;, </span><span class="si">{</span><span class="n">zone</span><span class="si">}</span><span class="s1">&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">zone</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper left&quot;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.05</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
     <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">fig</span>

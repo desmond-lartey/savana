@@ -699,7 +699,7 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot
 <ul>
 <li>Python &gt;= 3.10</li>
 <li>A Google Earth Engine account with a registered Cloud project
-  (<a href="https://code.earthengine.google.com/register">register here</a>) —
+  (<a href="https://code.earthengine.google.com/register">register here</a>),
   required by both the classification and precipitation-assessment modules</li>
 </ul>
 <h2 id="verifying-the-install">Verifying the install<a class="headerlink" href="#verifying-the-install" title="Permanent link">&para;</a></h2>
@@ -720,7 +720,7 @@ have a valid Earth Engine session in your environment, <code>savana.initialize()
 (or simply calling <code>savana.classify_landscape(...)</code> directly) will pick that
 up automatically.</p>
 <p>For <code>savana.rainfall</code>, Earth Engine initialization is handled the same way
-but lazily — it only fires right before a call that actually needs it
+but lazily, it only fires right before a call that actually needs it
 (<code>.ingest()</code>, <code>.extract()</code>, <code>.preview_stations()</code>, <code>.preview_map()</code>, or
 <code>get_observations(source="ee_asset")</code>), so a purely offline run (e.g.
 <code>obs_source="csv"</code> or <code>"demo"</code>) never prompts for Earth Engine auth at all.
@@ -736,13 +736,13 @@ requiring you to manage local raster files:</p>
 <ul>
 <li><strong>Gridded precipitation products</strong> (CHIRPS, ERA5-Land, GPM IMERG, MERRA-2,
   PERSIANN-CDR, TerraClimate by default): pulled directly from their public
-  Earth Engine collections — nothing to download.</li>
+  Earth Engine collections, nothing to download.</li>
 <li><strong>GPCC gauge observations</strong> (the validation reference): either the public
   GPCC Full Data Daily archive, downloaded and point-extracted automatically
   (<code>obs_source="download"</code>, works for any station location), or a
   pre-extracted Earth Engine table asset if you have one
   (<code>obs_source="ee_asset"</code>, faster but limited to whichever stations are in
-  that asset). Both stay point data — nothing here is rasterized or
+  that asset). Both stay point data, nothing here is rasterized or
   interpolated into a gridded GPCC surface.</li>
 </ul>
 
