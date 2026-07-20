@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Adaptive classification of complex savanna landscapes into management-relevant land-system classes">
+        <meta name="description" content="A geospatial intelligence ecosystem -- adaptive land-system classification and precipitation product assessment for savanna landscapes">
       
       
         <meta name="author" content="Desmond Lartey">
@@ -384,6 +384,28 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#earth-engine-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Earth Engine authentication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#precipitation-data-sources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Precipitation data sources
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -461,6 +483,33 @@
     
   
     API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_rainfall/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rainfall API Reference
   
 
     
@@ -586,6 +635,28 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#earth-engine-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Earth Engine authentication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#precipitation-data-sources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Precipitation data sources
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -610,19 +681,35 @@
 <h2 id="using-pip">Using pip<a class="headerlink" href="#using-pip" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>savana
 </code></pre></div>
-<p>For local vector file (shapefile/GeoPackage) AOI support:</p>
-<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;savana[vector]&quot;</span>
+<p>Extras, installable individually or combined:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># land-system classification with local vector file (shapefile/GeoPackage) AOI support:</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;savana[vector]&quot;</span>
+
+<span class="c1"># precipitation product assessment (xarray, netCDF4, requests, openpyxl,</span>
+<span class="c1"># matplotlib, geopandas, shapely):</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;savana[rainfall]&quot;</span>
+
+<span class="c1"># the AI agent -- works with either module:</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;savana[agents]&quot;</span>
+
+<span class="c1"># everything:</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;savana[vector,rainfall,agents]&quot;</span>
 </code></pre></div>
 <h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Python &gt;= 3.10</li>
 <li>A Google Earth Engine account with a registered Cloud project
-  (<a href="https://code.earthengine.google.com/register">register here</a>)</li>
+  (<a href="https://code.earthengine.google.com/register">register here</a>) —
+  required by both the classification and precipitation-assessment modules</li>
 </ul>
 <h2 id="verifying-the-install">Verifying the install<a class="headerlink" href="#verifying-the-install" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">savana</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">savana</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">savana.rainfall</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rf</span>   <span class="c1"># only if you installed the [rainfall] extra</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">rf</span><span class="p">)</span>
 </code></pre></div>
+<h2 id="earth-engine-authentication">Earth Engine authentication<a class="headerlink" href="#earth-engine-authentication" title="Permanent link">&para;</a></h2>
 <p>The first time you run anything that touches Earth Engine, you'll be prompted
 to authenticate:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">savana</span>
@@ -632,6 +719,32 @@ to authenticate:</p>
 have a valid Earth Engine session in your environment, <code>savana.initialize()</code>
 (or simply calling <code>savana.classify_landscape(...)</code> directly) will pick that
 up automatically.</p>
+<p>For <code>savana.rainfall</code>, Earth Engine initialization is handled the same way
+but lazily — it only fires right before a call that actually needs it
+(<code>.ingest()</code>, <code>.extract()</code>, <code>.preview_stations()</code>, <code>.preview_map()</code>, or
+<code>get_observations(source="ee_asset")</code>), so a purely offline run (e.g.
+<code>obs_source="csv"</code> or <code>"demo"</code>) never prompts for Earth Engine auth at all.
+Pass your project explicitly wherever you construct a <code>RainfallAssessment</code>
+or call <code>validate_against_gpcc()</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">savana.rainfall</span><span class="w"> </span><span class="kn">import</span> <span class="n">RainfallAssessment</span>
+
+<span class="n">ra</span> <span class="o">=</span> <span class="n">RainfallAssessment</span><span class="p">(</span><span class="n">ee_project</span><span class="o">=</span><span class="s2">&quot;your-gcp-project-id&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="precipitation-data-sources">Precipitation data sources<a class="headerlink" href="#precipitation-data-sources" title="Permanent link">&para;</a></h2>
+<p><code>savana.rainfall</code> needs two kinds of data, both handled for you, neither
+requiring you to manage local raster files:</p>
+<ul>
+<li><strong>Gridded precipitation products</strong> (CHIRPS, ERA5-Land, GPM IMERG, MERRA-2,
+  PERSIANN-CDR, TerraClimate by default): pulled directly from their public
+  Earth Engine collections — nothing to download.</li>
+<li><strong>GPCC gauge observations</strong> (the validation reference): either the public
+  GPCC Full Data Daily archive, downloaded and point-extracted automatically
+  (<code>obs_source="download"</code>, works for any station location), or a
+  pre-extracted Earth Engine table asset if you have one
+  (<code>obs_source="ee_asset"</code>, faster but limited to whichever stations are in
+  that asset). Both stay point data — nothing here is rasterized or
+  interpolated into a gridded GPCC surface.</li>
+</ul>
 
 
 

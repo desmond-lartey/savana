@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Adaptive classification of complex savanna landscapes into management-relevant land-system classes">
+        <meta name="description" content="A geospatial intelligence ecosystem -- adaptive land-system classification and precipitation product assessment for savanna landscapes">
       
       
         <meta name="author" content="Desmond Lartey">
@@ -398,6 +398,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../api_rainfall/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rainfall API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../contributing/" class="md-nav__link">
         
   
@@ -485,6 +512,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#unreleased" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unreleased
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#010" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -530,6 +568,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#unreleased" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unreleased
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#010" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -561,6 +610,32 @@
 
 
 <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
+<h2 id="unreleased">Unreleased<a class="headerlink" href="#unreleased" title="Permanent link">&para;</a></h2>
+<ul>
+<li>New module: <code>savana.rainfall</code> — zone-stratified validation of global
+  precipitation products (CHIRPS, ERA5-Land, GPM IMERG, MERRA-2,
+  PERSIANN-CDR, TerraClimate by default) against GPCC gauge observations,
+  reproducing a published West Africa study's methodology as the default
+  configuration while accepting your own stations, products, zones, and
+  application weights at every stage</li>
+<li><code>RainfallAssessment</code> chainable orchestrator and one-call
+  <code>validate_against_gpcc()</code> convenience function</li>
+<li>Continuous (Bias, PBIAS, MAE, RMSE, r, r², NSE, KGE) and categorical (POD,
+  FAR, CSI, ETS, frequency bias) validation metrics at any aggregation level,
+  plus rain-detection threshold-sensitivity analysis</li>
+<li>Application-weighted composite scoring and an interactive Excel
+  decision-support workbook (dropdown-driven <code>SELECTOR</code>/<code>SCORECARD</code> sheets)</li>
+<li>Interactive preview maps before running a full assessment: station
+  locations, product climatology, inter-product bias, real GPCC point
+  observations overlaid on a product's raster, and per-station bias against
+  GPCC ground truth</li>
+<li>Grounded facts/summary/Q&amp;A (<code>savana.rainfall.insights</code>), following the same
+  pattern as the classification module's <code>savana.insights</code></li>
+<li><code>SavanaGeoAgent</code> now accepts a <code>RainfallAssessment</code> (<code>rainfall=</code>) in
+  addition to, or instead of, a <code>SavanaClassifier</code> (<code>clf=</code>) — one agent, one
+  conversation, either or both result sets</li>
+<li>New optional dependency group: <code>savana[rainfall]</code></li>
+</ul>
 <h2 id="010">0.1.0<a class="headerlink" href="#010" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Initial release</li>
