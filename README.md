@@ -16,36 +16,36 @@
 
 **A growing ecosystem of geospatial intelligence tools, under one Python package.**
 
-`savana` is not a single-purpose library — it's an umbrella package for
+`savana` is an umbrella package for
 geospatial analysis modules that share a common design philosophy: adaptive
-rather than hardcoded methods, grounded rather than fabricated insights, and
+rather than hardcoded methods, and
 natural-language access to real computed results, not just static maps and
 tables. Each module targets a different question, and each is independently
-usable — install only what you need via the `[extra]` that matches it. Two
-modules ship today: **land-system classification** for savanna landscapes,
+usable, install only what you need via the `[extra]` that matches it. Two
+modules have been ship: **land-system classification** for savanna landscapes,
 and **precipitation product assessment** for validating global rainfall
 datasets against gauge observations. More are planned; see
 [Roadmap](#roadmap).
 
 ## Modules
 
-### 🌳 Land-system classification (`savana`)
+### Land-system classification (`savana`)
 
 Resolves savanna landscapes into ecologically meaningful structural classes
 — Core Woodland, Open Woodland, Shrub-Transition Savanna, Grassland,
-Riparian/Wetland Vegetation, Anthropogenic Disturbance — for *any* AOI, with
+Riparian/Wetland Vegetation, Anthropogenic Disturbance, for *any* AOI, with
 every threshold derived from that landscape's own index percentiles at run
 time rather than assumed from one park's spectral range. Built on
 Sentinel-2, Google AlphaEarth satellite embeddings, and rainfall-normalised
 phenology, with a 4-model ablation and RUE-validated change detection.
 [Quick start ↓](#quick-start--land-system-classification)
 
-### 🌧️ Precipitation product assessment (`savana.rainfall`)
+### Precipitation product assessment (`savana.rainfall`)
 
 Zone-stratified validation of global precipitation products (CHIRPS,
-ERA5-Land, GPM IMERG, MERRA-2, PERSIANN-CDR, TerraClimate by default — bring
+ERA5-Land, GPM IMERG, MERRA-2, PERSIANN-CDR, TerraClimate by default, bring
 your own subset or additions) against real GPCC gauge observations, at any
-station location you choose — the built-in West Africa 16-station network,
+station location you choose, the built-in West Africa 16-station network,
 your own coordinates, or a `.geojson`/`.csv` file of stations. Produces
 continuous and categorical validation metrics, threshold-sensitivity
 analysis, and an application-weighted decision matrix ranking products for
@@ -53,16 +53,16 @@ specific management uses (fire risk, drought early warning, flood
 forecasting, and more), plus an interactive Excel decision-support workbook.
 [Quick start ↓](#quick-start--precipitation-product-assessment)
 
-## Why "adaptive" and "grounded" matter here
+## All modules are adaptive
 
 Every classification threshold (canopy density, moisture, seasonal
 amplitude cutoffs) is derived from **percentiles of that AOI's own spectral
-index distribution** at run time — nothing hardcoded to one park's spectral
+index distribution** at run time, nothing hardcoded to one park's spectral
 range. Every rainfall validation defaults to the published West Africa study
 configuration but accepts your own stations, products, zones, and
-application weights at every stage — nothing hardcoded to that one dataset
+application weights at every stage, nothing hardcoded to that one dataset
 either. And every plain-English summary or Q&A answer, in both modules, is
-generated strictly from real computed results — never a plausible-sounding
+generated strictly from real computed results, never a plausible-sounding
 guess.
 
 ## Install
@@ -80,7 +80,7 @@ pip install "savana[agents]"
 Both modules need a Google Earth Engine account with a registered Cloud
 project ([register here](https://code.earthengine.google.com/register)).
 
-## Quick start — land-system classification
+## Quick start, land-system classification
 
 ```python
 import savana
@@ -112,7 +112,7 @@ clf = savana.classify_landscape(
 )
 ```
 
-## Quick start — precipitation product assessment
+## Quick start, precipitation product assessment
 
 ```python
 from savana.rainfall import validate_against_gpcc
@@ -125,7 +125,7 @@ print(result.summarize())
 result.export_workbook("decision_tool.xlsx")
 ```
 
-Your own stations, your own products, your own years — same call, different
+Your own stations, your own products, your own years, same call, different
 parameters:
 
 ```python
@@ -162,7 +162,7 @@ ra.show("recommendation_heatmap")
 
 ## Ask your results questions
 
-One agent class works with either module — pass a classifier, a rainfall
+One agent class works with either module, pass a classifier, a rainfall
 assessment, or both at once.
 
 ```python
@@ -216,7 +216,7 @@ agent.ask("Which product would you recommend for fire risk monitoring?")
    aggregation level (station/zone/season/pooled).
 7. **Thresholds** (`savana.rainfall.thresholds`): categorical metric
    sensitivity across a rain-detection threshold sweep.
-8. **Spatial** (`savana.rainfall.spatial`): interactive preview maps —
+8. **Spatial** (`savana.rainfall.spatial`): interactive preview maps,
    product climatology, inter-product bias, real GPCC point overlays,
    per-station bias against ground truth.
 9. **Decision** (`savana.rainfall.decision`): application-weighted composite
@@ -229,7 +229,7 @@ agent.ask("Which product would you recommend for fire risk monitoring?")
 ## Roadmap
 
 `savana` is an umbrella for a growing set of independently-usable geospatial
-modules, not a single fixed pipeline. Land-system classification and
+modules. Land-system classification and
 precipitation assessment are the first two. Planned additions include:
 
 - Additional class schemes / configurable taxonomies for other savanna biomes
@@ -244,7 +244,7 @@ precipitation assessment are the first two. Planned additions include:
   experience
 - A CLI
 
-New modules should be addable without breaking the existing API — see
+New modules should be addable without breaking the existing API, see
 [Contributing](docs/contributing.md).
 
 ## Citation
