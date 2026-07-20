@@ -1,60 +1,51 @@
-# Classification API Reference
+# Precipitation Assessment API Reference
 
-For precipitation product assessment, see the
-[Precipitation Assessment API Reference](api_rainfall.md).
+For land-system classification, see the [Classification API Reference](api.md).
 
-::: savana.pipeline
+::: savana.rainfall.pipeline
     options:
         show_root_heading: true
 
-::: savana.composites
+::: savana.rainfall.config
     options:
         show_root_heading: true
 
-::: savana.indices
+::: savana.rainfall.stations
     options:
         show_root_heading: true
 
-::: savana.rue
+::: savana.rainfall.zones
     options:
         show_root_heading: true
 
-::: savana.thresholds
+::: savana.rainfall.ingestion
     options:
         show_root_heading: true
 
-::: savana.masks
+::: savana.rainfall.extraction
     options:
         show_root_heading: true
 
-::: savana.sampling
+::: savana.rainfall.validation
     options:
         show_root_heading: true
 
-::: savana.classifiers
+::: savana.rainfall.thresholds
     options:
         show_root_heading: true
 
-::: savana.change
+::: savana.rainfall.spatial
     options:
         show_root_heading: true
 
-::: savana.accuracy
+::: savana.rainfall.decision
     options:
         show_root_heading: true
 
-::: savana.exports
+::: savana.rainfall.insights
     options:
         show_root_heading: true
 
-::: savana.viz
-    options:
-        show_root_heading: true
-
-::: savana.ee_init
-    options:
-        show_root_heading: true
-
-::: savana.config
+::: savana.rainfall.viz
     options:
         show_root_heading: true
