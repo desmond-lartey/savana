@@ -338,7 +338,7 @@
   <a href="#land-system-classification-savana" class="md-nav__link">
     <span class="md-ellipsis">
       
-        🌳 Land-system classification (savana)
+        Land-system classification (savana)
       
     </span>
   </a>
@@ -349,7 +349,7 @@
   <a href="#precipitation-product-assessment-savanarainfall" class="md-nav__link">
     <span class="md-ellipsis">
       
-        🌧️ Precipitation product assessment (savana.rainfall)
+        Precipitation product assessment (savana.rainfall)
       
     </span>
   </a>
@@ -362,10 +362,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#why-adaptive-and-grounded-matter-here" class="md-nav__link">
+  <a href="#all-modules-are-adaptive" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why "adaptive" and "grounded" matter here
+        All modules are adaptive
       
     </span>
   </a>
@@ -387,7 +387,7 @@
   <a href="#quick-start-land-system-classification" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quick start — land-system classification
+        Quick start, land-system classification
       
     </span>
   </a>
@@ -398,7 +398,7 @@
   <a href="#quick-start-precipitation-product-assessment" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quick start — precipitation product assessment
+        Quick start, precipitation product assessment
       
     </span>
   </a>
@@ -721,7 +721,7 @@
   <a href="#land-system-classification-savana" class="md-nav__link">
     <span class="md-ellipsis">
       
-        🌳 Land-system classification (savana)
+        Land-system classification (savana)
       
     </span>
   </a>
@@ -732,7 +732,7 @@
   <a href="#precipitation-product-assessment-savanarainfall" class="md-nav__link">
     <span class="md-ellipsis">
       
-        🌧️ Precipitation product assessment (savana.rainfall)
+        Precipitation product assessment (savana.rainfall)
       
     </span>
   </a>
@@ -745,10 +745,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#why-adaptive-and-grounded-matter-here" class="md-nav__link">
+  <a href="#all-modules-are-adaptive" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why "adaptive" and "grounded" matter here
+        All modules are adaptive
       
     </span>
   </a>
@@ -770,7 +770,7 @@
   <a href="#quick-start-land-system-classification" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quick start — land-system classification
+        Quick start, land-system classification
       
     </span>
   </a>
@@ -781,7 +781,7 @@
   <a href="#quick-start-precipitation-product-assessment" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quick start — precipitation product assessment
+        Quick start, precipitation product assessment
       
     </span>
   </a>
@@ -901,46 +901,46 @@
 </p>
 
 <p><strong>A growing ecosystem of geospatial intelligence tools, under one Python package.</strong></p>
-<p><code>savana</code> is not a single-purpose library — it's an umbrella package for
+<p><code>savana</code> is an umbrella package for
 geospatial analysis modules that share a common design philosophy: adaptive
-rather than hardcoded methods, grounded rather than fabricated insights, and
+rather than hardcoded methods, and
 natural-language access to real computed results, not just static maps and
 tables. Each module targets a different question, and each is independently
-usable — install only what you need via the <code>[extra]</code> that matches it. Two
-modules ship today: <strong>land-system classification</strong> for savanna landscapes,
+usable, install only what you need via the <code>[extra]</code> that matches it. Two
+modules have been ship: <strong>land-system classification</strong> for savanna landscapes,
 and <strong>precipitation product assessment</strong> for validating global rainfall
 datasets against gauge observations. More are planned; see
 <a href="#roadmap">Roadmap</a>.</p>
 <h2 id="modules">Modules<a class="headerlink" href="#modules" title="Permanent link">&para;</a></h2>
-<h3 id="land-system-classification-savana">🌳 Land-system classification (<code>savana</code>)<a class="headerlink" href="#land-system-classification-savana" title="Permanent link">&para;</a></h3>
+<h3 id="land-system-classification-savana">Land-system classification (<code>savana</code>)<a class="headerlink" href="#land-system-classification-savana" title="Permanent link">&para;</a></h3>
 <p>Resolves savanna landscapes into ecologically meaningful structural classes
 — Core Woodland, Open Woodland, Shrub-Transition Savanna, Grassland,
-Riparian/Wetland Vegetation, Anthropogenic Disturbance — for <em>any</em> AOI, with
+Riparian/Wetland Vegetation, Anthropogenic Disturbance, for <em>any</em> AOI, with
 every threshold derived from that landscape's own index percentiles at run
 time rather than assumed from one park's spectral range. Built on
 Sentinel-2, Google AlphaEarth satellite embeddings, and rainfall-normalised
 phenology, with a 4-model ablation and RUE-validated change detection.
 <a href="#quick-start--land-system-classification">Quick start ↓</a></p>
-<h3 id="precipitation-product-assessment-savanarainfall">🌧️ Precipitation product assessment (<code>savana.rainfall</code>)<a class="headerlink" href="#precipitation-product-assessment-savanarainfall" title="Permanent link">&para;</a></h3>
+<h3 id="precipitation-product-assessment-savanarainfall">Precipitation product assessment (<code>savana.rainfall</code>)<a class="headerlink" href="#precipitation-product-assessment-savanarainfall" title="Permanent link">&para;</a></h3>
 <p>Zone-stratified validation of global precipitation products (CHIRPS,
-ERA5-Land, GPM IMERG, MERRA-2, PERSIANN-CDR, TerraClimate by default — bring
+ERA5-Land, GPM IMERG, MERRA-2, PERSIANN-CDR, TerraClimate by default, bring
 your own subset or additions) against real GPCC gauge observations, at any
-station location you choose — the built-in West Africa 16-station network,
+station location you choose, the built-in West Africa 16-station network,
 your own coordinates, or a <code>.geojson</code>/<code>.csv</code> file of stations. Produces
 continuous and categorical validation metrics, threshold-sensitivity
 analysis, and an application-weighted decision matrix ranking products for
 specific management uses (fire risk, drought early warning, flood
 forecasting, and more), plus an interactive Excel decision-support workbook.
 <a href="#quick-start--precipitation-product-assessment">Quick start ↓</a></p>
-<h2 id="why-adaptive-and-grounded-matter-here">Why "adaptive" and "grounded" matter here<a class="headerlink" href="#why-adaptive-and-grounded-matter-here" title="Permanent link">&para;</a></h2>
+<h2 id="all-modules-are-adaptive">All modules are adaptive<a class="headerlink" href="#all-modules-are-adaptive" title="Permanent link">&para;</a></h2>
 <p>Every classification threshold (canopy density, moisture, seasonal
 amplitude cutoffs) is derived from <strong>percentiles of that AOI's own spectral
-index distribution</strong> at run time — nothing hardcoded to one park's spectral
+index distribution</strong> at run time, nothing hardcoded to one park's spectral
 range. Every rainfall validation defaults to the published West Africa study
 configuration but accepts your own stations, products, zones, and
-application weights at every stage — nothing hardcoded to that one dataset
+application weights at every stage, nothing hardcoded to that one dataset
 either. And every plain-English summary or Q&amp;A answer, in both modules, is
-generated strictly from real computed results — never a plausible-sounding
+generated strictly from real computed results, never a plausible-sounding
 guess.</p>
 <h2 id="install">Install<a class="headerlink" href="#install" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>savana
@@ -953,7 +953,7 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot
 </code></pre></div>
 <p>Both modules need a Google Earth Engine account with a registered Cloud
 project (<a href="https://code.earthengine.google.com/register">register here</a>).</p>
-<h2 id="quick-start-land-system-classification">Quick start — land-system classification<a class="headerlink" href="#quick-start-land-system-classification" title="Permanent link">&para;</a></h2>
+<h2 id="quick-start-land-system-classification">Quick start, land-system classification<a class="headerlink" href="#quick-start-land-system-classification" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">savana</span>
 
 <span class="n">clf</span> <span class="o">=</span> <span class="n">savana</span><span class="o">.</span><span class="n">classify_landscape</span><span class="p">(</span>
@@ -979,7 +979,7 @@ project (<a href="https://code.earthengine.google.com/register">register here</a
     <span class="n">epochs</span><span class="o">=</span><span class="p">[</span><span class="mi">2017</span><span class="p">,</span> <span class="mi">2019</span><span class="p">,</span> <span class="mi">2021</span><span class="p">,</span> <span class="mi">2024</span><span class="p">],</span>
 <span class="p">)</span>
 </code></pre></div>
-<h2 id="quick-start-precipitation-product-assessment">Quick start — precipitation product assessment<a class="headerlink" href="#quick-start-precipitation-product-assessment" title="Permanent link">&para;</a></h2>
+<h2 id="quick-start-precipitation-product-assessment">Quick start, precipitation product assessment<a class="headerlink" href="#quick-start-precipitation-product-assessment" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">savana.rainfall</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_against_gpcc</span>
 
 <span class="c1"># Reproduces the published West Africa study exactly: 16 GPCC stations,</span>
@@ -989,7 +989,7 @@ project (<a href="https://code.earthengine.google.com/register">register here</a
 <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">summarize</span><span class="p">())</span>
 <span class="n">result</span><span class="o">.</span><span class="n">export_workbook</span><span class="p">(</span><span class="s2">&quot;decision_tool.xlsx&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p>Your own stations, your own products, your own years — same call, different
+<p>Your own stations, your own products, your own years, same call, different
 parameters:</p>
 <div class="highlight"><pre><span></span><code><span class="n">result</span> <span class="o">=</span> <span class="n">validate_against_gpcc</span><span class="p">(</span>
     <span class="n">stations</span><span class="o">=</span><span class="p">[(</span><span class="o">-</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">12.4</span><span class="p">),</span> <span class="p">(</span><span class="mf">2.1</span><span class="p">,</span> <span class="mf">6.5</span><span class="p">)],</span>   <span class="c1"># or a single (lon, lat), a DataFrame,</span>
@@ -1019,7 +1019,7 @@ validation run:</p>
 <span class="n">ra</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s2">&quot;recommendation_heatmap&quot;</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="ask-your-results-questions">Ask your results questions<a class="headerlink" href="#ask-your-results-questions" title="Permanent link">&para;</a></h2>
-<p>One agent class works with either module — pass a classifier, a rainfall
+<p>One agent class works with either module, pass a classifier, a rainfall
 assessment, or both at once.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">savana.agents</span><span class="w"> </span><span class="kn">import</span> <span class="n">SavanaGeoAgent</span>
 
@@ -1068,7 +1068,7 @@ assessment, or both at once.</p>
    aggregation level (station/zone/season/pooled).</li>
 <li><strong>Thresholds</strong> (<code>savana.rainfall.thresholds</code>): categorical metric
    sensitivity across a rain-detection threshold sweep.</li>
-<li><strong>Spatial</strong> (<code>savana.rainfall.spatial</code>): interactive preview maps —
+<li><strong>Spatial</strong> (<code>savana.rainfall.spatial</code>): interactive preview maps,
    product climatology, inter-product bias, real GPCC point overlays,
    per-station bias against ground truth.</li>
 <li><strong>Decision</strong> (<code>savana.rainfall.decision</code>): application-weighted composite
@@ -1080,7 +1080,7 @@ assessment, or both at once.</p>
 </ol>
 <h2 id="roadmap">Roadmap<a class="headerlink" href="#roadmap" title="Permanent link">&para;</a></h2>
 <p><code>savana</code> is an umbrella for a growing set of independently-usable geospatial
-modules, not a single fixed pipeline. Land-system classification and
+modules. Land-system classification and
 precipitation assessment are the first two. Planned additions include:</p>
 <ul>
 <li>Additional class schemes / configurable taxonomies for other savanna biomes</li>
@@ -1095,7 +1095,7 @@ precipitation assessment are the first two. Planned additions include:</p>
   experience</li>
 <li>A CLI</li>
 </ul>
-<p>New modules should be addable without breaking the existing API — see
+<p>New modules should be addable without breaking the existing API, see
 <a href="contributing/">Contributing</a>.</p>
 <h2 id="citation">Citation<a class="headerlink" href="#citation" title="Permanent link">&para;</a></h2>
 <p>If you use this package in your research, please cite the associated manuscript(s).</p>
