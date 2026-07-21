@@ -1,4 +1,4 @@
-# Savana: A Geospatial Intelligence Ecosystem
+# Savana: A Geospatial Intelligence for Savanna Landscapes
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/desmond-lartey/savana/Fires/docs/assets/logo-readme.png" alt="savana logo" width="180">
@@ -14,7 +14,7 @@
   <img src="https://visitor-badge.laobi.icu/badge?page_id=desmond-lartey.savana" alt="Visitors">
 </p>
 
-**A growing ecosystem of geospatial intelligence tools, under one Python package.**
+**An ecosystem of geospatial intelligence tools for understanding Savanna Landscapes.**
 
 `savana` is an umbrella package for
 geospatial analysis modules that share a common design philosophy: adaptive
