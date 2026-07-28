@@ -1,0 +1,54 @@
+[general]
+name=Savana
+qgisMinimumVersion=3.28
+qgisMaximumVersion=4.99
+description=A geospatial intelligence toolbox for savanna landscapes: adaptive land-system classification and precipitation product assessment, powered by Google Earth Engine, brought into QGIS as dockable analysis panels.
+version=0.1.0
+author=Desmond Lartey
+email=desmond.lartey@example.com
+
+about=Savana brings the savana Python package into QGIS as a set of dockable
+    analysis panels under one hub.
+
+    Choose an analysis type from the hub launcher and its own panel opens
+    with its own controls:
+
+    Land-System Classification:
+    - Adaptive, percentile-derived classification of savanna landscapes into
+      ecologically meaningful structural classes for any AOI
+    - Multi-epoch mapping and RUE-validated change detection
+
+    Precipitation Product Assessment:
+    - Zone-stratified validation of global precipitation products (CHIRPS,
+      ERA5-Land, GPM IMERG, MERRA-2, PERSIANN-CDR, TerraClimate) against
+      GPCC gauge observations
+    - Application-weighted decision matrix for product selection
+
+    Shared:
+    - One-click managed Python environment installer for the savana package
+      and its Earth Engine dependencies (kept isolated from QGIS's own Python)
+    - A single Google Earth Engine connection, set once and used by every panel
+
+    Requires a Google Earth Engine account with a registered Cloud project.
+
+tracker=https://github.com/desmond-lartey/savana/issues
+repository=https://github.com/desmond-lartey/savana
+
+hasProcessingProvider=no
+
+tags=earth engine, savanna, land cover, classification, precipitation, rainfall, remote sensing, geospatial, ecology, gpcc, change detection
+
+homepage=https://github.com/desmond-lartey/savana
+category=Analysis
+icon=icons/icon.png
+
+experimental=True
+deprecated=False
+
+changelog=
+    0.1.0
+        - Initial QGIS plugin release
+        - Hub launcher with module panels for land-system classification and
+          precipitation product assessment
+        - Managed Python environment installer for the savana package
+        - Shared Google Earth Engine connection panel

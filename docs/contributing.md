@@ -46,4 +46,4 @@ pytest tests/
   `savana.__init__._LAZY_SYMBOL_MAP` (classification) or
   `savana.rainfall.__init__._LAZY_SYMBOL_MAP` (rainfall) should have a
   corresponding docstring picked up in the relevant
-  [API Reference](api.md) / [Rainfall API Reference](api_rainfall.md) page
+  [Classification API Reference](api_classification.md) / [Rainfall API Reference](api_rainfall.md) page

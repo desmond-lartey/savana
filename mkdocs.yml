@@ -39,7 +39,7 @@ nav:
     - Installation: installation.md
     - Quick Start: quickstart.md
     - Method Overview: method.md
-    - API Reference: api.md
+    - Classification API Reference: api_classification.md
     - Rainfall API Reference: api_rainfall.md
     - Contributing: contributing.md
     - Changelog: changelog.md

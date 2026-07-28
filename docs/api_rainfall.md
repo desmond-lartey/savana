@@ -1,6 +1,6 @@
 # Precipitation Assessment API Reference
 
-For land-system classification, see the [Classification API Reference](api.md).
+For land-system classification, see the [Classification API Reference](api_classification.md).
 
 ::: savana.rainfall.pipeline
     options:

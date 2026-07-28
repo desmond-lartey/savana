@@ -1,669 +1,395 @@
-"""``RainfallAssessment``: the chainable orchestrator tying every
-``savana.rainfall`` stage together, mirroring
-:class:`savana.pipeline.SavanaClassifier`'s builder pattern.
+"""High-level orchestration: the "few lines of code" entry point.
 
-Every constructor argument is a default that can be overridden, a
-different product catalogue, a different gauge network, a different
-zone scheme, or different application weights all work the same way
-they do calling the individual stage functions directly. This class is
-a convenience, not a new capability.
+Mirrors the workflow in ``mainrun.js`` step for step, but wrapped as a
+single Python object so a Jupyter user can go from an AOI to a
+validated, multi-epoch classified savanna land-system map in a handful
+of calls instead of hand-assembling every module.
+
+Example
+-------
+>>> import savana
+>>> clf = savana.SavanaClassifier(
+...     aoi="projects/ee-desmond/assets/NewParkMerged",
+...     name_filter="Kogyae",
+...     park_name="Kogyae",
+...     epochs=[2017, 2019, 2021, 2024],
+... )
+>>> clf.run()
+>>> clf.maps[2024]                 # ee.Image, classified 2024 land systems
+>>> clf.accuracy_summary()         # pandas.DataFrame, one row per model
+>>> clf.show(2024)                 # interactive geemap.Map in the notebook
 """
 
 from __future__ import annotations
 
-from . import config
+from . import accuracy as accuracy_mod
+from . import change as change_mod
+from . import classifiers, composites, config, ee_init
+from . import exports as exports_mod
+from . import indices
+from . import masks as masks_mod
+from . import rue as rue_mod
+from . import sampling
+from . import thresholds as thresholds_mod
+from . import viz
 
 
-class RainfallAssessment:
-    """Chainable orchestrator for a precipitation product assessment.
+class SavanaClassifier:
+    """End-to-end adaptive savanna land-system classifier for one AOI.
 
-    Example (defaults, reproduces the WA study)::
-
-        ra = (
-            RainfallAssessment()
-            .get_observations(source="ee_asset")
-            .ingest(start="2001-01-01", end="2020-12-31")
-            .extract()
-            .assign_zones()
-            .validate()
-            .score()
-        )
-        print(ra.summarize())
-        ra.export_workbook("decision_tool.xlsx")
-
-    Example (a different station network, subset of products)::
-
-        ra = (
-            RainfallAssessment(
-                stations=[(-1.5, 12.4), (2.1, 6.5)],  # or a DataFrame, a
-                                                        # .geojson/.csv path,
-                                                        # or a single (lon, lat)
-                products={"CHIRPS": config.DEFAULT_PRODUCTS["CHIRPS"],
-                          "GPM_IMERG": config.DEFAULT_PRODUCTS["GPM_IMERG"]},
-            )
-            .get_observations(source="download")
-            .ingest(start="2015-01-01", end="2023-12-31")
-            .extract()
-            .validate()   # no assign_zones() call -> pooled validation
-            .score()
-        )
+    All parameters have sane defaults matching the original manuscript
+    methodology; override any of them for a different landscape,
+    class scheme, or sensor configuration.
     """
 
     def __init__(
         self,
-        products: dict | None = None,
-        stations=None,
-        zones_gdf=None,
-        zones_fc=None,
-        app_weights: dict | None = None,
-        zone_notes: dict | None = None,
-        rain_threshold: float | None = None,
-        cache_dir=None,
+        aoi,
+        name_filter: str | None = None,
+        park_name: str = "AOI",
+        epochs: list[int] | None = None,
+        reference_year: int | None = None,
+        class_info: dict | None = None,
+        class_property: str = config.CLASS_PROPERTY,
+        n_clusters: int = config.DEFAULT_N_CLUSTERS,
+        points_per_class: int = config.DEFAULT_POINTS_PER_CLASS,
+        candidates_per_cluster: int = config.DEFAULT_CANDIDATES_PER_CLUSTER,
+        confidence_margin: float = config.DEFAULT_CONFIDENCE_MARGIN,
+        random_seed: int = config.DEFAULT_RANDOM_SEED,
+        phenology_min_year: int = config.DEFAULT_PHENOLOGY_MIN_YEAR,
+        rf_trees: int = 150,
+        scale: int = config.DEFAULT_EXPORT_SCALE,
+        crs: str = config.DEFAULT_CRS,
         ee_project: str | None = None,
     ):
-        from . import stations as _stations
+        ee_init.initialize(project=ee_project)
 
-        self.products = products if products is not None else config.DEFAULT_PRODUCTS
-        # Accepts anything load_stations_any() accepts: a DataFrame, a
-        # .geojson/.csv path, a list of (lon, lat)/(id, lon, lat)/dicts,
-        # or a single (lon, lat) tuple/list. Always resolves to a real
-        # stations_df immediately (never left as None), defaulting to
-        # the WA 16 stations if stations=None.
-        self.stations_df = _stations.load_stations_any(stations)
-        self.zones_gdf = zones_gdf
-        self.zones_fc = zones_fc
-        self.app_weights = (
-            app_weights if app_weights is not None else config.DEFAULT_APP_WEIGHTS
+        self.region = ee_init.load_aoi(aoi, name_filter=name_filter)
+        self.park_name = park_name
+        self.epochs = sorted(epochs or [2024])
+        self.reference_year = reference_year or self.epochs[-1]
+        self.class_info = class_info or config.DEFAULT_CLASS_INFO
+        self.class_property = class_property
+        self.n_clusters = n_clusters
+        self.points_per_class = points_per_class
+        self.candidates_per_cluster = candidates_per_cluster
+        self.confidence_margin = confidence_margin
+        self.random_seed = random_seed
+        self.phenology_min_year = phenology_min_year
+        self.rf_trees = rf_trees
+        self.scale = scale
+        self.crs = crs
+
+        # Populated by .run()
+        self.idx: dict | None = None
+        self.T: dict | None = None
+        self.masks: dict | None = None
+        self.embedding = None
+        self.gcps = None
+        self.models: dict | None = None
+        self.maps: dict = {}
+        self.change: dict | None = None
+
+    # -- pipeline stages, callable individually or via .run() ----------
+
+    def build_features(self):
+        """Build composites, indices, RUE, thresholds, and masks for the reference year."""
+        s2_annual = composites.sentinel2_annual(self.reference_year, self.region)
+        s2_dry = composites.seasonal_composite(
+            f"{self.reference_year}-03-01", f"{self.reference_year}-05-15", self.region
         )
-        self.zone_notes = (
-            zone_notes if zone_notes is not None else config.DEFAULT_ZONE_NOTES
+        s2_wet = composites.seasonal_composite(
+            f"{self.reference_year}-05-01", f"{self.reference_year}-07-15", self.region
         )
-        self.rain_threshold = (
-            rain_threshold
-            if rain_threshold is not None
-            else config.DEFAULT_RAIN_THRESHOLD_MM_DAY
+        pcts = composites.percentile_composites(self.reference_year, self.region)
+        self.embedding = composites.embedding_image(self.reference_year, self.region)
+
+        self.idx = indices.compute(s2_annual, s2_dry, s2_wet, pcts["p10"], pcts["p90"])
+        self.rue_annual = rue_mod.compute_annual(self.reference_year, self.region)
+        self.T = thresholds_mod.compute(self.idx, self.region)
+        self.masks = masks_mod.compute(self.idx, self.T)
+        return self
+
+    def sample_training_points(self):
+        """Unsupervised clustering + rule-based labelling + class balancing."""
+        cluster_result = sampling.cluster_embedding(
+            self.embedding,
+            self.region,
+            n_clusters=self.n_clusters,
+            seed=self.random_seed,
         )
-        self.cache_dir = cache_dir
-        self.ee_project = ee_project
-
-        # populated as stages run
-        self.start = None
-        self.end = None
-        self.obs_df = None
-        self.products_ic = None
-        self.sim_df = None
-        self.merged_df = None
-        self.validation_by_zone_df = None
-        self.validation_overall_df = None
-        self.ranking_df = None
-        self.threshold_df = None
-        self.scores_df = None
-        self._facts = None
-
-    def _ensure_ee(self):
-        """Initialize Earth Engine with this instance's ``ee_project``,
-        called lazily right before any EE-touching operation, not at
-        construction time, so a purely offline run (demo/csv
-        observations, no ``.ingest()``/``.preview_*`` calls) never
-        prompts for EE auth at all. Safe to call repeatedly; a no-op
-        after the first successful initialize() in this process (Earth
-        Engine's session state is global, not per-object).
-        """
-        from .. import ee_init
-
-        ee_init.initialize(project=self.ee_project)
-
-    # ────────────────────────────────────────────────────
-    # Stages
-    # ────────────────────────────────────────────────────
-
-    def get_observations(self, source: str = "download", **kwargs):
-        from . import stations as _stations
-
-        if source == "ee_asset":
-            self._ensure_ee()
-
-        stations_df = (
-            self.stations_df
-            if self.stations_df is not None
-            else config.default_stations_wa()
+        self.gcps = sampling.build_gcps(
+            self.embedding,
+            self.idx,
+            cluster_result["clusters"],
+            self.T,
+            self.region,
+            n_classes=len(self.class_info),
+            points_per_class=self.points_per_class,
+            scale=self.scale,
+            class_property=self.class_property,
+            n_clusters=self.n_clusters,
+            candidates_per_cluster=self.candidates_per_cluster,
+            confidence_margin=self.confidence_margin,
         )
-        self.stations_df = stations_df
+        return self
 
-        # If .ingest() already ran and set a date range, and the caller
-        # didn't explicitly pass their own start_year/end_year, reuse
-        # it -- otherwise "download"/"demo" silently default to the
-        # full 2001-2020 range regardless of what .ingest() was told,
-        # which is surprising and easy to miss. Only applies to sources
-        # that actually take a year range ("csv"/"ee_asset" don't).
-        if (
-            source in ("download", "demo")
-            and "start_year" not in kwargs
-            and "end_year" not in kwargs
-            and self.start is not None
-            and self.end is not None
-        ):
-            kwargs["start_year"] = int(self.start[:4])
-            kwargs["end_year"] = int(self.end[:4])
-            print(
-                f"  Using date range from .ingest(): "
-                f"{kwargs['start_year']}-{kwargs['end_year']} "
-                f"(pass start_year=/end_year= explicitly to override)"
+    def train(self):
+        """Train the 4-model ablation + master classifiers."""
+        self.models = classifiers.train_all_models(
+            self.gcps,
+            self.embedding,
+            self.idx,
+            self.rue_annual["rue"],
+            self.region,
+            class_property=self.class_property,
+            n_trees=self.rf_trees,
+            seed=self.random_seed,
+            class_order=sorted(self.class_info.keys()),
+        )
+        return self
+
+    def classify(self):
+        """Classify every requested epoch year."""
+        self.maps = classifiers.classify_all_epochs(
+            self.epochs,
+            self.models,
+            self.region,
+            park_name=self.park_name,
+            embedding_current_year=self.reference_year,
+            embedding_current_image=self.embedding,
+            phenology_min_year=self.phenology_min_year,
+        )
+        return self
+
+    def analyse_change(self):
+        """Run conservative + RUE-validated change detection across epochs."""
+        if len(self.epochs) >= 2:
+            self.change = change_mod.analyse(
+                self.maps, self.epochs, self.region, park_name=self.park_name
             )
-
-        self.obs_df = _stations.get_observations(stations_df, source=source, **kwargs)
         return self
 
-    def ingest(self, start: str, end: str, roi=None):
-        from . import ingestion
-
-        self._ensure_ee()
-        self.start, self.end = start, end
-        roi = roi if roi is not None else ingestion.build_roi(self.stations_df)
-        self.products_ic = ingestion.load_all_products(
-            start, end, roi=roi, products=self.products, stations_df=self.stations_df
-        )
-        return self
-
-    def extract(self, cache_dir=None):
-        from . import extraction
-
-        if self.products_ic is None:
-            raise RuntimeError("Call .ingest() before .extract().")
-        self._ensure_ee()
-        cache_dir = cache_dir if cache_dir is not None else self.cache_dir
-        self.sim_df = extraction.extract_all_products(
-            self.products_ic, self.stations_df, cache_dir=cache_dir
-        )
-        return self
-
-    def assign_zones(self, zones_gdf=None, zones_fc=None, use_default_if_none=False):
-        from . import zones as _zones
-
-        zones_gdf = zones_gdf if zones_gdf is not None else self.zones_gdf
-        zones_fc = zones_fc if zones_fc is not None else self.zones_fc
-        if zones_fc is not None or use_default_if_none:
-            self._ensure_ee()
-        self.stations_df = _zones.assign_zones(
-            self.stations_df,
-            zones_gdf=zones_gdf,
-            zones_fc=zones_fc,
-            use_default_if_none=use_default_if_none,
-        )
-        return self
-
-    def merge(self):
-        from . import extraction
-
-        if self.sim_df is None or self.obs_df is None:
-            raise RuntimeError(
-                "Call .get_observations() and .extract() before .merge()."
-            )
-        self.merged_df = extraction.merge_with_observations(
-            self.sim_df, self.obs_df, stations_df=self.stations_df
-        )
-        return self
-
-    # ────────────────────────────────────────────────────
-    # Preview, look before you validate
-    # ────────────────────────────────────────────────────
-
-    def preview_stations(self, m=None, zoom: int = 5):
-        """Interactive map of station locations. Works as soon as
-        stations are set (before ``.get_observations()`` even), the
-        first sanity check: are these actually where you think they are?
-        """
-        from . import stations as _stations
-
-        self._ensure_ee()
-        stations_df = (
-            self.stations_df
-            if self.stations_df is not None
-            else config.default_stations_wa()
-        )
-        return _stations.preview_map(stations_df, m=m, zoom=zoom)
-
-    def preview_observations(self, station_id: str | None = None):
-        """Quick time-series plot of raw GPCC observations. Requires
-        ``.get_observations()`` to have run, no product data needed."""
-        from . import viz
-
-        if self.obs_df is None:
-            raise RuntimeError(
-                "Call .get_observations() before .preview_observations()."
-            )
-        return viz.preview_observations(self.obs_df, station_id=station_id)
-
-    def preview_comparison(
-        self, station_id: str | None = None, product: str | None = None
-    ):
-        """Quick obs-vs-sim scatter, before running formal validation
-        metrics. Requires ``.merge()`` (or ``.validate()``, which calls
-        it) to have run."""
-        from . import viz
-
-        if self.merged_df is None:
-            self.merge()
-        return viz.preview_comparison(
-            self.merged_df, station_id=station_id, product=product
-        )
-
-    def compare_table(self):
-        """Obs vs. every product's simulated value, side by side, one
-        row per (station, year, month), GPCC in its own column, one
-        column per product. The plain "just let me look at the numbers"
-        table, underlying every bias/KGE/etc. computed later. Requires
-        ``.merge()`` (or ``.validate()``, which calls it) to have run.
-        """
-        if self.merged_df is None:
-            self.merge()
-
-        idx_cols = [
-            c for c in ("station_id", "year", "month") if c in self.merged_df.columns
-        ]
-        pivot = self.merged_df.pivot_table(
-            index=idx_cols, columns="product", values="sim_mm_day"
-        )
-        # obs_mm_day is identical across products for the same
-        # station/year/month (it's the same real GPCC observation),
-        # any one row's value is the right one to pull in as the GPCC column.
-        obs = self.merged_df.drop_duplicates(idx_cols).set_index(idx_cols)["obs_mm_day"]
-        pivot.insert(0, "GPCC", obs)
-        return pivot.reset_index()
-
-    def preview_map(
-        self,
-        product: str,
-        kind: str = "daily",
-        reference: str | None = None,
-        show_gpcc: bool = False,
-        region=None,
-        m=None,
-    ):
-        """Interactive map of one product's mean rainfall (``kind=
-        "daily"`` or ``"annual"``), or its bias against ANOTHER PRODUCT
-        if ``reference`` is given, a gridded-vs-gridded comparison,
-        never a GPCC comparison (GPCC has no gridded form here).
-
-        Set ``show_gpcc=True`` to overlay real GPCC station values (not
-        a rasterized surface, the true point observations, colored on
-        the same scale as the raster) on top of the mean map. Requires
-        ``.get_observations()`` to have already run. Ignored when
-        ``reference`` is also given (the overlay only applies to the
-        single-product mean map).
-
-        Requires ``.ingest()`` to have run.
-        """
-        from . import spatial
-
-        if self.products_ic is None:
-            raise RuntimeError("Call .ingest() before .preview_map().")
-        if product not in self.products_ic:
-            raise ValueError(
-                f"Unknown product {product!r}. Ingested: " f"{sorted(self.products_ic)}"
-            )
-        if region is None:
-            from . import ingestion
-
-            region = ingestion.build_roi(self.stations_df)
-
-        if reference is not None:
-            if reference not in self.products_ic:
-                raise ValueError(
-                    f"Unknown reference {reference!r}. Ingested: "
-                    f"{sorted(self.products_ic)}"
-                )
-            return spatial.preview_bias_map(
-                self.products_ic[product],
-                self.products_ic[reference],
-                product_name=product,
-                reference_name=reference,
-                region=region,
-                m=m,
-            )
-
-        obs_df, stations_df = None, None
-        if show_gpcc:
-            if self.obs_df is None:
-                raise RuntimeError(
-                    "show_gpcc=True requires .get_observations() to " "have run first."
-                )
-            obs_df, stations_df = self.obs_df, self.stations_df
-
-        return spatial.preview_mean_map(
-            self.products_ic[product],
-            product_name=product,
-            region=region,
-            kind=kind,
-            m=m,
-            obs_df=obs_df,
-            stations_df=stations_df,
-        )
-
-    def preview_station_bias(self, product: str, m=None, zoom: int = 5):
-        """Interactive map of per-station bias against REAL GPCC
-        observations for one product, the actual "does this agree with
-        ground truth, and where" spatial check. Requires ``.merge()``
-        (or ``.validate()``, which calls it) to have run.
-        """
-        from . import spatial
-
-        if self.merged_df is None:
-            self.merge()
-        return spatial.preview_station_bias_map(self.merged_df, product, m=m, zoom=zoom)
-
-    def validate(self):
-        from . import validation
-
-        if self.merged_df is None:
-            self.merge()
-        if "zone" in self.merged_df.columns:
-            self.validation_by_zone_df = validation.validate_by_zone(
-                self.merged_df, threshold=self.rain_threshold
-            )
-        self.validation_overall_df = validation.validate_overall(
-            self.merged_df, threshold=self.rain_threshold
-        )
-        self.ranking_df = validation.rank_products(
-            self.validation_by_zone_df
-            if self.validation_by_zone_df is not None
-            else self.validation_overall_df
-        )
-        return self
-
-    def analyze_thresholds(self, thresholds: list[float] | None = None):
-        from . import thresholds as _thresholds
-
-        if self.merged_df is None:
-            self.merge()
-        self.threshold_df = _thresholds.threshold_sensitivity(
-            self.merged_df, thresholds
-        )
-        return self
-
-    def score(self, normalization: str = "fixed"):
-        from . import decision
-
-        validation_df = (
-            self.validation_by_zone_df
-            if self.validation_by_zone_df is not None
-            else self.validation_overall_df
-        )
-        if validation_df is None:
-            raise RuntimeError("Call .validate() before .score().")
-        self.scores_df = decision.score_products(
-            validation_df, weights=self.app_weights, normalization=normalization
-        )
-        return self
-
-    def run(self, start: str, end: str, obs_source: str = "download", **obs_kwargs):
-        """Run every stage end-to-end with sensible defaults."""
+    def run(self):
+        """Run the full pipeline: features -> sampling -> training -> classification -> change."""
         return (
-            self.get_observations(source=obs_source, **obs_kwargs)
-            .ingest(start=start, end=end)
-            .extract()
-            .assign_zones()
-            .merge()
-            .validate()
-            .analyze_thresholds()
-            .score()
+            self.build_features()
+            .sample_training_points()
+            .train()
+            .classify()
+            .analyse_change()
         )
 
-    # ────────────────────────────────────────────────────
-    # Insights
-    # ────────────────────────────────────────────────────
+    # -- results & reporting --------------------------------------------
 
-    def facts(self):
+    def accuracy_summary(self):
+        """One row per model (A/B/C/D) with overall accuracy, kappa, PA/UA."""
+        matrices = {
+            "a": self.models["matrix_a"],
+            "b": self.models["matrix_b"],
+            "c": self.models["matrix_c"],
+            "d": self.models["matrix_d"],
+        }
+        return accuracy_mod.summary_dataframe(
+            matrices, park_name=self.park_name, class_info=self.class_info
+        )
+
+    def confusion_matrices(self):
+        """Full per-class confusion matrix table across all 4 models."""
+        matrices = {
+            "a": self.models["matrix_a"],
+            "b": self.models["matrix_b"],
+            "c": self.models["matrix_c"],
+            "d": self.models["matrix_d"],
+        }
+        return accuracy_mod.confusion_matrix_dataframe(
+            matrices, park_name=self.park_name, class_info=self.class_info
+        )
+
+    def class_areas(self):
+        """Per-epoch class area statistics (km2) as a pandas DataFrame."""
+        stats_scale = self.change["stats_scale"] if self.change else self.scale
+        return exports_mod.class_areas_dataframe(
+            self.maps, self.epochs, self.region, stats_scale
+        )
+
+    def export(self, drive_folder: str | None = None, asset_folder: str | None = None):
+        """Export classified maps (+ change products, if computed) to Drive/Assets."""
+        tasks = exports_mod.export_classified_maps(
+            self.maps,
+            self.epochs,
+            self.region,
+            park_name=self.park_name,
+            drive_folder=drive_folder,
+            asset_folder=asset_folder,
+            scale=self.scale,
+            crs=self.crs,
+        )
+        if self.change is not None and (drive_folder or asset_folder):
+            tasks += exports_mod.export_change_products(
+                self.change,
+                self.region,
+                park_name=self.park_name,
+                drive_folder=drive_folder,
+                asset_folder=asset_folder,
+                scale=self.scale,
+                crs=self.crs,
+            )
+        return tasks
+
+    def show(self, year: int | None = None, m=None):
+        """Display a classified epoch (default: reference year) on an interactive map."""
+        year = year or self.reference_year
+        return viz.show_classified_map(
+            self.maps[year], region=self.region, class_info=self.class_info, m=m
+        )
+
+    def show_gcps(self, with_background: bool = True, m=None):
+        """Display the ground control points on the map, colored by class.
+
+        A sanity check on the sampling/labelling step — where the
+        training points actually landed and whether their classes look
+        spatially sensible — before trusting the classifier they train.
+        Requires .sample_training_points() (or .run()) to have completed.
+
+        Args:
+            with_background: If True (default), shows the reference
+                year's classified map underneath the points, dimmed, so
+                you can visually compare point placement against the
+                result. If False, points are shown alone.
+        """
+        if self.gcps is None:
+            raise RuntimeError("Call .sample_training_points() (or .run()) first.")
+        background = None
+        if with_background and self.reference_year in self.maps:
+            background = self.maps[self.reference_year]
+        return viz.show_gcps(
+            self.gcps,
+            region=self.region,
+            class_info=self.class_info,
+            class_property=self.class_property,
+            background=background,
+            m=m,
+        )
+
+    def show_years(self, years: list[int] | None = None, m=None):
+        """Display several classified epochs as toggleable layers on one map.
+
+        Uses geemap's layer panel — check/uncheck each year's checkbox to
+        flip between them. Defaults to all epochs the classifier ran.
+
+        >>> clf.show_years()             # all epochs
+        >>> clf.show_years([2019, 2024]) # just these two
+        """
+        return viz.show_multi_year_map(
+            self.maps, years=years, region=self.region, class_info=self.class_info, m=m
+        )
+
+    def show_geolibre(self, year: int | None = None, m=None):
+        """Display a classified epoch inside the GeoLibre Jupyter widget.
+
+        Alternative to .show() — same idea, different map backend.
+        Requires: pip install "savana[geolibre]" (Python >= 3.11).
+        """
+        from . import viz_geolibre
+
+        year = year or self.reference_year
+        return viz_geolibre.show_classified_map(
+            self.maps[year], region=self.region, class_info=self.class_info, m=m
+        )
+
+    def show_years_geolibre(self, years: list[int] | None = None, m=None):
+        """Display several classified epochs as toggleable layers in GeoLibre.
+
+        Alternative to .show_years() — same idea, different map backend.
+        Requires: pip install "savana[geolibre]" (Python >= 3.11).
+        """
+        from . import viz_geolibre
+
+        return viz_geolibre.show_multi_year_map(
+            self.maps, years=years, region=self.region, class_info=self.class_info, m=m
+        )
+
+    def compare(self, left=2024, right="SATELLITE", m=None):
+        """Side-by-side swipe comparison between two years, or a year vs. a basemap.
+
+        ``left``/``right`` each accept either an epoch year (int, must be
+        in ``self.maps``) or a basemap name string (e.g. ``"SATELLITE"``,
+        ``"HYBRID"``, ``"ROADMAP"``, ``"Esri.WorldImagery"``). Drag the
+        handle in the middle of the resulting map to swipe.
+
+        >>> clf.compare(2019, 2024)              # two classified years
+        >>> clf.compare(2024, "SATELLITE")        # classified year vs. basemap
+        """
+        left_img = self.maps[left] if isinstance(left, int) else left
+        right_img = self.maps[right] if isinstance(right, int) else right
+        left_label = str(left) if isinstance(left, int) else left
+        right_label = str(right) if isinstance(right, int) else right
+        return viz.compare_split_map(
+            left_img,
+            right_img,
+            left_label=left_label,
+            right_label=right_label,
+            region=self.region,
+            class_info=self.class_info,
+            m=m,
+        )
+
+    def show_change(self, m=None):
+        """Display change-detection layers on an interactive map."""
+        if self.change is None:
+            raise RuntimeError(
+                "Call .analyse_change() (or .run()) with >= 2 epochs first."
+            )
+        return viz.show_change_map(self.change, region=self.region, m=m)
+
+    def facts(self) -> dict:
+        """Compute the grounded facts dict — real numbers from your actual results.
+
+        This is the single source of truth for .summarize() and .answer();
+        call it directly if you want the raw structured data instead of text.
+        """
         from . import insights
 
-        if self._facts is None:
-            validation_df = (
-                self.validation_by_zone_df
-                if self.validation_by_zone_df is not None
-                else self.validation_overall_df
-            )
-            if self.scores_df is None or validation_df is None:
-                raise RuntimeError("Call .score() before .facts().")
-            self._facts = insights.compute_facts(
-                self.scores_df,
-                validation_df,
-                self.ranking_df,
-                self.threshold_df,
-                zone_notes=self.zone_notes,
-            )
-        return self._facts
+        return insights.compute_facts(self)
 
     def summarize(self) -> str:
+        """Plain-English report generated entirely from real computed results.
+
+        No AI, no invented numbers — every figure here traces back to
+        .class_areas() / .accuracy_summary() / the change-detection stats.
+        """
         from . import insights
 
         return insights.summarize(self.facts())
 
     def answer(self, question: str) -> str:
+        """Answer a question about your results using only computed facts.
+
+        Simple keyword matching, not an LLM — it can only ever report
+        numbers the pipeline actually produced, so it can't hallucinate.
+        Try asking about a class's area, the dominant class, accuracy,
+        or change between years.
+
+        >>> clf.answer("how much core woodland is there in 2024?")
+        >>> clf.answer("what changed between the years?")
+        >>> clf.answer("how accurate is the model?")
+        """
         from . import insights
 
         return insights.answer(self.facts(), question)
 
-    # ────────────────────────────────────────────────────
-    # Outputs
-    # ────────────────────────────────────────────────────
 
-    def export_workbook(self, out_path):
-        from . import decision
+def classify_landscape(
+    aoi, epochs: list[int] | None = None, park_name: str = "AOI", **kwargs
+) -> SavanaClassifier:
+    """One-call convenience wrapper: build, run, and return a fitted classifier.
 
-        if self.scores_df is None:
-            self.score()
-        return decision.build_workbook(
-            out_path,
-            self.validation_by_zone_df,
-            validation_overall_df=self.validation_overall_df,
-            ranking_df=self.ranking_df,
-            threshold_df=self.threshold_df,
-            scores_df=self.scores_df,
-            app_weights=self.app_weights,
-            zone_notes=self.zone_notes,
-        )
-
-    def show(self, kind: str = "recommendation_heatmap", **kwargs):
-        from . import viz
-
-        fn = getattr(viz, kind, None)
-        if fn is None:
-            raise ValueError(f"Unknown figure kind {kind!r}. See savana.rainfall.viz.")
-        target_df = (
-            self.scores_df
-            if "scores_df" in fn.__code__.co_varnames
-            else (
-                self.validation_by_zone_df
-                if self.validation_by_zone_df is not None
-                else self.validation_overall_df
-            )
-        )
-        return fn(target_df, **kwargs)
-
-
-# ════════════════════════════════════════════════════════════
-# One-call entry point
-# ════════════════════════════════════════════════════════════
-
-
-def validate_against_gpcc(
-    stations=None,
-    products: list[str] | None = None,
-    start_year: int = 2001,
-    end_year: int = 2020,
-    obs_source: str | None = None,
-    obs_csv=None,
-    cache_dir="savana_rainfall_data",
-    zones_gdf=None,
-    zones_fc=None,
-    rain_threshold: float | None = None,
-    ee_project: str | None = None,
-):
-    """Validate one or more precipitation products against GPCC gauge
-    observations at one or more stations, over a chosen year range,
-    the one-call version of the whole assessment, matching the original
-    paper's exact logic (16 WA stations, 6 products, 2001-2020) as the
-    default, everything else overridable by simple parameters.
-
-    This is the function to reach for first. It does exactly what the
-    original per-station CSV workflow did, extract each requested
-    product at each requested station, save/reuse a per-product CSV
-    (``cache_dir/precip_extraction_<PRODUCT>.csv``, same as before),
-    merge against GPCC observations
-    (``cache_dir/gpcc_obs_<start>_<end>.csv``), and write the same
-    result CSVs the original scripts did (``validation_by_zone.csv``,
-    ``validation_overall.csv``, ``product_ranking.csv``,
-    ``threshold_sensitivity.csv``), just wrapped in one call instead of
-    six separate scripts.
-
-    Args:
-        stations: where to validate. Any of:
-            - ``None`` (default): the 16 WA GPCC stations from the paper.
-            - a ``stations_df``, a path to a ``.geojson``/``.csv`` file
-              of station points, a list of ``(lon, lat)`` tuples, or a
-              single ``(lon, lat)`` tuple, see
-              :func:`savana.rainfall.stations.load_stations_any` for
-              the full list of accepted shapes. Works the same whether
-              you give it 1 station or 100.
-        products: which products to check, by name (e.g.
-            ``["CHIRPS", "GPM_IMERG"]``). ``None`` (default) uses all 6
-            in :data:`config.DEFAULT_PRODUCTS`. Any subset works.
-        start_year, end_year: inclusive year range (plain ints, the
-            paper used 2001-2020; pick whatever you need).
-        obs_source: where GPCC observations come from,
-            ``"ee_asset"`` (fast, only covers the 16 WA stations),
-            ``"download"`` (slower, works for any station anywhere),
-            ``"csv"`` (use ``obs_csv=``, you already have one), or
-            ``"demo"`` (synthetic, testing only). Defaults to
-            ``"ee_asset"`` when ``stations`` is the WA default (fastest
-            path for the paper's own network) and ``"download"``
-            otherwise (since the EE asset only has the WA 16).
-        obs_csv: required if ``obs_source="csv"``.
-        cache_dir: where per-product extraction CSVs, the GPCC obs CSV,
-            and the result CSVs are read from / written to. Sits right
-            next to your notebook by default; set to ``None`` to skip
-            all file caching and keep everything in memory only.
-        zones_gdf, zones_fc: optional zone geometry (see
-            :mod:`savana.rainfall.zones`) for zone-stratified results.
-            Omit for pooled (unzoned) validation.
-        rain_threshold: mm/day wet/dry threshold for categorical
-            metrics. Defaults to the WMO standard (1.0 mm/day).
-        ee_project: Google Cloud project registered for Earth Engine use
-            (only needed for ``obs_source="ee_asset"`` or the default
-            Earth Engine ingestion, not needed at all if you only use
-            ``obs_source="csv"``/``"demo"``). If omitted, uses whatever
-            is already configured for the environment (see
-            ``savana.ee_init.initialize``), set this explicitly if
-            you have more than one Google Cloud project and the wrong
-            one keeps getting picked up.
-
-    Returns:
-        A fully populated :class:`RainfallAssessment`, inspect
-        ``.validation_by_zone_df`` / ``.validation_overall_df``
-        directly, or call ``.summarize()``, ``.answer("...")``,
-        ``.show()``, ``.export_workbook(...)`` on it, same as building
-        one by hand.
-
-    Example::
-
-        from savana.rainfall import validate_against_gpcc
-
-        # Reproduce the paper exactly:
-        result = validate_against_gpcc()
-
-        # One station, two products, a shorter recent period:
-        result = validate_against_gpcc(
-            stations=(-1.5, 12.4),
-            products=["CHIRPS", "GPM_IMERG"],
-            start_year=2018, end_year=2023,
-        )
-        print(result.validation_overall_df)
+    >>> clf = savana.classify_landscape(
+    ...     "path/to/my_park.geojson", epochs=[2020, 2024], park_name="My Park"
+    ... )
+    >>> clf.show()
     """
-    from pathlib import Path
-
-    from . import stations as _stations
-
-    stations_df = _stations.load_stations_any(stations)
-    is_default_wa_network = stations is None
-
-    if products is None:
-        selected_products = config.DEFAULT_PRODUCTS
-    else:
-        unknown = [p for p in products if p not in config.DEFAULT_PRODUCTS]
-        if unknown:
-            raise ValueError(
-                f"Unknown product(s) {unknown}. Known products: "
-                f"{sorted(config.DEFAULT_PRODUCTS)}."
-            )
-        selected_products = {p: config.DEFAULT_PRODUCTS[p] for p in products}
-
-    if obs_source is None:
-        obs_source = "ee_asset" if is_default_wa_network else "download"
-
-    cache_path = Path(cache_dir) if cache_dir else None
-
-    ra = RainfallAssessment(
-        products=selected_products,
-        stations=stations_df,
-        zones_gdf=zones_gdf,
-        zones_fc=zones_fc,
-        rain_threshold=rain_threshold,
-        cache_dir=cache_path,
-        ee_project=ee_project,
-    )
-
-    obs_kwargs = {}
-    if obs_source == "csv":
-        if obs_csv is None:
-            raise ValueError('obs_source="csv" requires obs_csv=<path>.')
-        obs_kwargs = {"obs_csv": obs_csv}
-    elif obs_source == "download":
-        obs_kwargs = {"start_year": start_year, "end_year": end_year}
-        if cache_path:
-            obs_kwargs["data_dir"] = cache_path
-    elif obs_source == "demo":
-        obs_kwargs = {"start_year": start_year, "end_year": end_year}
-    # "ee_asset" takes no year kwargs, filtered to the requested range below instead
-
-    ra.get_observations(source=obs_source, **obs_kwargs)
-    ra.obs_df = ra.obs_df[
-        (ra.obs_df["year"] >= start_year) & (ra.obs_df["year"] <= end_year)
-    ].reset_index(drop=True)
-    if ra.obs_df.empty:
-        raise ValueError(
-            f"No GPCC observations found for {start_year}-{end_year} with "
-            f"obs_source={obs_source!r}. Check the year range against what "
-            f"that source actually covers."
-        )
-    ra.ingest(start=f"{start_year}-01-01", end=f"{end_year}-12-31")
-    ra.extract(cache_dir=cache_path)
-    if zones_gdf is not None or zones_fc is not None:
-        ra.assign_zones()
-    ra.merge()
-    ra.validate()
-    ra.analyze_thresholds()
-    ra.score()
-
-    if cache_path:
-        cache_path.mkdir(parents=True, exist_ok=True)
-        ra.merged_df.to_csv(
-            cache_path
-            / (
-                "merged_obs_grid_zoned.csv"
-                if "zone" in ra.merged_df.columns
-                else "merged_obs_grid.csv"
-            ),
-            index=False,
-        )
-        if ra.validation_by_zone_df is not None:
-            ra.validation_by_zone_df.to_csv(
-                cache_path / "validation_by_zone.csv", index=False
-            )
-        ra.validation_overall_df.to_csv(
-            cache_path / "validation_overall.csv", index=False
-        )
-        ra.ranking_df.to_csv(cache_path / "product_ranking.csv", index=False)
-        ra.threshold_df.to_csv(cache_path / "threshold_sensitivity.csv", index=False)
-        print(f"  Result CSVs written to: {cache_path}")
-
-    return ra
+    clf = SavanaClassifier(aoi, epochs=epochs, park_name=park_name, **kwargs)
+    clf.run()
+    return clf

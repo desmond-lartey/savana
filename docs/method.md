@@ -38,7 +38,7 @@ it recalibrates automatically.
 9. **Accuracy / Exports** (`savana.accuracy`, `savana.exports`), confusion
    matrices, accuracy summaries, and Drive/Asset/CSV export helpers.
 
-See the [API Reference](api.md) for the full function/class listing.
+See the [Classification API Reference](api_classification.md) for the full function/class listing.
 
 ---
 
