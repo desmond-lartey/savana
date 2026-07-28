@@ -1,7 +1,9 @@
 # Savana: A Geospatial Intelligence for Savanna Landscapes
 
 <p align="center">
+<a href="https://desmond-lartey.github.io/savana/" target="_blank" rel="noopener noreferrer">
   <img src="https://raw.githubusercontent.com/desmond-lartey/savana/Fires/docs/assets/logo-readme.png" alt="savana logo" width="180">
+</a>
 </p>
 
 <p align="center">
