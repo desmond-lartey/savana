@@ -149,6 +149,23 @@ DEFAULT_PRODUCTS: dict[str, dict] = {
         "native_res_deg": 0.04,
         "notes": "mm/day = raw(mm/month) / days_in_month.",
     },
+    "CPC": {
+        "collection": "NOAA/CPC/Precipitation",
+        "band": "precipitation",
+        "native_temporal": "daily",
+        "conversion": "scale",
+        "scale_factor": 0.1,
+        "units_raw": "0.1 mm/day",
+        "units_out": "mm/day",
+        "type": "gauge_based",
+        "native_res_deg": 0.5,
+        "notes": (
+            "CPC Global Unified Gauge-Based Analysis of Daily "
+            "Precipitation. Raw band is in 0.1 mm, so mm/day = raw x 0.1, "
+            "then monthly mean. Gauge-based, like GPCC, so a useful "
+            "independent validation complement. Available 2006 onward."
+        ),
+    },
 }
 
 # Full known availability window per product, ingestion.py clips the
@@ -161,6 +178,7 @@ DEFAULT_PRODUCT_DATE_RANGES: dict[str, tuple[str, str]] = {
     "ERA5_LAND": ("1950-01-01", "2024-12-31"),
     "MERRA2": ("1980-01-01", "2024-12-31"),
     "TERRACLIMATE": ("1958-01-01", "2023-12-31"),
+    "CPC": ("2006-01-01", "2024-12-31"),
 }
 
 

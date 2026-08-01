@@ -22,6 +22,7 @@ from qgis.core import QgsProject, QgsVectorLayer
 from qgis.PyQt.QtWidgets import (
     QComboBox,
     QDockWidget,
+    QFileDialog,
     QFormLayout,
     QGroupBox,
     QHBoxLayout,
@@ -47,6 +48,7 @@ PRODUCTS = [
     "ERA5_LAND",
     "MERRA2",
     "TERRACLIMATE",
+    "CPC",
 ]
 
 # Mirrors savana.rainfall.config.DEFAULT_VIS_PARAMS. Duplicated here
@@ -139,11 +141,55 @@ class RainfallDockWidget(QDockWidget):
         self.stations_edit.setPlaceholderText(
             "blank = 16 default WA stations, or lon,lat  or  path to .geojson/.csv"
         )
-        form.addRow("Stations:", self.stations_edit)
+        form.addRow(
+            "Stations:",
+            self._field_with_browse(
+                self.stations_edit,
+                "Select stations file",
+                "Vector/CSV (*.csv *.geojson *.json *.shp);;All files (*)",
+            ),
+        )
 
         self.obs_source = QComboBox()
-        self.obs_source.addItems(["download", "ee_asset"])
+        # "csv" lets a user validate against their own digitised gauge
+        # records instead of downloading GPCC -- see the Observations CSV
+        # field below, which is required when this is set to "csv".
+        self.obs_source.addItems(["download", "ee_asset", "csv"])
         form.addRow("GPCC source:", self.obs_source)
+
+        # User-supplied observations (digitised regional gauge records).
+        # Required only when GPCC source = "csv". Columns:
+        # station_id, year, month, obs_mm_day. The station locations come
+        # from the Stations field above (a stations CSV with
+        # station_id, station_name, lon, lat, elevation_m, source).
+        self.obs_csv_edit = QLineEdit()
+        self.obs_csv_edit.setPlaceholderText(
+            "for GPCC source = csv: station_id, year, month, obs_mm_day"
+        )
+        self.obs_csv_browse = self._field_with_browse(
+            self.obs_csv_edit,
+            "Select observations CSV",
+            "CSV files (*.csv);;All files (*)",
+        )
+        form.addRow("Observations CSV:", self.obs_csv_browse)
+
+        # Optional study-area boundary. When given, it clips the map
+        # previews to the region (instead of the product's global tiles)
+        # and can drive zone characterisation. Accepts an EE asset id or
+        # a local vector file; blank falls back to the station bounding
+        # box plus a buffer.
+        self.boundary_edit = QLineEdit()
+        self.boundary_edit.setPlaceholderText(
+            "optional: EE asset id or path to .geojson/.shp (clips maps + zones)"
+        )
+        form.addRow(
+            "Study area:",
+            self._field_with_browse(
+                self.boundary_edit,
+                "Select study-area boundary",
+                "Vector (*.geojson *.json *.shp);;All files (*)",
+            ),
+        )
 
         yr = QHBoxLayout()
         self.start_year = QSpinBox()
@@ -161,6 +207,28 @@ class RainfallDockWidget(QDockWidget):
         form.addRow("Years:", wrap)
 
         return group
+
+    def _field_with_browse(self, line_edit, caption, file_filter):
+        """Wrap a QLineEdit with a Browse button that opens a file picker.
+
+        Returns a QWidget (line edit + button) to drop into a form row,
+        so users can pick CSV/vector files instead of typing paths.
+        """
+        row = QHBoxLayout()
+        row.setContentsMargins(0, 0, 0, 0)
+        row.addWidget(line_edit)
+        btn = QPushButton("Browse...")
+
+        def _pick():
+            path, _ = QFileDialog.getOpenFileName(self, caption, "", file_filter)
+            if path:
+                line_edit.setText(path)
+
+        btn.clicked.connect(_pick)
+        row.addWidget(btn)
+        wrap = QWidget()
+        wrap.setLayout(row)
+        return wrap
 
     def _build_map_group(self) -> QGroupBox:
         """Map layers are shown on demand, not auto-loaded.
@@ -252,9 +320,31 @@ class RainfallDockWidget(QDockWidget):
         self._pending_layer_name = layer_name
 
         products_arg = "None" if not p["products"] else repr(p["products"])
+        boundary = p.get("boundary")
+        # Resolve a region: an EE asset id or vector path becomes the ROI
+        # (and clip geometry); otherwise ingest falls back to the station
+        # bounding box. Clipping to the study area is what stops the map
+        # covering the whole globe.
+        if boundary:
+            roi_line = f"_roi = _load_boundary({boundary!r})\n"
+            clip_expr = "({expr}).clip(_roi)"
+        else:
+            roi_line = "_roi = None\n"
+            clip_expr = "{expr}"
         setup = (
             "from savana.rainfall import RainfallAssessment\n"
             "from savana.rainfall import config as _cfg\n"
+            "from savana.rainfall import ingestion as _ing\n"
+            "import ee\n"
+            "def _load_boundary(spec):\n"
+            "    if spec.lower().endswith(('.geojson', '.json', '.shp')):\n"
+            "        import geopandas as _gpd, json as _json\n"
+            "        _g = _gpd.read_file(spec).to_crs(4326)\n"
+            "        _gj = _json.loads(_g.dissolve().to_json())\n"
+            "        _geom = _gj['features'][0]['geometry']\n"
+            "        return ee.Geometry(_geom)\n"
+            "    _fc = ee.FeatureCollection(spec)\n"
+            "    return _fc.geometry()\n"
             f"_prods = {products_arg}\n"
             "_sel = None if _prods is None else "
             "{k: _cfg.DEFAULT_PRODUCTS[k] for k in _prods}\n"
@@ -263,11 +353,13 @@ class RainfallDockWidget(QDockWidget):
             "    products=_sel,\n"
             f"    ee_project={p['ee_project']!r},\n"
             ")\n"
+            f"{roi_line}"
             f"_ra.ingest(start='{p['start_year']}-01-01', "
-            f"end='{p['end_year']}-12-31')\n"
+            f"end='{p['end_year']}-12-31', roi=_roi)\n"
         )
+        clipped_expr = clip_expr.format(expr=image_expr)
         vis = _VIS_PARAMS[vis_key]
-        script = ee_layers.build_tile_script(image_expr, vis, tiles_path, setup=setup)
+        script = ee_layers.build_tile_script(clipped_expr, vis, tiles_path, setup=setup)
 
         self._log(f"Building map layer: {layer_name} ...")
         set_status(self.map_status, f"Building {layer_name}...", "busy")
@@ -327,13 +419,36 @@ class RainfallDockWidget(QDockWidget):
         if not self._prerequisites_ok():
             return
 
+        obs_source = self.obs_source.currentText()
+        obs_csv = self.obs_csv_edit.text().strip() or None
+        if obs_source == "csv" and not obs_csv:
+            set_status(
+                self.run_status,
+                "CSV mode needs an Observations CSV path.",
+                "error",
+            )
+            self._log(
+                "GPCC source is 'csv' but no Observations CSV was given. "
+                "Provide a CSV with columns station_id, year, month, "
+                "obs_mm_day, and put your stations CSV in the Stations field."
+            )
+            return
+
         selected = [i.text() for i in self.product_list.selectedItems()]
+        # The products actually used this run: the explicit selection, or
+        # all six when nothing is selected. Stored so the Maps tab can
+        # offer exactly these (asking for a product that wasn't ingested
+        # is what caused the earlier KeyError).
+        effective_products = selected or list(PRODUCTS)
         params = {
             "stations": self.stations_edit.text().strip() or None,
             "products": selected or None,
+            "effective_products": effective_products,
+            "boundary": self.boundary_edit.text().strip() or None,
             "start_year": self.start_year.value(),
             "end_year": self.end_year.value(),
-            "obs_source": self.obs_source.currentText(),
+            "obs_source": obs_source,
+            "obs_csv": obs_csv,
             "ee_project": ee_connection.get_project(),
             "out_dir": tempfile.mkdtemp(prefix="savana_rainfall_"),
         }
@@ -367,9 +482,19 @@ class RainfallDockWidget(QDockWidget):
         self._log("Assessment finished. Loading results...")
         self._load_results()
         # Map layers need an ingested assessment, so they only become
-        # available once a run has actually completed.
+        # available once a run has actually completed. Populate the map
+        # product dropdowns with exactly the products this run ingested,
+        # so a map can never ask for a product that isn't there.
+        run_products = self._last_params.get("effective_products", list(PRODUCTS))
+        self.map_product.clear()
+        self.map_product.addItems(run_products)
+        self.map_reference.clear()
+        self.map_reference.addItems(run_products)
+        if self.map_reference.count() > 1:
+            self.map_reference.setCurrentIndex(1)
         self.mean_map_btn.setEnabled(True)
-        self.bias_map_btn.setEnabled(True)
+        # Bias needs two different products to compare.
+        self.bias_map_btn.setEnabled(len(run_products) >= 2)
         set_status(self.map_status, "Ready - pick a product and show a map.", "ok")
 
     def _load_results(self):
@@ -440,6 +565,7 @@ ra = validate_against_gpcc(
     start_year=p["start_year"],
     end_year=p["end_year"],
     obs_source=p["obs_source"],
+    obs_csv=p.get("obs_csv"),
     ee_project=p["ee_project"],
     cache_dir=out_dir,
 )

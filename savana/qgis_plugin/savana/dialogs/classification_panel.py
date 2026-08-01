@@ -51,7 +51,11 @@ CLASS_COLORS = [
     "d73027",  # 6 Anthropogenic Disturbance
 ]
 CLASS_VIS = {"min": 1, "max": 6, "palette": CLASS_COLORS}
-CHANGE_VIS = {"min": 0, "max": 1, "palette": ["#FFFFFF", "#d73027"]}
+# genuine_change is a 0/1 mask. We .selfMask() it (below) so the 0
+# "no change" pixels drop out and render transparent instead of painting
+# solid over the basemap -- so the map shows a sparse scatter of change
+# pixels, matching the manuscript figures, rather than a filled block.
+CHANGE_VIS = {"min": 1, "max": 1, "palette": ["#d73027"]}
 
 
 class ClassificationDockWidget(QDockWidget):
@@ -162,7 +166,7 @@ class ClassificationDockWidget(QDockWidget):
 
     def _on_show_change_map(self):
         self._show_map_layer(
-            image_expr='_clf.change["genuine_change"]',
+            image_expr='_clf.change["genuine_change"].selfMask()',
             vis=CHANGE_VIS,
             layer_name=f"Genuine change - {self._last_params['park_name']}",
         )
@@ -254,9 +258,9 @@ class ClassificationDockWidget(QDockWidget):
         form.addRow("Label:", self.park_name_edit)
 
         self.epochs_edit = QLineEdit()
-        self.epochs_edit.setText("2019, 2024")
+        self.epochs_edit.setText("2017, 2019, 2021, 2024")
         self.epochs_edit.setPlaceholderText(
-            "comma-separated years, e.g. 2019, 2021, 2024"
+            "comma-separated years; 4+ recommended for genuine-change analysis"
         )
         form.addRow("Epochs:", self.epochs_edit)
 
@@ -300,6 +304,18 @@ class ClassificationDockWidget(QDockWidget):
         if not epochs:
             self._log("Enter at least one epoch year.")
             return
+        if len(epochs) < 4:
+            # With fewer than 4 epochs, conservative change reduces to a
+            # raw pairwise mask and RUE-CV is computed over too few points
+            # to filter rainfall-driven change -- so "genuine change"
+            # comes out far denser than a proper multi-epoch run. This
+            # mirrors the study's 2017/2019/2021/2024 configuration.
+            self._log(
+                "Note: genuine-change analysis needs 4+ epochs to be "
+                "meaningful (e.g. 2017, 2019, 2021, 2024). With fewer, the "
+                "change map approximates raw change rather than validated "
+                "structural change."
+            )
         aoi = self.aoi_edit.text().strip()
         if not aoi:
             self._log("Enter an AOI (EE asset id or a vector file path).")
@@ -371,6 +387,16 @@ class ClassificationDockWidget(QDockWidget):
     # -- helpers --------------------------------------------------------
 
     def _log(self, line: str):
+        # Pipeline stage markers ("STAGE: ...") drive the live status
+        # label so the user sees which step is running instead of a
+        # frozen "Running classification". The marker still goes to the
+        # log too, for the full record.
+        if line.startswith("STAGE: "):
+            stage = line[len("STAGE: ") :]
+            if stage == "Done":
+                set_status(self.run_status, "Finalising results...", "busy")
+            else:
+                set_status(self.run_status, stage + "...", "busy")
         self.log.appendPlainText(line)
 
     def _set_busy(self, busy: bool):
@@ -393,13 +419,29 @@ with open(r"{params_path}", encoding="utf-8") as f:
 
 import savana
 
-clf = savana.classify_landscape(
+# Expand classify_landscape into its individual stages so each one
+# reports progress as it runs -- otherwise the whole classification is
+# one silent block and the panel just says "Running..." for minutes.
+# Stage markers are printed as "STAGE: <name>" and the panel turns them
+# into a live status line.
+clf = savana.SavanaClassifier(
     aoi=p["aoi"],
     epochs=p["epochs"],
     park_name=p["park_name"],
     name_filter=p["name_filter"],
     ee_project=p["ee_project"],
 )
+print("STAGE: Building image features and composites")
+clf.build_features()
+print("STAGE: Sampling training points")
+clf.sample_training_points()
+print("STAGE: Training the classifier")
+clf.train()
+print("STAGE: Classifying each epoch")
+clf.classify()
+print("STAGE: Analysing change between epochs")
+clf.analyse_change()
+print("STAGE: Done")
 
 results = {{}}
 
