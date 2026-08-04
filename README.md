@@ -18,6 +18,8 @@
 
 **An ecosystem of geospatial intelligence tools for understanding Savanna Landscapes.**
 
+![](https://github.com/desmond-lartey/savana/blob/Fires/West-Africa-Climate-Zones.jpg?raw=true)
+
 `savana` is an umbrella package for
 geospatial analysis modules that share a common design philosophy: adaptive
 rather than hardcoded methods, and
@@ -41,6 +43,8 @@ time rather than assumed from one park's spectral range. Built on
 Sentinel-2, Google AlphaEarth satellite embeddings, and rainfall-normalised
 phenology, with a 4-model ablation and RUE-validated change detection.
 [Quick start ↓](#quick-start--land-system-classification)
+
+![](https://github.com/desmond-lartey/savana/blob/Fires/Picture4.jpg)
 
 ### Precipitation product assessment (`savana.rainfall`)
 
